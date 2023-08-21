@@ -31,22 +31,9 @@ bot.registerModal(/order:(\d+):reject:modal/, async (interaction) => {
   const newOrdersMessageId =
     interaction.components[0].components[0].customId.split(":")[1];
   const reject = await rejectOrder(parseInt(orderId), reason);
-  const newOrdersChannel = await (
-    await bot.client.guilds.fetch(process.env.KITCHEN_SERVER_ID!)
-  ).channels.fetch(process.env.NEW_ORDERS_CHANNEL_ID!);
-  if (!newOrdersChannel?.isTextBased())
-    return interaction.reply({
-      content: "Failed to fetch new orders channel",
-      ephemeral: true,
-    });
-  const newOrdersMessage = await newOrdersChannel.messages.fetch(
+  const newOrdersMessage = await interaction.channel!.messages.fetch(
     newOrdersMessageId
   );
-  if (!newOrdersMessage)
-    return interaction.reply({
-      content: "Failed to fetch new orders message",
-      ephemeral: true,
-    });
   await newOrdersMessage.delete();
   return interaction.reply({ content: reject.message, ephemeral: true });
 });

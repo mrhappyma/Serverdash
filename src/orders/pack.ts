@@ -18,6 +18,12 @@ const packOrder = async (orderId: number, url: string, chefId: string) => {
   if (!orderP) return { success: false, message: "Order not found" };
   if (orderP.chefId !== chefId)
     return { success: false, message: "You are not the chef of this order" };
+  const request = await fetch(url);
+  if (!request.ok) return { success: false, message: "Failed to fetch image" };
+  const allowedContentTypes = ["image/png", "image/jpeg", "image/gif"];
+  if (!allowedContentTypes.includes(request.headers.get("content-type") ?? ""))
+    return { success: false, message: "Invalid image type" };
+
   try {
     var order = await prisma.order.update({
       where: {

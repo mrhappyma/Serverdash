@@ -15,6 +15,17 @@ const createOrder = async (
   channelId: string,
   statusMessageId?: string
 ) => {
+  const activeOrders = await prisma.order.findMany({
+    where: {
+      customerId,
+      guildId,
+    },
+  });
+  const activeOrdersFiltered = activeOrders.filter(
+    (order) => order.status !== "DELIVERED" && order.status !== "REJECTED"
+  );
+  if (activeOrdersFiltered.length > 0)
+    return { success: false, message: "You already have an active order" };
   try {
     var record = await prisma.order.create({
       data: {

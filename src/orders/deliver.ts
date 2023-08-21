@@ -109,7 +109,7 @@ export const finishDelivery = async (orderId: number, deliveryId: string) => {
       message: "You are not the delivery driver for this order",
     };
   try {
-    prisma.order.update({
+    await prisma.order.update({
       where: {
         id: orderId,
       },

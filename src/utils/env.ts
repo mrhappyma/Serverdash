@@ -11,5 +11,7 @@ const envSchema = z.object({
   DELIVERED_ORDERS_CHANNEL_ID: z.string(),
   CANCELLED_ORDERS_CHANNEL_ID: z.string(),
   LOG_CHANNEL_ID: z.string(),
+  ORDER_PING_ROLE_ID: z.string(),
+  DELIVERY_PING_ROLE_ID: z.string(),
 });
 export default envSchema.parse(process.env);
