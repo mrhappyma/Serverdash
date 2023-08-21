@@ -1,0 +1,15 @@
+{
+  "scripts": {
+    "postinstall": "prisma generate"
+  },
+  "dependencies": {
+    "@prisma/client": "^5.1.1",
+    "discord.js": "^14.13.0",
+    "zod": "^3.22.2"
+  },
+  "devDependencies": {
+    "@types/node": "^20.5.1",
+    "prisma": "^5.1.1",
+    "typescript": "^5.1.6"
+  }
+}
