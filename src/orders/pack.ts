@@ -92,6 +92,7 @@ export const finishPackOrder = async (orderId: number) => {
   await deliveryChannel.send({
     embeds: [deliveryEmbed],
     components: [deliveryActionRow],
+    content: `<@&${env.DELIVERY_PING_ROLE_ID}>`,
   });
   if (order.statusMessageId)
     updateOrderStatusMessage(

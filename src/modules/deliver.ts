@@ -22,7 +22,7 @@ bot.registerButton(/order:(\d+):deliver/, async (interaction) => {
       .setStyle(ButtonStyle.Link),
   ]);
   interaction.followUp({
-    content: deliver.invite,
+    content: `<#${deliver.deliveryChannelId}>\n${deliver.invite}`,
     components: [actionRow],
     ephemeral: true,
   });

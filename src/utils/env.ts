@@ -13,5 +13,6 @@ const envSchema = z.object({
   LOG_CHANNEL_ID: z.string(),
   ORDER_PING_ROLE_ID: z.string(),
   DELIVERY_PING_ROLE_ID: z.string(),
+  DEVELOPERS: z.string().default(""),
 });
 export default envSchema.parse(process.env);

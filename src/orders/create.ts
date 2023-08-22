@@ -62,6 +62,7 @@ const createOrder = async (
   await newOrdersChannel.send({
     embeds: [kitchenEmbed],
     components: [kitchenActionRow],
+    content: `<@&${env.ORDER_PING_ROLE_ID}>`,
   });
   return {
     success: true,

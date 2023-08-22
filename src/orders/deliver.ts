@@ -20,6 +20,7 @@ declare type startDeliveringOrderResponse =
       invite: string;
       deliveryMessage: string;
       deliveringMessageId: string;
+      deliveryChannelId: string;
     };
 
 export const startDeliveringOrder = async (
@@ -93,6 +94,7 @@ export const startDeliveringOrder = async (
     invite: invite.url,
     deliveryMessage: `Here's your order! ${order.fileUrl}`,
     deliveringMessageId: deliveringOrderMessage.id,
+    deliveryChannelId: deliveringOrdersChannel.id,
   };
 };
 
