@@ -94,7 +94,7 @@ export const startDeliveringOrder = async (
     invite: invite.url,
     deliveryMessage: `Here's your order! ${order.fileUrl}`,
     deliveringMessageId: deliveringOrderMessage.id,
-    deliveryChannelId: deliveringOrdersChannel.id,
+    deliveryChannelId: targetChannel.id,
   };
 };
 
