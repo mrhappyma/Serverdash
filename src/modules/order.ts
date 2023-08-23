@@ -37,7 +37,8 @@ bot.addGlobalCommand(
     //check if the bot can create invites
     const order = await createOrder(
       orderText,
-      interaction.guildId!,
+      interaction.guild!.id,
+      interaction.guild!.name,
       interaction.user.id,
       interaction.user.tag,
       interaction.channelId,

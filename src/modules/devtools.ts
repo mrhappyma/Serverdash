@@ -22,6 +22,10 @@ bot.addGlobalCommand(
         .setCustomId("devtools:role-select")
         .setLabel("Send role select menu")
         .setStyle(ButtonStyle.Secondary),
+      new ButtonBuilder()
+        .setCustomId("devtools:message-set")
+        .setLabel("Send message set menu")
+        .setStyle(ButtonStyle.Secondary),
     ]);
     return interaction.reply({ components: [actionRow], ephemeral: true });
   }

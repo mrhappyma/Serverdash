@@ -10,6 +10,7 @@ import env from "../utils/env";
 const createOrder = async (
   order: string,
   guildId: string,
+  guildName: string,
   customerId: string,
   customerUsername: string,
   channelId: string,
@@ -33,6 +34,7 @@ const createOrder = async (
         customerId,
         customerUsername,
         guildId,
+        guildName,
         order,
         statusMessageId,
       },

@@ -8,6 +8,7 @@ import {
 import bot, { prisma } from "..";
 import env from "../utils/env";
 import updateOrderStatusMessage from "../utils/updateOrderStatusMessage";
+import fillOrderMessage from "../utils/fillOrderMessage";
 
 declare type startDeliveringOrderResponse =
   | {
@@ -88,11 +89,21 @@ export const startDeliveringOrder = async (
       order.statusMessageId,
       `Your order is being delivered by ${deliveryUsername}`
     );
+  const deliveryMessage = await prisma.chef.upsert({
+    where: {
+      id: deliveryId,
+    },
+    update: {},
+    create: {
+      id: deliveryId,
+      message: "Hey $mention! Here's your order! $item",
+    },
+  });
   return {
     success: true,
     message: `Order ${order.id} is being delivered`,
     invite: invite.url,
-    deliveryMessage: `Here's your order! ${order.fileUrl}`,
+    deliveryMessage: fillOrderMessage(order, deliveryMessage.message!),
     deliveringMessageId: deliveringOrderMessage.id,
     deliveryChannelId: targetChannel.id,
   };

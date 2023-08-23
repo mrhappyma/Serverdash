@@ -15,6 +15,7 @@ model order {
   status           orderStatus @default(ORDERED)
   order            String
   guildId          String
+  guildName        String?
   customerId       String
   customerUsername String
   channelId        String
@@ -38,4 +39,9 @@ enum orderStatus {
   DELIVERED
   CANCELLED
   REJECTED
+}
+
+model chef {
+  id      String  @id
+  message String?
 }
