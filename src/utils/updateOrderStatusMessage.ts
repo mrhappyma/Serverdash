@@ -12,12 +12,9 @@ const updateOrderStatusMessage = async (
   ).channels.fetch(channelId);
   if (!orderChannel?.isTextBased()) return false;
   const orderMessage = await orderChannel.messages.fetch(messageId);
-  if (orderMessage)
-    orderMessage.edit({
-      embeds: [
-        EmbedBuilder.from(orderMessage.embeds[0]).setDescription(content),
-      ],
-    });
+  orderMessage.edit({
+    embeds: [EmbedBuilder.from(orderMessage.embeds[0]).setDescription(content)],
+  });
   return true;
 };
 export default updateOrderStatusMessage;

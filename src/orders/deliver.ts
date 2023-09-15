@@ -22,6 +22,7 @@ declare type startDeliveringOrderResponse =
       deliveryMessage: string;
       deliveringMessageId: string;
       deliveryChannelId: string;
+      backticks: boolean;
     };
 
 export const startDeliveringOrder = async (
@@ -89,7 +90,7 @@ export const startDeliveringOrder = async (
       order.statusMessageId,
       `Your order is being delivered by ${deliveryUsername}`
     );
-  const deliveryMessage = await prisma.chef.upsert({
+  const chefRecord = await prisma.chef.upsert({
     where: {
       id: deliveryId,
     },
@@ -103,9 +104,10 @@ export const startDeliveringOrder = async (
     success: true,
     message: `Order ${order.id} is being delivered`,
     invite: invite.url,
-    deliveryMessage: fillOrderMessage(order, deliveryMessage.message!),
+    deliveryMessage: fillOrderMessage(order, chefRecord.message!),
     deliveringMessageId: deliveringOrderMessage.id,
     deliveryChannelId: targetChannel.id,
+    backticks: chefRecord.backticks,
   };
 };
 

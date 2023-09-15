@@ -42,6 +42,7 @@ enum orderStatus {
 }
 
 model chef {
-  id      String  @id
-  message String?
+  id        String  @id
+  message   String?
+  backticks Boolean @default(false)
 }
