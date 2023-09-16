@@ -6,9 +6,10 @@ import {
   EmbedBuilder,
 } from "discord.js";
 import bot, { prisma } from "..";
-import env from "../utils/env";
 import updateOrderStatusMessage from "../utils/updateOrderStatusMessage";
 import fillOrderMessage from "../utils/fillOrderMessage";
+import kitchenChannels from "../utils/kitchenChannels";
+import { emojiInline } from "../utils/emoji";
 
 declare type startDeliveringOrderResponse =
   | {
@@ -44,14 +45,16 @@ export const startDeliveringOrder = async (
   } catch (e) {
     return { success: false, message: "Failed to start delivering order" };
   }
-  const deliveringOrdersChannel = await (
-    await bot.client.guilds.fetch(env.KITCHEN_SERVER_ID)
-  ).channels.fetch(env.DELIVERING_ORDERS_CHANNEL_ID);
+  const deliveringOrdersChannel =
+    await kitchenChannels.deliveringOrdersChannel();
   if (!deliveringOrdersChannel?.isTextBased())
     return {
       success: false,
       message: "Failed to fetch delivering orders channel",
     };
+  const logsChannel = await kitchenChannels.logsChannel();
+  if (!logsChannel?.isTextBased())
+    return { success: false, message: "Failed to fetch logs channel" };
   const deliveringActionRow =
     new ActionRowBuilder<ButtonBuilder>().addComponents([
       new ButtonBuilder()
@@ -78,7 +81,7 @@ export const startDeliveringOrder = async (
   if (!targetChannel?.isTextBased() || targetChannel.isThread())
     return { success: false, message: "Failed to fetch target channel" };
   const invite = await targetChannel.createInvite({
-    maxAge: 0,
+    maxAge: 3600,
     maxUses: 1,
     unique: true,
     reason: `Order ${order.id} delivery invite`,
@@ -99,6 +102,10 @@ export const startDeliveringOrder = async (
       id: deliveryId,
       message: "Hey $mention! Here's your order! $item",
     },
+  });
+  await logsChannel.send({
+    content: `${emojiInline.materialPackage2} <@!${deliveryId}> started delivering order **#${order.id}**`,
+    allowedMentions: { parse: [] },
   });
   return {
     success: true,
@@ -142,14 +149,15 @@ export const finishDelivery = async (orderId: number, deliveryId: string) => {
       order.statusMessageId,
       `Your order has been delivered!`
     );
-  const deliveredOrdersChannel = await (
-    await bot.client.guilds.fetch(env.KITCHEN_SERVER_ID)
-  ).channels.fetch(env.DELIVERED_ORDERS_CHANNEL_ID);
+  const deliveredOrdersChannel = await kitchenChannels.deliveredOrdersChannel();
   if (!deliveredOrdersChannel?.isTextBased())
     return {
       success: false,
       message: "Failed to fetch delivered orders channel",
     };
+  const logsChannel = await kitchenChannels.logsChannel();
+  if (!logsChannel?.isTextBased())
+    return { success: false, message: "Failed to fetch logs channel" };
   const deliveredEmbed = new EmbedBuilder()
     .setTitle(`Order #${order.id}`)
     .setDescription(order.order)
@@ -170,6 +178,10 @@ export const finishDelivery = async (orderId: number, deliveryId: string) => {
     .setImage(order.fileUrl);
   await deliveredOrdersChannel.send({
     embeds: [deliveredEmbed],
+  });
+  await logsChannel.send({
+    content: `${emojiInline.materialLocalPostOffice} <@!${order.deliveryId}> marked order **#${order.id}** delivered`,
+    allowedMentions: { parse: [] },
   });
   return { success: true, message: `Order ${order.id} has been delivered` };
 };

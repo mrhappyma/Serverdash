@@ -4,10 +4,11 @@ import {
   ButtonStyle,
   EmbedBuilder,
 } from "discord.js";
-import bot, { prisma } from "..";
+import { prisma } from "..";
 import updateOrderStatusMessage from "../utils/updateOrderStatusMessage";
-import env from "../utils/env";
 import { orderStatus } from "@prisma/client";
+import kitchenChannels from "../utils/kitchenChannels";
+import { emojiInline } from "../utils/emoji";
 
 declare type startFillingOrderResponse =
   | {
@@ -46,11 +47,12 @@ export const startFillingOrder = async (
       order.statusMessageId,
       `Your order is being filled by ${chefUsername}`
     );
-  const orderFillingChannel = await (
-    await bot.client.guilds.fetch(env.KITCHEN_SERVER_ID)
-  ).channels.fetch(env.FILL_ORDERS_CHANNEL_ID);
+  const orderFillingChannel = await kitchenChannels.fillOrdersChannel();
   if (!orderFillingChannel?.isTextBased())
     return { success: false, message: "Failed to fetch order filling channel" };
+  const logsChannel = await kitchenChannels.logsChannel();
+  if (!logsChannel?.isTextBased())
+    return { success: false, message: "Failed to fetch logs channel" };
   const orderFillingActionRow =
     new ActionRowBuilder<ButtonBuilder>().addComponents([
       new ButtonBuilder()
@@ -70,6 +72,10 @@ export const startFillingOrder = async (
     embeds: [orderFillingEmbed],
     components: [orderFillingActionRow],
     content: `<@!${chefId}>`,
+  });
+  await logsChannel.send({
+    content: `${emojiInline.materialBlender} <@!${chefId}> claimed order **#${order.id}**`,
+    allowedMentions: { parse: [] },
   });
   return {
     success: true,

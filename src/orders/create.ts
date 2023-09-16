@@ -4,8 +4,10 @@ import {
   ButtonStyle,
   EmbedBuilder,
 } from "discord.js";
-import bot, { prisma } from "..";
+import { prisma } from "..";
 import env from "../utils/env";
+import kitchenChannels from "../utils/kitchenChannels";
+import { emojiInline } from "../utils/emoji";
 
 const createOrder = async (
   order: string,
@@ -42,11 +44,12 @@ const createOrder = async (
   } catch (e) {
     return { success: false, message: "Failed to create order" };
   }
-  const newOrdersChannel = await (
-    await bot.client.guilds.fetch(env.KITCHEN_SERVER_ID)
-  ).channels.fetch(env.NEW_ORDERS_CHANNEL_ID);
+  const newOrdersChannel = await kitchenChannels.newOrdersChannel();
   if (!newOrdersChannel?.isTextBased())
     return { success: false, message: "Failed to fetch new orders channel" };
+  const logsChannel = await kitchenChannels.logsChannel();
+  if (!logsChannel?.isTextBased())
+    return { success: false, message: "Failed to fetch logs channel" };
   const kitchenActionRow = new ActionRowBuilder<ButtonBuilder>().addComponents([
     new ButtonBuilder()
       .setCustomId(`order:${record.id}:fill`)
@@ -65,6 +68,10 @@ const createOrder = async (
     embeds: [kitchenEmbed],
     components: [kitchenActionRow],
     content: `<@&${env.ORDER_PING_ROLE_ID}>`,
+  });
+  await logsChannel.send({
+    content: `${emojiInline.materialEdit} <@!${customerId}> created order **#${record.id}** for **${order}**`,
+    allowedMentions: { parse: [] },
   });
   return {
     success: true,

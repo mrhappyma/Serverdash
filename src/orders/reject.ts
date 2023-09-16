@@ -1,10 +1,11 @@
 import { orderStatus } from "@prisma/client";
-import bot, { prisma } from "..";
+import { prisma } from "..";
 import { EmbedBuilder } from "discord.js";
-import env from "../utils/env";
 import updateOrderStatusMessage from "../utils/updateOrderStatusMessage";
+import kitchenChannels from "../utils/kitchenChannels";
+import { emojiInline } from "../utils/emoji";
 
-const rejectOrder = async (id: number, reason: string) => {
+const rejectOrder = async (id: number, reason: string, rejector: string) => {
   try {
     var order = await prisma.order.update({
       where: {
@@ -13,6 +14,7 @@ const rejectOrder = async (id: number, reason: string) => {
       data: {
         status: orderStatus.REJECTED,
         rejectedReason: reason,
+        rejectorId: rejector,
       },
     });
   } catch (e) {
@@ -25,20 +27,28 @@ const rejectOrder = async (id: number, reason: string) => {
       order.statusMessageId,
       `Your order has been rejected by the kitchen\n${reason}`
     );
-  const orderRejectionsChannel = await (
-    await bot.client.guilds.fetch(env.KITCHEN_SERVER_ID)
-  ).channels.fetch(env.CANCELLED_ORDERS_CHANNEL_ID);
+  const orderRejectionsChannel = await kitchenChannels.cancelledOrdersChannel();
   if (!orderRejectionsChannel?.isTextBased())
     return {
       success: false,
       message: "Failed to fetch order rejections channel",
     };
+  const logsChannel = await kitchenChannels.logsChannel();
+  if (!logsChannel?.isTextBased())
+    return { success: false, message: "Failed to fetch logs channel" };
   const orderRejectionEmbed = new EmbedBuilder()
     .setTitle(`Order from **${order.customerUsername}**`)
     .setDescription(order.order)
-    .addFields([{ name: "Reason", value: reason }])
+    .addFields([
+      { name: "Reason", value: reason },
+      { name: "Rejected by", value: `<@!${rejector}>` },
+    ])
     .setFooter({ text: `Order ID: ${order.id}` });
   await orderRejectionsChannel.send({ embeds: [orderRejectionEmbed] });
+  await logsChannel.send({
+    content: `${emojiInline.materialError} <@!${rejector}> rejected order **#${id}**\n\`\`\`${reason}\`\`\``,
+    allowedMentions: { parse: [] },
+  });
   return {
     success: true,
     message: `Order ${order.id} has been rejected`,

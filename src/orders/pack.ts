@@ -8,6 +8,8 @@ import {
   ButtonStyle,
   EmbedBuilder,
 } from "discord.js";
+import kitchenChannels from "../utils/kitchenChannels";
+import { emojiInline } from "../utils/emoji";
 
 const packOrder = async (orderId: number, url: string, chefId: string) => {
   const orderP = await prisma.order.findUnique({
@@ -48,6 +50,13 @@ const packOrder = async (orderId: number, url: string, chefId: string) => {
       ).toString()}:R>`
     );
   setTimeout(() => finishPackOrder(orderId), 1000 * 60 * 5);
+  const logsChannel = await kitchenChannels.logsChannel();
+  if (!logsChannel?.isTextBased())
+    return { success: false, message: "Failed to fetch logs channel" };
+  await logsChannel.send({
+    content: `${emojiInline.materialLunchDining} <@!${chefId}> finished filling order **#${orderId}**`,
+    allowedMentions: { parse: [] },
+  });
   return {
     success: true,
     message: `Order ${order.id} is being packed`,

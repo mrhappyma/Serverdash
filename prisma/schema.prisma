@@ -26,6 +26,7 @@ model order {
   deliveryUsername String?
   fileUrl          String?
   rejectedReason   String?
+  rejectorId       String?
   createdAt        DateTime    @default(now())
   updatedAt        DateTime    @updatedAt
 }

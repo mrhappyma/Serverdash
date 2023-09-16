@@ -30,7 +30,11 @@ bot.registerModal(/order:(\d+):reject:modal/, async (interaction) => {
   const reason = interaction.components[0].components[0].value;
   const newOrdersMessageId =
     interaction.components[0].components[0].customId.split(":")[1];
-  const reject = await rejectOrder(parseInt(orderId), reason);
+  const reject = await rejectOrder(
+    parseInt(orderId),
+    reason,
+    interaction.user.id
+  );
   const newOrdersMessage = await interaction.channel!.messages.fetch(
     newOrdersMessageId
   );
