@@ -23,7 +23,7 @@ const packOrder = async (orderId: number, url: string, chefId: string) => {
   const request = await fetch(url);
   if (!request.ok) return { success: false, message: "Failed to fetch image" };
   const allowedContentTypes = ["image/png", "image/jpeg", "image/gif"];
-  if (!allowedContentTypes.includes(request.headers.get("content-type") ?? ""))
+  if (!allowedContentTypes.includes(request.headers.get("content-type") ?? "") && !url.startsWith('https://youtu.be/'))
     return { success: false, message: "Invalid image type" };
 
   try {
