@@ -14,7 +14,7 @@ bot.client.once("ready", async () => {
   bot.client.user!.setPresence({
     activities: [
       {
-        name: "become a chef! discord.gg/gN6x8KMtsF",
+        name: "counting down 'till 🦃 day",
         type: ActivityType.Custom,
         state: "become a chef! discord.gg/gN6x8KMtsF",
       },
