@@ -11,24 +11,25 @@ datasource db {
 }
 
 model order {
-  id               Int         @id @default(autoincrement())
-  status           orderStatus @default(ORDERED)
-  order            String
-  guildId          String
-  guildName        String?
-  customerId       String
-  customerUsername String
-  channelId        String
-  statusMessageId  String?
-  chefId           String?
-  chefUsername     String?
-  deliveryId       String?
-  deliveryUsername String?
-  fileUrl          String?
-  rejectedReason   String?
-  rejectorId       String?
-  createdAt        DateTime    @default(now())
-  updatedAt        DateTime    @updatedAt
+  id                     Int         @id @default(autoincrement())
+  status                 orderStatus @default(ORDERED)
+  order                  String
+  guildId                String
+  guildName              String?
+  customerId             String
+  customerUsername       String
+  channelId              String
+  statusMessageId        String?
+  chefId                 String?
+  chefUsername           String?
+  deliveryId             String?
+  deliveryUsername       String?
+  fileUrl                String?
+  rejectedReason         String?
+  rejectorId             String?
+  relatedKitchenMessages String[] // `enum:messageID` format
+  createdAt              DateTime    @default(now())
+  updatedAt              DateTime    @updatedAt
 }
 
 enum orderStatus {
@@ -44,6 +45,6 @@ enum orderStatus {
 
 model chef {
   id        String  @id
-  message   String?
+  message   String
   backticks Boolean @default(false)
 }
