@@ -205,8 +205,12 @@ bot.registerButton(/order:(\d+):complete/, async (interaction) => {
         name: "Delivery Driver",
         value: `<@!${order.deliveryId}>`,
       },
-    ])
-    .setImage(order.fileUrl);
+    ]);
+  if (order.fileUrl?.endsWith(".png" || ".jpeg" || ".gif")) {
+    deliveredEmbed.setImage(order.fileUrl);
+  } else {
+    deliveredEmbed.addFields([{ name: "File", value: order.fileUrl! }]);
+  }
   await sendKitchenMessage(KitchenChannel.deliveredOrders, {
     embeds: [deliveredEmbed],
   });
