@@ -206,12 +206,8 @@ bot.registerButton(/order:(\d+):complete/, async (interaction) => {
         value: `<@!${order.deliveryId}>`,
       },
     ]);
-  if (order.fileUrl?.endsWith(".png" || ".jpeg" || ".gif")) {
-    deliveredEmbed.setImage(order.fileUrl);
-  } else {
-    deliveredEmbed.addFields([{ name: "File", value: order.fileUrl! }]);
-  }
   await sendKitchenMessage(KitchenChannel.deliveredOrders, {
+    content: order.fileUrl ?? undefined,
     embeds: [deliveredEmbed],
   });
   await sendKitchenMessage(KitchenChannel.logs, {
