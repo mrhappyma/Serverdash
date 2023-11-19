@@ -48,3 +48,9 @@ model chef {
   message   String
   backticks Boolean @default(false)
 }
+
+model KitchenConfig {
+  id           Int     @id
+  closed       Boolean @default(false)
+  closedReason String  @default("")
+}

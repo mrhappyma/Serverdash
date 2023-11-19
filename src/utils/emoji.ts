@@ -5,6 +5,7 @@ export default {
   materialBlender: "materialBlender:1152408275778805800",
   materialLunchDining: "materialLunchDining:1152408274549882951",
   materialError: "materialError:1152408273010573444",
+  materialDoorFront: "materialDoorFront:1175910965083111455",
 };
 
 export const emojiInline = {
@@ -14,4 +15,5 @@ export const emojiInline = {
   materialBlender: "<:materialBlender:1152408275778805800>",
   materialLunchDining: "<:materialLunchDining:1152408274549882951>",
   materialError: "<:materialError:1152408273010573444>",
+  materialDoorFront: "<:materialDoorFront:1175910965083111455>",
 };

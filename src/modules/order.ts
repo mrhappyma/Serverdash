@@ -10,6 +10,7 @@ import bot, { prisma } from "..";
 import { emojiInline } from "../utils/emoji";
 import env from "../utils/env";
 import { KitchenChannel, sendKitchenMessage } from "../utils/kitchenChannels";
+import { closed, closedReason } from "./closed";
 
 bot.addGlobalCommand(
   new SlashCommandBuilder()
@@ -30,6 +31,18 @@ bot.addGlobalCommand(
       !interaction.channel
     )
       return;
+
+    if (closed) {
+      return interaction.reply({
+        embeds: [
+          {
+            title: "Kitchen closed",
+            description: closedReason,
+          },
+        ],
+      });
+    }
+
     const orderText = interaction.options.getString("order", true);
     const channel = interaction.channel as GuildChannel;
     const permissions = channel.permissionsFor(interaction.client.user);
