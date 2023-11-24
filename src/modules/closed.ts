@@ -23,10 +23,10 @@ const loadClosed = async () => {
 };
 loadClosed();
 
-bot.registerButton("devtools:closed-toggle", (interaction) => {
+bot.registerButton("devtools:closed-toggle", async (interaction) => {
   if (closed) {
     closed = false;
-    prisma.kitchenConfig.update({
+    await prisma.kitchenConfig.update({
       where: {
         id: 0,
       },
