@@ -1,11 +1,11 @@
 on:
   push:
     branches:
-    - main
+      - main
 jobs:
   sentry:
-    name: Send files to Sentry
-    runs-on: ubuntu-18.04
+    name: create Sentry release
+    runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v3
         with:
