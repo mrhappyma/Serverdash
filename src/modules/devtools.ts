@@ -38,6 +38,10 @@ bot.addGlobalCommand(
         .setCustomId("devtools:closed-toggle")
         .setLabel(kitchenConfig.closed ? "Open kitchen" : "Close kitchen")
         .setStyle(ButtonStyle.Secondary),
+      new ButtonBuilder()
+        .setCustomId("devtools:error-test")
+        .setLabel("fire drill")
+        .setStyle(ButtonStyle.Secondary),
     ]);
     return interaction.reply({ components: [actionRow], ephemeral: true });
   }

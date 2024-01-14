@@ -1,7 +1,9 @@
 // half-baked outlet "framework" from Vacuum. but modified to remove the logger.
+// also further modified
 
 import * as Discord from "discord.js";
 import type { BitFieldResolvable, GatewayIntentsString } from "discord.js";
+import handleError from "./utils/sentry";
 
 declare type powercordConfig = {
   intents: BitFieldResolvable<GatewayIntentsString, number>;
@@ -116,70 +118,76 @@ export default class Powercord {
       console.log("failed to register application commands" + e);
     }
 
-    this.client.on("interactionCreate", (interaction) => {
-      switch (interaction.type) {
-        case Discord.InteractionType.ApplicationCommand:
-          const command = this.globalCommands.find(
-            (cmd) => cmd.command.name === interaction.commandName
-          );
-          if (!command) {
-            console.log(`Command not found ${interaction.commandName}`);
-            return;
-          }
-          command.callback(interaction as Discord.CommandInteraction);
-          break;
-        case Discord.InteractionType.ApplicationCommandAutocomplete:
-          const autocomplete = this.globalCommands.find(
-            (cmd) => cmd.command.name === interaction.commandName
-          )?.autocomplete;
-          if (!autocomplete) {
-            console.log(`Autocomplete not found ${interaction.commandName}`);
-            return;
-          }
-          autocomplete(interaction as Discord.AutocompleteInteraction);
-          break;
-        case Discord.InteractionType.MessageComponent:
-          if (interaction.isButton()) {
-            const button = this.buttons.find(
+    this.client.on("interactionCreate", async (interaction) => {
+      try {
+        switch (interaction.type) {
+          case Discord.InteractionType.ApplicationCommand:
+            const command = this.globalCommands.find(
+              (cmd) => cmd.command.name === interaction.commandName
+            );
+            if (!command) {
+              console.log(`Command not found ${interaction.commandName}`);
+              return;
+            }
+            await command.callback(interaction as Discord.CommandInteraction);
+            break;
+          case Discord.InteractionType.ApplicationCommandAutocomplete:
+            const autocomplete = this.globalCommands.find(
+              (cmd) => cmd.command.name === interaction.commandName
+            )?.autocomplete;
+            if (!autocomplete) {
+              console.log(`Autocomplete not found ${interaction.commandName}`);
+              return;
+            }
+            await autocomplete(interaction as Discord.AutocompleteInteraction);
+            break;
+          case Discord.InteractionType.MessageComponent:
+            if (interaction.isButton()) {
+              const button = this.buttons.find(
+                (btn) =>
+                  interaction.customId.match(btn.customId)?.[0] ==
+                  interaction.customId
+              );
+              if (!button) {
+                console.log(`Button not found ${interaction.customId}`);
+                return;
+              }
+              await button.callback(interaction as Discord.ButtonInteraction);
+              return;
+            }
+            if (interaction.isStringSelectMenu()) {
+              const stringSelectMenu = this.stringSelectMenus.find(
+                (btn) =>
+                  interaction.customId.match(btn.customId)?.[0] ==
+                  interaction.customId
+              );
+              if (!stringSelectMenu) {
+                console.log(
+                  `StringSelectMenu not found ${interaction.customId}`
+                );
+                return;
+              }
+              await stringSelectMenu.callback(
+                interaction as Discord.StringSelectMenuInteraction
+              );
+              return;
+            }
+            break;
+          case Discord.InteractionType.ModalSubmit:
+            const modal = this.modals.find(
               (btn) =>
                 interaction.customId.match(btn.customId)?.[0] ==
                 interaction.customId
             );
-            if (!button) {
-              console.log(`Button not found ${interaction.customId}`);
+            if (!modal) {
+              console.log(`Modal not found ${interaction.customId}`);
               return;
             }
-            button.callback(interaction as Discord.ButtonInteraction);
-            return;
-          }
-          if (interaction.isStringSelectMenu()) {
-            const stringSelectMenu = this.stringSelectMenus.find(
-              (btn) =>
-                interaction.customId.match(btn.customId)?.[0] ==
-                interaction.customId
-            );
-            if (!stringSelectMenu) {
-              console.log(`StringSelectMenu not found ${interaction.customId}`);
-              return;
-            }
-            stringSelectMenu.callback(
-              interaction as Discord.StringSelectMenuInteraction
-            );
-            return;
-          }
-          break;
-        case Discord.InteractionType.ModalSubmit:
-          const modal = this.modals.find(
-            (btn) =>
-              interaction.customId.match(btn.customId)?.[0] ==
-              interaction.customId
-          );
-          if (!modal) {
-            console.log(`Modal not found ${interaction.customId}`);
-            return;
-          }
-          modal.callback(interaction as Discord.ModalSubmitInteraction);
-          break;
+            await modal.callback(interaction as Discord.ModalSubmitInteraction);
+            break;
+        }
+      } catch (e) {
+        handleError(e, { interaction });
       }
     });
   }

@@ -23,5 +23,10 @@ const envSchema = z.object({
   ORDER_PING_ROLE_ID: z.string(),
   DELIVERY_PING_ROLE_ID: z.string(),
   DEVELOPERS: z.string().default(""),
+  SENTRY_DSN: z.string().optional(),
+  SENTRY_ORG: z.string().optional(),
+  SENTRY_PROJECT: z.string().optional(),
+  SENTRY_TOKEN: z.string().optional(),
+  NODE_ENV: z.string().optional(),
 });
 export default envSchema.parse(process.env);

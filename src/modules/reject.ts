@@ -36,8 +36,6 @@ bot.registerButton(/order:(\d+):reject/, async (interaction) => {
 bot.registerModal(/order:(\d+):reject:modal/, async (interaction) => {
   const orderId = parseInt(interaction.customId.split(":")[1]);
   const reason = interaction.components[0].components[0].value;
-  const messageId =
-    interaction.components[0].components[0].customId.split(":")[1];
 
   try {
     var order = await prisma.order.update({

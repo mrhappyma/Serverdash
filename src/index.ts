@@ -4,10 +4,12 @@ import env from "./utils/env";
 import { ActivityType } from "discord.js";
 import path from "path";
 import fs from "fs";
+import { registerSentryButtons } from "./utils/sentry";
 
 export const prisma = new PrismaClient();
 const bot = new Powercord(env.DSC_TOKEN, { intents: ["Guilds"] });
 export default bot;
+registerSentryButtons();
 
 import { finishPackOrder } from "./modules/pack"; // this file imports the bot, so it must be imported after the bot is created
 
