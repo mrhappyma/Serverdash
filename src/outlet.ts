@@ -3,7 +3,7 @@
 
 import * as Discord from "discord.js";
 import type { BitFieldResolvable, GatewayIntentsString } from "discord.js";
-import handleError from "./utils/sentry";
+import handleError from "./modules/sentry";
 
 declare type powercordConfig = {
   intents: BitFieldResolvable<GatewayIntentsString, number>;

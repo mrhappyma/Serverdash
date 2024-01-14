@@ -13,7 +13,7 @@ import {
   TextInputStyle,
 } from "discord.js";
 import bot from "..";
-import env from "./env";
+import env from "../utils/env";
 
 export let usingSentry = false;
 if (env.SENTRY_DSN && env.SENTRY_ORG && env.SENTRY_PROJECT && env.SENTRY_TOKEN)
@@ -148,7 +148,7 @@ export const registerSentryButtons = async () => {
     const comments = interaction.fields.getTextInputValue("comments");
     const email = interaction.fields.getTextInputValue("email");
     try {
-      const feedba = await fetch(
+      var feedback = await fetch(
         `https://sentry.io/api/0/projects/${env.SENTRY_ORG}/${env.SENTRY_PROJECT}/user-feedback/`,
         {
           method: "POST",
@@ -164,10 +164,16 @@ export const registerSentryButtons = async () => {
           }),
         }
       );
-      console.log(feedba.status, await feedba.json());
     } catch {
       return interaction.reply({
         content: "Failed to send feedback, sorry about that.",
+        ephemeral: true,
+      });
+    }
+    if (!feedback.ok) {
+      return interaction.reply({
+        content:
+          "Failed to send feedback, sorry about that. This is usually due to an invalid email, or waiting a while before submitting feedback.",
         ephemeral: true,
       });
     }

@@ -4,7 +4,7 @@ import env from "./utils/env";
 import { ActivityType } from "discord.js";
 import path from "path";
 import fs from "fs";
-import { registerSentryButtons } from "./utils/sentry";
+import { registerSentryButtons } from "./modules/sentry";
 
 export const prisma = new PrismaClient();
 const bot = new Powercord(env.DSC_TOKEN, { intents: ["Guilds"] });
