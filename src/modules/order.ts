@@ -56,8 +56,23 @@ bot.addGlobalCommand(
         content:
           "I don't have permission to create invites! How do you expect your order to be delivered without that?",
       });
-    const message = await interaction.deferReply({ fetchReply: true });
-    //check if the bot can create invites
+    const message = await interaction.reply({
+      content: "Working on it...",
+      fetchReply: true,
+    });
+    try {
+      await interaction.channel.messages.edit(message.id, {
+        content: "Sending your order to the kitchen...",
+      });
+    } catch (e) {
+      console.log(e);
+      console.log(message.id);
+      return await interaction.followUp({
+        content:
+          "Hey! I don't have access to my own messages in here, so I wouldn't be able to update you with your order's status. Please ask an admin to fix this, then re-order :)\n\n(while you're at it, make sure new members can send messages in here too!)",
+      });
+    }
+
     const activeOrders = await prisma.order.findMany({
       where: {
         customerId: interaction.user.id,
@@ -72,23 +87,17 @@ bot.addGlobalCommand(
         content: "You already have an active order! One at a time please!",
       });
 
-    try {
-      var record = await prisma.order.create({
-        data: {
-          channelId: interaction.channel.id,
-          customerId: interaction.user.id,
-          customerUsername: interaction.user.username,
-          guildId: interaction.guild.id,
-          guildName: interaction.guild.name,
-          order: orderText,
-          statusMessageId: message.id,
-        },
-      });
-    } catch (e) {
-      return interaction.editReply({
-        content: "Couldn't create order, sorry :(",
-      });
-    }
+    const record = await prisma.order.create({
+      data: {
+        channelId: interaction.channel.id,
+        customerId: interaction.user.id,
+        customerUsername: interaction.user.username,
+        guildId: interaction.guild.id,
+        guildName: interaction.guild.name,
+        order: orderText,
+        statusMessageId: message.id,
+      },
+    });
 
     const kitchenActionRow =
       new ActionRowBuilder<ButtonBuilder>().addComponents([
@@ -118,7 +127,8 @@ bot.addGlobalCommand(
       content: `${emojiInline.materialEdit} <@!${interaction.user.id}> created order **#${record.id}** for **${orderText}**`,
       allowedMentions: { parse: [] },
     });
-    return await interaction.editReply({
+    await interaction.editReply({
+      content: "",
       embeds: [
         {
           title: `Order status - ${orderText}`,

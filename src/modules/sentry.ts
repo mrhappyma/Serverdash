@@ -4,7 +4,6 @@ import {
   ActionRowBuilder,
   ButtonBuilder,
   ButtonStyle,
-  ComponentType,
   Interaction,
   ModalActionRowComponentBuilder,
   ModalBuilder,
@@ -18,7 +17,11 @@ import env from "../utils/env";
 export let usingSentry = false;
 if (env.SENTRY_DSN && env.SENTRY_ORG && env.SENTRY_PROJECT && env.SENTRY_TOKEN)
   usingSentry = true;
-Sentry.init({ dsn: env.SENTRY_DSN, environment: env.NODE_ENV });
+Sentry.init({
+  dsn: env.SENTRY_DSN,
+  environment: env.NODE_ENV,
+  release: env.SOURCE_COMMIT,
+});
 
 const handleError = async (
   e: any,

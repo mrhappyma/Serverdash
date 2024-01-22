@@ -28,5 +28,6 @@ const envSchema = z.object({
   SENTRY_PROJECT: z.string().optional(),
   SENTRY_TOKEN: z.string().optional(),
   NODE_ENV: z.string().optional(),
+  SOURCE_COMMIT: z.string().optional(),
 });
 export default envSchema.parse(process.env);
