@@ -72,7 +72,7 @@ bot.registerModal(/order:(\d+):pack:modal/, async (interaction) => {
   if (
     !allowedContentTypes.includes(request.headers.get("content-type") ?? "") &&
     !url.startsWith("https://youtu.be/") &&
-    !url startsWith("https://wikihow.com/")
+    !url.startsWith("https://wikihow.com/")
   )
     return interaction.editReply({ content: "Invalid file type" });
 
