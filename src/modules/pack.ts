@@ -66,6 +66,7 @@ bot.registerModal(/order:(\d+):pack:modal/, async (interaction) => {
     "image/png",
     "image/jpeg",
     "image/gif",
+    "image/webp",
     "video/webm",
     "video/mp4",
   ];
