@@ -126,7 +126,7 @@ export const registerSentryButtons = async () => {
                 .setStyle(TextInputStyle.Paragraph)
                 .setCustomId("comments")
                 .setLabel("What's your feedback?")
-                .setPlaceholder("have at it")
+                .setPlaceholder("How can we improve? Please don't use this form to complain about slow delivery time ;)")
                 .setRequired(true)
             ),
             new ActionRowBuilder<ModalActionRowComponentBuilder>().addComponents(
