@@ -8,7 +8,7 @@ import bot, { prisma } from "..";
 import env from "../utils/env";
 import { orderStatus } from "@prisma/client";
 import { emojiInline } from "../utils/emoji";
-import fillOrderMessage from "../utils/fillOrderMessage";
+import fillOrderMessage, { fileUrl } from "../utils/fillOrderMessage";
 import updateOrderStatusMessage from "../utils/updateOrderStatusMessage";
 import {
   KitchenChannel,
@@ -207,7 +207,7 @@ bot.registerButton(/order:(\d+):complete/, async (interaction) => {
       },
     ]);
   await sendKitchenMessage(KitchenChannel.deliveredOrders, {
-    content: order.fileUrl ?? undefined,
+    content: fileUrl(order.fileUrl!) ?? undefined,
     embeds: [deliveredEmbed],
   });
   await sendKitchenMessage(KitchenChannel.logs, {

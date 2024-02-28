@@ -6,110 +6,160 @@ import {
   ModalBuilder,
   TextInputBuilder,
   TextInputStyle,
+  ThreadChannel,
 } from "discord.js";
 import bot, { prisma } from "..";
 import env from "../utils/env";
 import { orderStatus } from "@prisma/client";
-import { emojiInline } from "../utils/emoji";
+import emoji, { emojiInline } from "../utils/emoji";
 import updateOrderStatusMessage from "../utils/updateOrderStatusMessage";
 import {
   KitchenChannel,
   clearKitchenMessages,
   sendKitchenMessage,
 } from "../utils/kitchenChannels";
+import s3 from "./s3";
+import handleError from "./sentry";
 
-bot.registerButton(/order:(\d+):pack/, async (interaction) => {
-  const orderId = interaction.customId.split(":")[1];
-  const modal = new ModalBuilder()
-    .setTitle("Pack Order")
-    .setCustomId(`order:${orderId}:pack:modal`)
-    .addComponents([
-      new ActionRowBuilder<TextInputBuilder>().addComponents([
-        new TextInputBuilder()
-          .setCustomId(`url:${interaction.message.id}`)
-          .setLabel("File URL")
-          .setRequired(true)
-          .setStyle(TextInputStyle.Short)
-          .setMaxLength(1000),
-      ]),
-    ]);
-  return interaction.showModal(modal);
-});
+// this took way too long to get copilot to spit out it had better work
+const URL_REGEX =
+  /(https?:\/\/(?:www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*))/g;
+const ALLOWED_CONTENT_TYPES = [
+  "image/png",
+  "image/jpeg",
+  "image/gif",
+  "video/webm",
+  "video/mp4",
+];
+const ALLOWED_EXTERNAL_SITES = ["https://youtu.be/", "https://wikihow.com/"];
 
-bot.registerModal(/order:(\d+):pack:modal/, async (interaction) => {
-  const orderId = parseInt(interaction.customId.split(":")[1]);
-  const url = interaction.components[0].components[0].value;
-  interaction.components[0].components[0].customId.split(":")[1];
-
-  const orderP = await prisma.order.findUnique({
-    where: {
-      id: orderId,
-    },
-  });
-  if (!orderP)
-    return interaction.reply({ content: "Order not found", ephemeral: true });
-  if (orderP.chefId !== interaction.user.id)
-    return interaction.reply({
-      content: "Hey, this is someone else's order! Go get your own!",
-      ephemeral: true,
-    });
-
-  await interaction.deferReply({ ephemeral: true });
+bot.client.on("messageCreate", async (message) => {
   try {
-    var request = await fetch(url);
-  } catch (e) {
-    return interaction.editReply({ content: "Failed to fetch image" });
-  }
-  if (!request.ok)
-    return interaction.editReply({ content: "Failed to fetch image" });
-  const allowedContentTypes = [
-    "image/png",
-    "image/jpeg",
-    "image/gif",
-    "image/webp",
-    "video/webm",
-    "video/mp4",
-  ];
-  if (
-    !allowedContentTypes.includes(request.headers.get("content-type") ?? "") &&
-    !url.startsWith("https://youtu.be/") &&
-    !url.startsWith("https://wikihow.com/")
-  )
-    return interaction.editReply({ content: "Invalid file type" });
+    if (!message.channel.isThread()) return;
+    if (message.channel.parentId != env.FILL_ORDERS_CHANNEL_ID) return;
+    if (message.author.id == bot.client.user?.id) return;
+    if (message.content.startsWith("//")) return;
 
-  try {
-    var order = await prisma.order.update({
+    const messageUrls = message.content.match(URL_REGEX);
+    const attachments = Array.from(message.attachments.values());
+    if ((!messageUrls || !messageUrls[0]) && !attachments[0]) return;
+    const orders = await prisma.order.findMany({
       where: {
-        id: orderId,
-      },
-      data: {
-        status: orderStatus.PACKING,
-        fileUrl: url,
+        relatedKitchenMessages: {
+          has: `${KitchenChannel.fillOrders}:${message.channelId}`,
+        },
       },
     });
-  } catch (e) {
-    return interaction.editReply({ content: "Failed to pack order" });
-  }
-  setTimeout(() => finishPackOrder(orderId), 1000 * 60 * 5);
-  clearKitchenMessages(orderId);
+    const order = orders[0];
+    if (!order) return;
 
-  const timestampIn5Minutes = new Date(Date.now() + 5 * 60 * 1000);
-  if (order.statusMessageId)
-    updateOrderStatusMessage(
-      order.guildId,
-      order.channelId,
-      order.statusMessageId,
-      `Your order is being packed! It will be done <t:${Math.round(
-        timestampIn5Minutes.getTime() / 1000
-      ).toString()}:R>`
-    );
-  await sendKitchenMessage(KitchenChannel.logs, {
-    content: `${emojiInline.materialLunchDining} <@!${interaction.user.id}> finished packing order **#${orderId}**`,
-    allowedMentions: { parse: [] },
-  });
-  return interaction.editReply({
-    content: "Done and sent off for packing 📦",
-  });
+    if (order.chefId !== message.author.id) {
+      await message.reply({
+        content: "Hey, this is someone else's order! Go get your own!",
+        allowedMentions: { repliedUser: false },
+      });
+      return;
+    }
+
+    await message.react(emoji.materialSync);
+
+    const sourceURL = attachments[0]?.url ?? messageUrls![0];
+
+    const submitError = async (m: string) => {
+      await message.react(emoji.materialError);
+      //TODO: remove interactions
+      return await message.reply({
+        content: m,
+        allowedMentions: { repliedUser: false },
+      });
+    };
+
+    try {
+      var request = await fetch(sourceURL);
+    } catch {
+      await submitError("Failed to fetch :(");
+      return;
+    }
+    if (!request.ok) {
+      await submitError("Failed to fetch :(");
+      return;
+    }
+
+    if (
+      !ALLOWED_CONTENT_TYPES.includes(
+        request.headers.get("content-type") ?? ""
+      ) &&
+      !ALLOWED_EXTERNAL_SITES.some((site) => sourceURL.startsWith(site))
+    ) {
+      await submitError("Invalid file type");
+      return;
+    }
+
+    const finish = async (c: string) => {
+      await message.react(emoji.materialDone);
+      await prisma.order.update({
+        where: {
+          id: order.id,
+        },
+        data: {
+          status: orderStatus.PACKING,
+          fileUrl: c,
+        },
+      });
+      setTimeout(() => finishPackOrder(order.id), 1000 * 60 * 5);
+
+      clearKitchenMessages(order.id);
+      const timestampIn5Minutes = new Date(Date.now() + 5 * 60 * 1000);
+      if (order.statusMessageId)
+        updateOrderStatusMessage(
+          order.guildId,
+          order.channelId,
+          order.statusMessageId,
+          `Your order is being packed! It will be done <t:${Math.round(
+            timestampIn5Minutes.getTime() / 1000
+          ).toString()}:R>`
+        );
+      await sendKitchenMessage(KitchenChannel.logs, {
+        content: `${emojiInline.materialLunchDining} <@!${message.author.id}> finished packing order **#${order.id}**`,
+        allowedMentions: { parse: [] },
+      });
+
+      const channel = message.channel as ThreadChannel;
+      await message.reply({
+        content: "Got it! Thanks!",
+        allowedMentions: { repliedUser: false },
+      });
+      await channel.setLocked(true, "Order filled!");
+    };
+
+    if (ALLOWED_EXTERNAL_SITES.some((site) => sourceURL.startsWith(site))) {
+      await finish(sourceURL);
+      return;
+    } else {
+      const s3Key = `orders/${order.id}/${
+        request.headers.get("content-type")?.split("/")[0]
+      }.${request.headers.get("content-type")?.split("/")[1].split(";")[0]}`;
+
+      const buffer = Buffer.from(await request.arrayBuffer());
+
+      s3.upload(
+        {
+          Bucket: env.S3_BUCKET,
+          Key: s3Key,
+          Body: buffer,
+        },
+        async (err, data) => {
+          if (err) {
+            submitError(`Failed to upload!\n\`\`\`${err}\`\`\``);
+            return;
+          }
+          await finish(`s3 ${data.Key}`);
+        }
+      );
+    }
+  } catch (e) {
+    handleError(e, { message });
+  }
 });
 
 export const finishPackOrder = async (orderId: number) => {

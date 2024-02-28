@@ -6,6 +6,8 @@ export default {
   materialLunchDining: "materialLunchDining:1152408274549882951",
   materialError: "materialError:1152408273010573444",
   materialDoorFront: "materialDoorFront:1175910965083111455",
+  materialSync: "materialSync:1211509117794131968",
+  materialDone: "materialDone:1212215187109711932",
 };
 
 export const emojiInline = {
@@ -16,4 +18,6 @@ export const emojiInline = {
   materialLunchDining: "<:materialLunchDining:1152408274549882951>",
   materialError: "<:materialError:1152408273010573444>",
   materialDoorFront: "<:materialDoorFront:1175910965083111455>",
+  materialSync: "<:materialSync:121150911779413196>",
+  materialDone: "<:materialDone:1212215187109711932>",
 };

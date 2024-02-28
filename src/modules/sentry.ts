@@ -5,6 +5,7 @@ import {
   ButtonBuilder,
   ButtonStyle,
   Interaction,
+  Message,
   ModalActionRowComponentBuilder,
   ModalBuilder,
   SlashCommandBuilder,
@@ -28,6 +29,7 @@ const handleError = async (
   c: {
     order?: order;
     interaction?: Interaction;
+    message?: Message;
   }
 ) => {
   let capture: string | undefined;
@@ -57,6 +59,8 @@ const handleError = async (
     } else {
       c.interaction.followUp(message);
     }
+  } else if (c.message) {
+    c.message.reply(message);
   } else if (c.order) {
     try {
       const o = c.order;

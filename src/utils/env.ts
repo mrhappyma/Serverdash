@@ -29,5 +29,10 @@ const envSchema = z.object({
   SENTRY_TOKEN: z.string().optional(),
   NODE_ENV: z.string().optional(),
   SOURCE_COMMIT: z.string().optional(),
+  AWS_ACCESS_KEY_ID: z.string(),
+  AWS_SECRET_ACCESS_KEY: z.string(),
+  S3_REGION: z.string(),
+  S3_BUCKET: z.string(),
+  FILE_URL_PREFIX: z.string().optional(),
 });
 export default envSchema.parse(process.env);

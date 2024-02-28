@@ -4,15 +4,20 @@
 
 #### Order (a picture of) anything (within reason) from your Discord server! Powered by real life humans!
 
-[Invite Serverdash to your server](https://discord.com/oauth2/authorize?client_id=1037404893822074991&permissions=2049&scope=applications.commands%20bot) to order something! You can also [join the kitchen](https://discord.gg/erQNNwJEaK) to help fill orders (or if you need help, or if you just want to be there :)!
+[Invite Serverdash to your server](https://discord.kitchen/) to order something! You can also [join the kitchen](https://discord.kitchen/kitchen) to help fill orders (or if you need help, or if you just want to be there :)!
 
 ## Self-hosting
 
-if for some reason anyone ever wanted to. Get yourself a [Discord bot](https://discord.com/developers) and a postgres database. Clone the repo & run `pnpm install`. Then set up a ridiculous amount of environment variables:
+if for some reason anyone ever wanted to. Get yourself a [Discord bot](https://discord.com/developers) and a postgres database and an s3 bucket. Clone the repo & run `pnpm install`. Then set up a ridiculous amount of environment variables:
 
 ```env
 DSC_TOKEN= # Your bot token
 DATABASE_URL= # Your database url
+AWS_ACCESS_KEY_ID="" # s3 credentials
+AWS_SECRET_ACCESS_KEY=""
+S3_REGION=""
+S3_BUCKET=""
+FILE_URL_PREFIX="" # optional. no trailing slash.
 KITCHEN_SERVER_ID= # The server where all the orders will come in
 NEW_ORDERS_CHANNEL_ID= # Then a bunch of channel ids for various stages of the order
 FILL_ORDERS_CHANNEL_ID=

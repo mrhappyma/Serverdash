@@ -20,11 +20,11 @@ bot.addGlobalCommand(
     const actionRow = new ActionRowBuilder<ButtonBuilder>().addComponents([
       new ButtonBuilder()
         .setLabel("Open-source on GitHub")
-        .setURL("https://github.com/mrhappyma/Serverdash")
+        .setURL("https://discord.kitchen/git")
         .setStyle(ButtonStyle.Link),
       new ButtonBuilder()
         .setLabel("Roadmap")
-        .setURL("https://github.com/users/mrhappyma/projects/7")
+        .setURL("https://discord.kitchen/board")
         .setStyle(ButtonStyle.Link),
       new ButtonBuilder()
         .setLabel("Invite to your server")
