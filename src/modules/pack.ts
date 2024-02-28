@@ -30,6 +30,7 @@ const ALLOWED_CONTENT_TYPES = [
   "image/gif",
   "video/webm",
   "video/mp4",
+  "image/webp"
 ];
 const ALLOWED_EXTERNAL_SITES = ["https://youtu.be/", "https://wikihow.com/"];
 
