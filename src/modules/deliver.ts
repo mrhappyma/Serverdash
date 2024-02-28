@@ -1,12 +1,13 @@
 import {
   ActionRowBuilder,
   ButtonBuilder,
+  ButtonInteraction,
   ButtonStyle,
   EmbedBuilder,
 } from "discord.js";
 import bot, { prisma } from "..";
 import env from "../utils/env";
-import { orderStatus } from "@prisma/client";
+import { orderStatus, order } from "@prisma/client";
 import { emojiInline } from "../utils/emoji";
 import fillOrderMessage, { fileUrl } from "../utils/fillOrderMessage";
 import updateOrderStatusMessage from "../utils/updateOrderStatusMessage";
@@ -15,6 +16,51 @@ import {
   clearKitchenMessages,
   sendKitchenMessage,
 } from "../utils/kitchenChannels";
+
+const sendDeliveryContent = async (
+  o: order,
+  i: ButtonInteraction,
+  m?: string
+) => {
+  const chefRecord = await prisma.chef.upsert({
+    where: {
+      id: i.user.id,
+    },
+    update: {},
+    create: {
+      id: i.user.id,
+      message:
+        "Hey $mention! Here's your order, prepared by the lovely @$chef! $item",
+    },
+  });
+
+  const actionRowInvite = new ActionRowBuilder<ButtonBuilder>().addComponents([
+    new ButtonBuilder()
+      .setLabel("Jump to buttons")
+      .setURL(
+        `https://discord.com/channels/${env.KITCHEN_SERVER_ID}/${env.DELIVERING_ORDERS_CHANNEL_ID}/${m}`
+      )
+      .setStyle(ButtonStyle.Link),
+  ]);
+  const actionRowMessage = new ActionRowBuilder<ButtonBuilder>().addComponents([
+    new ButtonBuilder()
+      .setLabel("toggle codeblock")
+      .setStyle(ButtonStyle.Primary)
+      .setCustomId(`toggle_backticks`),
+  ]);
+  await i.followUp({
+    content: `<#${o.channelId}>\n${o.invite}`,
+    components: m ? [actionRowInvite] : [],
+    ephemeral: true,
+  });
+  await i.followUp({
+    content: chefRecord.backticks
+      ? `\`\`\`\n${fillOrderMessage(o, chefRecord.message)}\n\`\`\``
+      : fillOrderMessage(o, chefRecord.message),
+    ephemeral: true,
+    components: [actionRowMessage],
+  });
+};
 
 bot.registerButton(/order:(\d+):deliver/, async (interaction) => {
   await interaction.deferUpdate();
@@ -59,23 +105,17 @@ bot.registerButton(/order:(\d+):deliver/, async (interaction) => {
       ephemeral: true,
     });
   }
-  try {
-    var order = await prisma.order.update({
-      where: {
-        id: orderId,
-      },
-      data: {
-        status: orderStatus.DELIVERING,
-        deliveryId: interaction.user.id,
-        deliveryUsername: interaction.user.username,
-      },
-    });
-  } catch (e) {
-    return interaction.followUp({
-      content: "Failed to start delivery",
-      ephemeral: true,
-    });
-  }
+  var order = await prisma.order.update({
+    where: {
+      id: orderId,
+    },
+    data: {
+      status: orderStatus.DELIVERING,
+      deliveryId: interaction.user.id,
+      deliveryUsername: interaction.user.username,
+      invite: invite.url,
+    },
+  });
 
   await clearKitchenMessages(order.id);
   const deliveringActionRow =
@@ -88,6 +128,10 @@ bot.registerButton(/order:(\d+):deliver/, async (interaction) => {
         .setLabel("Reject Order")
         .setStyle(ButtonStyle.Danger)
         .setCustomId(`order:${order.id}:reject`),
+      new ButtonBuilder()
+        .setLabel("Get Content")
+        .setStyle(ButtonStyle.Secondary)
+        .setCustomId(`order:${order.id}:content`),
     ]);
   const deliveringEmbed = new EmbedBuilder()
     .setTitle(`Order from **${order.customerUsername}**`)
@@ -103,42 +147,7 @@ bot.registerButton(/order:(\d+):deliver/, async (interaction) => {
     order.id
   );
 
-  const chefRecord = await prisma.chef.upsert({
-    where: {
-      id: interaction.user.id,
-    },
-    update: {},
-    create: {
-      id: interaction.user.id,
-      message: "Hey $mention! Here's your order! $item",
-    },
-  });
-  const actionRowInvite = new ActionRowBuilder<ButtonBuilder>().addComponents([
-    new ButtonBuilder()
-      .setLabel("Jump to buttons")
-      .setURL(
-        `https://discord.com/channels/${env.KITCHEN_SERVER_ID}/${env.DELIVERING_ORDERS_CHANNEL_ID}/${deliveringOrderMessage.id}`
-      )
-      .setStyle(ButtonStyle.Link),
-  ]);
-  const actionRowMessage = new ActionRowBuilder<ButtonBuilder>().addComponents([
-    new ButtonBuilder()
-      .setLabel("toggle codeblock")
-      .setStyle(ButtonStyle.Primary)
-      .setCustomId(`toggle_backticks`),
-  ]);
-  interaction.followUp({
-    content: `<#${order.channelId}>\n${invite.url}`,
-    components: [actionRowInvite],
-    ephemeral: true,
-  });
-  interaction.followUp({
-    content: chefRecord.backticks
-      ? `\`\`\`\n${fillOrderMessage(order, chefRecord.message)}\n\`\`\``
-      : fillOrderMessage(order, chefRecord.message),
-    ephemeral: true,
-    components: [actionRowMessage],
-  });
+  await sendDeliveryContent(order, interaction, deliveringOrderMessage.id);
 
   await sendKitchenMessage(KitchenChannel.logs, {
     content: `${emojiInline.materialPackage2} <@!${interaction.user.id}> started delivering order **#${order.id}**`,
@@ -248,4 +257,23 @@ bot.registerButton("toggle_backticks", async (interaction) => {
       components: interaction.message.components,
     });
   }
+});
+
+bot.registerButton(/order:(\d+):content/, async (interaction) => {
+  await interaction.deferUpdate();
+
+  const orderId = parseInt(interaction.customId.split(":")[1]);
+  const order = await prisma.order.findUnique({
+    where: {
+      id: orderId,
+    },
+  });
+  if (!order) return { success: false, message: "Failed to fetch order" };
+  if (order.deliveryId != interaction.user.id)
+    return interaction.reply({
+      content: "Nice try, but this isn't your order!",
+      ephemeral: true,
+    });
+
+  await sendDeliveryContent(order, interaction);
 });
