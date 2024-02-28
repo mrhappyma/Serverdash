@@ -3,6 +3,7 @@ import {
   ButtonBuilder,
   ButtonStyle,
   EmbedBuilder,
+  TextBasedChannel,
 } from "discord.js";
 import bot, { prisma } from "..";
 import env from "../utils/env";
@@ -59,10 +60,6 @@ bot.registerButton("order:(\\d+):fill", async (interaction) => {
   const orderFillingActionRow =
     new ActionRowBuilder<ButtonBuilder>().addComponents([
       new ButtonBuilder()
-        .setCustomId(`order:${order.id}:pack`)
-        .setLabel("Pack Order")
-        .setStyle(ButtonStyle.Primary),
-      new ButtonBuilder()
         .setLabel("Reject Order")
         .setStyle(ButtonStyle.Danger)
         .setCustomId(`order:${order.id}:reject`),
@@ -71,7 +68,7 @@ bot.registerButton("order:(\\d+):fill", async (interaction) => {
     .setTitle(`Order from **${order.customerUsername}**`)
     .setDescription(order.order)
     .setFooter({ text: `Order ID: ${order.id}` });
-  const orderFillingMessage = await sendKitchenMessage(
+  let orderFillAPIMessage = await sendKitchenMessage(
     KitchenChannel.fillOrders,
     {
       embeds: [orderFillingEmbed],
@@ -86,15 +83,26 @@ bot.registerButton("order:(\\d+):fill", async (interaction) => {
   });
   const actionRow = new ActionRowBuilder<ButtonBuilder>().addComponents([
     new ButtonBuilder()
-      .setLabel("Jump to message")
+      .setLabel("Jump to thread")
       .setURL(
-        `https://discord.com/channels/${env.KITCHEN_SERVER_ID}/${env.FILL_ORDERS_CHANNEL_ID}/${orderFillingMessage.id}`
+        `https://discord.com/channels/${env.KITCHEN_SERVER_ID}/${env.FILL_ORDERS_CHANNEL_ID}/threads/${orderFillAPIMessage.id}/`
       )
       .setStyle(ButtonStyle.Link),
   ]);
-  return interaction.reply({
+  await interaction.reply({
     content: `Claimed!`,
     components: [actionRow],
     ephemeral: true,
+  });
+  const fillOrdersChannel = (await bot.client.channels.fetch(
+    env.FILL_ORDERS_CHANNEL_ID
+  )) as TextBasedChannel;
+  const orderFillMessage = await fillOrdersChannel.messages.fetch(
+    orderFillAPIMessage.id
+  );
+  await orderFillMessage.startThread({
+    name: `Order #${order.id}`,
+    autoArchiveDuration: 60,
+    reason: `Order ${order.id} claimed by ${interaction.user.username}`,
   });
 });

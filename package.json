@@ -5,6 +5,7 @@
   "dependencies": {
     "@prisma/client": "^5.1.1",
     "@sentry/node": "^7.91.0",
+    "aws-sdk": "^2.1565.0",
     "discord.js": "^14.13.0",
     "zod": "^3.22.2"
   },
