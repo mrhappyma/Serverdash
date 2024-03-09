@@ -268,9 +268,13 @@ bot.registerButton(/order:(\d+):content/, async (interaction) => {
       id: orderId,
     },
   });
-  if (!order) return { success: false, message: "Failed to fetch order" };
+  if (!order)
+    return interaction.followUp({
+      content: "Failed to fetch order :(",
+      ephemeral: true,
+    });
   if (order.deliveryId != interaction.user.id)
-    return interaction.reply({
+    return interaction.followUp({
       content: "Nice try, but this isn't your order!",
       ephemeral: true,
     });
