@@ -51,6 +51,7 @@ bot.registerModal("message-set:modal", async (interaction) => {
   if (!message.includes("$mention") || !message.includes("$item"))
     return interaction.reply({
       content: "Your message must contain `$mention` and `$item`",
+      ephemeral: true,
     });
   await prisma.chef.upsert({
     where: { id: interaction.user.id },
