@@ -20,7 +20,7 @@ bot.registerButton("devtools:message-set", async (interaction) => {
   ]);
   interaction.channel!.send({
     content:
-      "Set your prefilled delivery message! The following variables will automatically be filled in. `$mention` and `$item` are required.\n`$mention`-mention the customer\n`$item`-the image url\n`$number`-the order number\n`$chef`-the chef's username\n`$order`-the order\n`$server`-the customer server's name",
+      "Set your prefilled delivery message! The following variables will automatically be filled in. `$mention`, `$item`, and `$chef` are required.\n`$mention`-mention the customer\n`$item`-the image url\n`$number`-the order number\n`$chef`-the chef's username\n`$order`-the order\n`$server`-the customer server's name",
     components: [actionRow],
   });
 });
@@ -48,9 +48,13 @@ bot.registerButton("message-set", async (interaction) => {
 
 bot.registerModal("message-set:modal", async (interaction) => {
   const message = interaction.fields.getTextInputValue("message");
-  if (!message.includes("$mention") || !message.includes("$item"))
+  if (
+    !message.includes("$mention") ||
+    !message.includes("$item") ||
+    !message.includes("$chef")
+  )
     return interaction.reply({
-      content: "Your message must contain `$mention` and `$item`",
+      content: "Your message must contain `$mention`, `$item`, and `$chef`!",
       ephemeral: true,
     });
   await prisma.chef.upsert({

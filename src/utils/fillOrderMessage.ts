@@ -3,12 +3,12 @@ import { s3FilePrefix } from "../modules/s3";
 
 const fillOrderMessage = (order: order, message: string) => {
   return message
-    .replace("$mention", `<@${order.customerId}>`)
-    .replace("$item", fileUrl(order.fileUrl!)!)
-    .replace("$number", order.id.toString())
-    .replace("$chef", order.chefUsername!)
-    .replace("$order", order.order)
-    .replace("$server", order.guildName!);
+    .replaceAll("$mention", `<@${order.customerId}>`)
+    .replaceAll("$item", fileUrl(order.fileUrl!)!)
+    .replaceAll("$number", order.id.toString())
+    .replaceAll("$chef", order.chefUsername!)
+    .replaceAll("$order", order.order)
+    .replaceAll("$server", order.guildName!);
 };
 export default fillOrderMessage;
 
