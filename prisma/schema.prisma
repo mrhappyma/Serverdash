@@ -55,3 +55,11 @@ model KitchenConfig {
   closed       Boolean @default(false)
   closedReason String  @default("")
 }
+
+model application {
+  id        Int      @id @default(autoincrement())
+  user      String
+  token     String   @unique @default(uuid())
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+}

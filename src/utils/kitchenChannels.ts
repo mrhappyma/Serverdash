@@ -11,6 +11,7 @@ export const enum KitchenChannel {
   cancelledOrders = 5,
   logs = 6,
   chefChat = 7,
+  applications = 8,
 }
 
 const webhooks = {
@@ -34,6 +35,9 @@ const webhooks = {
   }),
   [KitchenChannel.logs]: new WebhookClient({ url: env.LOGS_WEBHOOK }),
   [KitchenChannel.chefChat]: new WebhookClient({ url: env.CHEF_CHAT_WEBHOOK }),
+  [KitchenChannel.applications]: new WebhookClient({
+    url: env.APPLICATIONS_WEBHOOK,
+  }),
 };
 
 /**

@@ -27,6 +27,7 @@ DELIVERED_ORDERS_CHANNEL_ID=
 CANCELLED_ORDERS_CHANNEL_ID=
 LOGS_CHANNEL_ID=
 CHEF_CHAT_CHANNEL_ID=
+APPLICATIONS_CHANNEL_ID=
 ORDER_PING_ROLE_ID= # Role pinged when a new order comes in
 DELIVERY_PING_ROLE_ID= #same for ready for delivery
 DEVELOPERS= # Space separated list of ids, people who can use `/devtools`. optional.

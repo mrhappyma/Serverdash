@@ -20,6 +20,8 @@ const envSchema = z.object({
   LOGS_WEBHOOK: z.string(),
   CHEF_CHAT_CHANNEL_ID: z.string(),
   CHEF_CHAT_WEBHOOK: z.string(),
+  APPLICATIONS_CHANNEL_ID: z.string(),
+  APPLICATIONS_WEBHOOK: z.string(),
   ORDER_PING_ROLE_ID: z.string(),
   DELIVERY_PING_ROLE_ID: z.string(),
   DEVELOPERS: z.string().default(""),
@@ -34,5 +36,6 @@ const envSchema = z.object({
   S3_REGION: z.string(),
   S3_BUCKET: z.string(),
   FILE_URL_PREFIX: z.string().optional(),
+  APPLICATION_URL: z.string(),
 });
 export default envSchema.parse(process.env);

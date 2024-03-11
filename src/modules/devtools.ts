@@ -25,7 +25,7 @@ bot.addGlobalCommand(
       update: {},
       create: { id: 0 },
     });
-    const actionRow = new ActionRowBuilder<ButtonBuilder>().addComponents([
+    const a1 = new ActionRowBuilder<ButtonBuilder>().addComponents([
       new ButtonBuilder()
         .setCustomId("devtools:role-select")
         .setLabel("Send role select menu")
@@ -35,6 +35,12 @@ bot.addGlobalCommand(
         .setLabel("Send message set menu")
         .setStyle(ButtonStyle.Secondary),
       new ButtonBuilder()
+        .setCustomId("devtools:apply-button")
+        .setLabel("Send apply menu")
+        .setStyle(ButtonStyle.Secondary),
+    ]);
+    const a2 = new ActionRowBuilder<ButtonBuilder>().addComponents([
+      new ButtonBuilder()
         .setCustomId("devtools:closed-toggle")
         .setLabel(kitchenConfig.closed ? "Open kitchen" : "Close kitchen")
         .setStyle(ButtonStyle.Secondary),
@@ -43,6 +49,6 @@ bot.addGlobalCommand(
         .setLabel("fire drill")
         .setStyle(ButtonStyle.Secondary),
     ]);
-    return interaction.reply({ components: [actionRow], ephemeral: true });
+    return interaction.reply({ components: [a1, a2], ephemeral: true });
   }
 );
