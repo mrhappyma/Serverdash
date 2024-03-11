@@ -7,6 +7,8 @@ import {
   TextInputStyle,
 } from "discord.js";
 import bot, { prisma } from "..";
+import fillOrderMessage from "../utils/fillOrderMessage";
+import { orderStatus } from "@prisma/client";
 
 bot.registerButton("devtools:message-set", async (interaction) => {
   interaction.deferUpdate();
@@ -47,7 +49,7 @@ bot.registerButton("message-set", async (interaction) => {
 bot.registerModal("message-set:modal", async (interaction) => {
   const message = interaction.fields.getTextInputValue("message");
   if (!message.includes("$mention") || !message.includes("$item"))
-    return interaction.editReply({
+    return interaction.reply({
       content: "Your message must contain `$mention` and `$item`",
     });
   await prisma.chef.upsert({
@@ -56,7 +58,31 @@ bot.registerModal("message-set:modal", async (interaction) => {
     create: { id: interaction.user.id, message },
   });
   return interaction.reply({
-    content: "Your message has been set!",
+    content: `Your message has been set!\n\n${fillOrderMessage(
+      {
+        id: 0,
+        status: orderStatus.DELIVERING,
+        order: "a big bowl of spaghetti",
+        guildId: "0",
+        guildName: "the nuclear collective",
+        customerId: "643945264868098049",
+        customerUsername: "mr. joesph r biden jr.",
+        channelId: "2",
+        statusMessageId: "3",
+        chefId: "4",
+        chefUsername: "chefy mcchef face",
+        deliveryId: interaction.user.id,
+        deliveryUsername: interaction.user.username,
+        fileUrl: "s3 m/brazil.jpg",
+        rejectedReason: null,
+        rejectorId: null,
+        relatedKitchenMessages: [],
+        invite: "discord.gg/deez-nuts",
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      message
+    )}`,
     ephemeral: true,
   });
 });
