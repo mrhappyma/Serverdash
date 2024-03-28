@@ -87,9 +87,15 @@ bot.registerButton(/order:(\d+):deliver/, async (interaction) => {
       ephemeral: true,
     });
 
-  const targetChannel = await (
-    await bot.client.guilds.fetch(orderP.guildId)
-  ).channels.fetch(orderP.channelId);
+  try {
+    var guild = await bot.client.guilds.fetch(orderP.guildId);
+  } catch (e) {
+    return interaction.followUp({
+      content: `Failed to fetch guild! This usually means the bot was kicked, and if so just reject the order. Here's the error:\n\`\`\`${e}\`\`\``,
+      ephemeral: true,
+    });
+  }
+  const targetChannel = guild.channels.cache.get(orderP.channelId);
   if (!targetChannel?.isTextBased() || targetChannel.isThread())
     return interaction.followUp({ content: "Failed to fetch order channel" });
   try {
