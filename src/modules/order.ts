@@ -20,7 +20,7 @@ bot.addGlobalCommand(
     .addStringOption((option) =>
       option
         .setName("order")
-        .setDescription("What would you like to order?")
+        .setDescription("What would you like to order? - 1 reasonable item per order :)")
         .setRequired(true)
         .setMaxLength(241)
     ) as SlashCommandBuilder,
