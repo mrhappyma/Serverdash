@@ -197,6 +197,13 @@ bot.registerButton(/order:(\d+):complete/, async (interaction) => {
   await clearKitchenMessages(order.id);
   await interaction.deferReply({ ephemeral: true });
 
+  const isImage =
+    order.fileUrl?.endsWith(".png") ||
+    order.fileUrl?.endsWith(".jpg") ||
+    order.fileUrl?.endsWith(".jpeg") ||
+    order.fileUrl?.endsWith(".gif") ||
+    order.fileUrl?.endsWith(".webp");
+
   if (order.statusMessageId)
     updateOrderStatusMessage(
       order.guildId,
@@ -221,6 +228,7 @@ bot.registerButton(/order:(\d+):complete/, async (interaction) => {
         value: `<@!${order.deliveryId}>`,
       },
     ]);
+  isImage ? deliveredEmbed.setImage(fileUrl(order.fileUrl!)!) : null;
   await sendKitchenMessage(KitchenChannel.deliveredOrders, {
     content: fileUrl(order.fileUrl!) ?? undefined,
     embeds: [deliveredEmbed],
