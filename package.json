@@ -8,6 +8,7 @@
     "aws-sdk": "^2.1565.0",
     "discord.js": "^14.13.0",
     "express": "^4.18.3",
+    "sqids": "^0.3.0",
     "zod": "^3.22.3"
   },
   "devDependencies": {

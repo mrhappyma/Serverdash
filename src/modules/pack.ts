@@ -20,6 +20,7 @@ import {
 } from "../utils/kitchenChannels";
 import s3 from "./s3";
 import handleError from "./sentry";
+import Sqids from "sqids";
 
 // this took way too long to get copilot to spit out it had better work
 const URL_REGEX =
@@ -30,7 +31,7 @@ const ALLOWED_CONTENT_TYPES = [
   "image/gif",
   "video/webm",
   "video/mp4",
-  "image/webp"
+  "image/webp",
 ];
 const ALLOWED_EXTERNAL_SITES = ["https://youtu.be/", "https://wikihow.com/"];
 
@@ -137,9 +138,12 @@ bot.client.on("messageCreate", async (message) => {
       await finish(sourceURL);
       return;
     } else {
-      const s3Key = `orders/${order.id}/${
-        request.headers.get("content-type")?.split("/")[0]
-      }.${request.headers.get("content-type")?.split("/")[1].split(";")[0]}`;
+      const sqids = new Sqids();
+      const id = sqids.encode([order.id, Date.now()]);
+
+      const s3Key = `orders/${order.id}/${id}.${
+        request.headers.get("content-type")?.split("/")[1].split(";")[0]
+      }`;
 
       const buffer = Buffer.from(await request.arrayBuffer());
 
