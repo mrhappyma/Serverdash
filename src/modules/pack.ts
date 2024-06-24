@@ -21,6 +21,7 @@ import {
 import s3 from "./s3";
 import handleError from "./sentry";
 import Sqids from "sqids";
+import { updateProcessingOrders } from "./metrics";
 
 // this took way too long to get copilot to spit out it had better work
 const URL_REGEX =
@@ -108,6 +109,7 @@ bot.client.on("messageCreate", async (message) => {
           fileUrl: c,
         },
       });
+      updateProcessingOrders(orderStatus.PACKING, order.id);
       setTimeout(() => finishPackOrder(order.id), 1000 * 60 * 5);
 
       clearKitchenMessages(order.id);
@@ -177,6 +179,7 @@ export const finishPackOrder = async (orderId: number) => {
         status: orderStatus.PACKED,
       },
     });
+    updateProcessingOrders(orderStatus.PACKED, order.id);
   } catch (e) {
     sendKitchenMessage(KitchenChannel.logs, {
       content: `:x: Failed to finish packing order ${orderId}!! <@!${

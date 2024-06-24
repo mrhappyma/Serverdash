@@ -11,6 +11,8 @@ import { emojiInline } from "../utils/emoji";
 import env from "../utils/env";
 import { KitchenChannel, sendKitchenMessage } from "../utils/kitchenChannels";
 import { closed, closedReason } from "./closed";
+import { updateProcessingOrders } from "./metrics";
+import { orderStatus } from "@prisma/client";
 
 bot.addGlobalCommand(
   new SlashCommandBuilder()
@@ -20,7 +22,9 @@ bot.addGlobalCommand(
     .addStringOption((option) =>
       option
         .setName("order")
-        .setDescription("What would you like to order? - 1 reasonable item per order :)")
+        .setDescription(
+          "What would you like to order? - 1 reasonable item per order :)"
+        )
         .setRequired(true)
         .setMaxLength(241)
     ) as SlashCommandBuilder,
@@ -98,6 +102,7 @@ bot.addGlobalCommand(
         statusMessageId: message.id,
       },
     });
+    updateProcessingOrders(orderStatus.ORDERED, record.id);
 
     const kitchenActionRow =
       new ActionRowBuilder<ButtonBuilder>().addComponents([

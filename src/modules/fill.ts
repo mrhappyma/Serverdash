@@ -15,6 +15,7 @@ import {
   clearKitchenMessages,
   sendKitchenMessage,
 } from "../utils/kitchenChannels";
+import { updateProcessingOrders } from "./metrics";
 
 bot.registerButton("order:(\\d+):fill", async (interaction) => {
   const orderId = interaction.customId.split(":")[1];
@@ -42,6 +43,7 @@ bot.registerButton("order:(\\d+):fill", async (interaction) => {
         chefUsername: interaction.user.username,
       },
     });
+    updateProcessingOrders(orderStatus.FILLING, order.id);
   } catch (e) {
     return interaction.reply({
       content: "Failed to claim order",

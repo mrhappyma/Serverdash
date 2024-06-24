@@ -3,6 +3,7 @@ import {
   handleIncomingApplication,
   submittedApplicationSchema,
 } from "./applications";
+import { register } from "prom-client";
 
 const api = express();
 api.use(express.json());
@@ -15,6 +16,12 @@ api.post("/api/applications/submit", (req, res) => {
   } catch {
     return res.send(400);
   }
+});
+
+api.get("/metrics", async (req, res) => {
+  res
+    .header("Content-Type", register.contentType)
+    .send(await register.metrics());
 });
 
 api.get("/", (req, res) => {

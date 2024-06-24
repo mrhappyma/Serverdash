@@ -16,6 +16,7 @@ import {
   clearKitchenMessages,
   sendKitchenMessage,
 } from "../utils/kitchenChannels";
+import { updateProcessingOrders } from "./metrics";
 
 const sendDeliveryContent = async (
   o: order,
@@ -122,6 +123,7 @@ bot.registerButton(/order:(\d+):deliver/, async (interaction) => {
       invite: invite.url,
     },
   });
+  updateProcessingOrders(orderStatus.DELIVERING, order.id);
 
   await clearKitchenMessages(order.id);
   const deliveringActionRow =
@@ -191,6 +193,7 @@ bot.registerButton(/order:(\d+):complete/, async (interaction) => {
         status: orderStatus.DELIVERED,
       },
     });
+    updateProcessingOrders(orderStatus.DELIVERED, order.id);
   } catch (e) {
     return { success: false, message: "Failed to mark delivery finished" };
   }

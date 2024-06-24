@@ -14,6 +14,7 @@ import {
   clearKitchenMessages,
   sendKitchenMessage,
 } from "../utils/kitchenChannels";
+import { updateProcessingOrders } from "./metrics";
 
 bot.registerButton(/order:(\d+):reject/, async (interaction) => {
   const orderId = interaction.customId.split(":")[1];
@@ -48,6 +49,7 @@ bot.registerModal(/order:(\d+):reject:modal/, async (interaction) => {
         rejectorId: interaction.user.id,
       },
     });
+    updateProcessingOrders(orderStatus.REJECTED, order.id);
   } catch (e) {
     return interaction.reply({
       content: "Failed to reject order",

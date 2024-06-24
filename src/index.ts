@@ -12,6 +12,7 @@ const bot = new Powercord(env.DSC_TOKEN, {
 });
 export default bot;
 registerSentryButtons();
+import "./modules/metrics";
 
 import { finishPackOrder } from "./modules/pack"; // this file imports the bot, so it must be imported after the bot is created
 
