@@ -19,6 +19,10 @@ bot.addGlobalCommand(
       );
     const actionRow = new ActionRowBuilder<ButtonBuilder>().addComponents([
       new ButtonBuilder()
+        .setLabel("Privacy Policy")
+        .setURL("https://discord.kitchen/privacy")
+        .setStyle(ButtonStyle.Link),
+      new ButtonBuilder()
         .setLabel("Open-source on GitHub")
         .setURL("https://discord.kitchen/git")
         .setStyle(ButtonStyle.Link),
