@@ -19,7 +19,7 @@ bot.addGlobalCommand(
       );
     const actionRow = new ActionRowBuilder<ButtonBuilder>().addComponents([
       new ButtonBuilder()
-        .setLabel("Privacy Policy")
+        .setLabel("Privacy")
         .setURL("https://discord.kitchen/privacy")
         .setStyle(ButtonStyle.Link),
       new ButtonBuilder()
