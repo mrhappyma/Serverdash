@@ -63,7 +63,7 @@ bot.registerModal(/order:(\d+):reject:modal/, async (interaction) => {
       order.guildId,
       order.channelId,
       order.statusMessageId,
-      `Your order has been rejected by the kitchen\n${reason}\nplease review the order rules: https://discord.kitchen/rules`
+      `Your order has been rejected by the kitchen\n\n${reason}\nplease review the order rules: https://discord.kitchen/rules`
     );
   const orderRejectionEmbed = new EmbedBuilder()
     .setTitle(`Order from **${order.customerUsername}**`)
