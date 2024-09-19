@@ -13,7 +13,7 @@ export const submittedApplicationSchema = z.object({
   why: z.string(),
   source: z.string(),
   token: z.string(),
-  tz: z.number(),
+  tz: z.string(),
 });
 
 export const handleIncomingApplication = async (
