@@ -87,6 +87,12 @@ bot.registerButton(/order:(\d+):deliver/, async (interaction) => {
       content: "Can't start delivery- status is not PACKED",
       ephemeral: true,
     });
+  if (orderP.customerId == interaction.user.id) {
+    return interaction.followUp({
+      content: "this is your order! you can't deliver it, that's silly",
+      ephemeral: true,
+    });
+  }
 
   try {
     var guild = await bot.client.guilds.fetch(orderP.guildId);
