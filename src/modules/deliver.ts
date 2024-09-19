@@ -89,7 +89,7 @@ bot.registerButton(/order:(\d+):deliver/, async (interaction) => {
     });
   if (orderP.customerId == interaction.user.id) {
     return interaction.followUp({
-      content: "this is your order! you can't deliver it, that's silly",
+      content: "you ordered this! who are you gonna deliver to, yourself?",
       ephemeral: true,
     });
   }
