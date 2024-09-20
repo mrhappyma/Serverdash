@@ -8,7 +8,7 @@ import { registerSentryButtons } from "./modules/sentry";
 
 export const prisma = new PrismaClient();
 const bot = new Powercord(env.DSC_TOKEN, {
-  intents: ["Guilds", "GuildMessages", "MessageContent"],
+  intents: ["Guilds", "GuildMessages"],
 });
 export default bot;
 registerSentryButtons();
