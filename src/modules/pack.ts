@@ -56,7 +56,10 @@ bot.client.on("messageCreate", async (message) => {
     const order = orders[0];
     if (!order) return;
 
-    if (order.chefId !== message.author.id) {
+    if (
+      order.chefId !== message.author.id &&
+      !env.DEVELOPERS.split(" ").includes(message.author.id)
+    ) {
       await message.reply({
         content: "Hey, this is someone else's order! Go get your own!",
         allowedMentions: { repliedUser: false },
