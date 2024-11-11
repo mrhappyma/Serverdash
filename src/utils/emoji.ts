@@ -8,6 +8,7 @@ export default {
   materialDoorFront: "materialDoorFront:1175910965083111455",
   materialSync: "materialSync:1211509117794131968",
   materialDone: "materialDone:1212215187109711932",
+  materialMail: "materialMail:1305607728286138429",
 };
 
 export const emojiInline = {
@@ -20,4 +21,5 @@ export const emojiInline = {
   materialDoorFront: "<:materialDoorFront:1175910965083111455>",
   materialSync: "<:materialSync:121150911779413196>",
   materialDone: "<:materialDone:1212215187109711932>",
+  materialMail: "<:materialMail:1305607728286138429>",
 };

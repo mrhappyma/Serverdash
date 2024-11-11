@@ -9,6 +9,8 @@ import {
 } from "discord.js";
 import bot, { prisma } from "..";
 import env from "../utils/env";
+import { emojiInline } from "../utils/emoji";
+import { sendKitchenMessage, KitchenChannel } from "../utils/kitchenChannels";
 
 bot.addGlobalCommand(
   new SlashCommandBuilder().setName("devtools").setDescription("secret sauce"),
@@ -92,6 +94,9 @@ bot.registerButton("devtools:dm", async (interaction) => {
 bot.registerModal("devtools:dm:modal", async (interaction) => {
   const user = interaction.fields.getTextInputValue("user");
   const content = interaction.fields.getTextInputValue("content");
+  await sendKitchenMessage(KitchenChannel.logs, {
+    content: `${emojiInline.materialMail} <@!${interaction.user.id}> sent a message to <@!${user}>\n\`\`\`${content}\`\`\``,
+  });
   await bot.client.users.cache.get(user)?.send(content);
   interaction.reply({
     content: "Message sent",
