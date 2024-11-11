@@ -5,7 +5,7 @@ import {
   EmbedBuilder,
   TextBasedChannel,
 } from "discord.js";
-import bot, { prisma } from "..";
+import bot, { messagesClient, prisma } from "..";
 import env from "../utils/env";
 import { orderStatus } from "@prisma/client";
 import { emojiInline } from "../utils/emoji";
@@ -96,7 +96,7 @@ bot.registerButton("order:(\\d+):fill", async (interaction) => {
     components: [actionRow],
     ephemeral: true,
   });
-  const fillOrdersChannel = (await bot.client.channels.fetch(
+  const fillOrdersChannel = (await messagesClient.client.channels.fetch(
     env.FILL_ORDERS_CHANNEL_ID
   )) as TextBasedChannel;
   const orderFillMessage = await fillOrdersChannel.messages.fetch(

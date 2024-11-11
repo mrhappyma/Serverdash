@@ -37,5 +37,6 @@ const envSchema = z.object({
   S3_BUCKET: z.string(),
   FILE_URL_PREFIX: z.string().optional(),
   APPLICATION_URL: z.string(),
+  COLLECTOR_TOKEN: z.string().optional(),
 });
 export default envSchema.parse(process.env);

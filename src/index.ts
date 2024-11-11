@@ -8,9 +8,17 @@ import { registerSentryButtons } from "./modules/sentry";
 
 export const prisma = new PrismaClient();
 const bot = new Powercord(env.DSC_TOKEN, {
-  intents: ["Guilds", "GuildMessages", "MessageContent"],
+  intents: env.COLLECTOR_TOKEN
+    ? ["Guilds"]
+    : ["Guilds", "GuildMessages", "MessageContent"],
 });
 export default bot;
+export const collector = env.COLLECTOR_TOKEN
+  ? new Powercord(env.COLLECTOR_TOKEN, {
+      intents: ["GuildMessages", "MessageContent"],
+    })
+  : null;
+export const messagesClient = collector ?? bot;
 registerSentryButtons();
 import "./modules/metrics";
 
@@ -41,3 +49,4 @@ fs.readdirSync(normalizedPath).forEach(function (file: string) {
 });
 
 bot.plug();
+collector?.plug();

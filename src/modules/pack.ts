@@ -8,7 +8,7 @@ import {
   TextInputStyle,
   ThreadChannel,
 } from "discord.js";
-import bot, { prisma } from "..";
+import { messagesClient, prisma } from "..";
 import env from "../utils/env";
 import { orderStatus } from "@prisma/client";
 import emoji, { emojiInline } from "../utils/emoji";
@@ -36,11 +36,11 @@ const ALLOWED_CONTENT_TYPES = [
 ];
 const ALLOWED_EXTERNAL_SITES = ["https://youtu.be/", "https://wikihow.com/"];
 
-bot.client.on("messageCreate", async (message) => {
+messagesClient.client.on("messageCreate", async (message) => {
   try {
     if (!message.channel.isThread()) return;
     if (message.channel.parentId != env.FILL_ORDERS_CHANNEL_ID) return;
-    if (message.author.id == bot.client.user?.id) return;
+    if (message.author.id == messagesClient.client.user?.id) return;
     if (message.content.startsWith("//")) return;
 
     const messageUrls = message.content.match(URL_REGEX);
