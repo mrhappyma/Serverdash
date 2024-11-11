@@ -2,7 +2,10 @@ import {
   ActionRowBuilder,
   ButtonBuilder,
   ButtonStyle,
+  ModalBuilder,
   SlashCommandBuilder,
+  TextInputBuilder,
+  TextInputStyle,
 } from "discord.js";
 import bot, { prisma } from "..";
 import env from "../utils/env";
@@ -41,6 +44,12 @@ bot.addGlobalCommand(
     ]);
     const a2 = new ActionRowBuilder<ButtonBuilder>().addComponents([
       new ButtonBuilder()
+        .setCustomId("devtools:dm")
+        .setLabel("Message user")
+        .setStyle(ButtonStyle.Secondary),
+    ]);
+    const a3 = new ActionRowBuilder<ButtonBuilder>().addComponents([
+      new ButtonBuilder()
         .setCustomId("devtools:closed-toggle")
         .setLabel(kitchenConfig.closed ? "Open kitchen" : "Close kitchen")
         .setStyle(ButtonStyle.Secondary),
@@ -49,6 +58,43 @@ bot.addGlobalCommand(
         .setLabel("fire drill")
         .setStyle(ButtonStyle.Secondary),
     ]);
-    return interaction.reply({ components: [a1, a2], ephemeral: true });
+
+    return interaction.reply({ components: [a1, a2, a3], ephemeral: true });
   }
 );
+
+bot.registerButton("devtools:dm", async (interaction) => {
+  const modal = new ModalBuilder()
+    .setTitle("Message user")
+    .setCustomId("devtools:dm:modal")
+    .addComponents([
+      new ActionRowBuilder<TextInputBuilder>().addComponents([
+        new TextInputBuilder()
+          .setCustomId("user")
+          .setLabel("User ID")
+          .setRequired(true)
+          .setStyle(TextInputStyle.Short)
+          .setMinLength(18)
+          .setMaxLength(18),
+      ]),
+      new ActionRowBuilder<TextInputBuilder>().addComponents([
+        new TextInputBuilder()
+          .setCustomId("content")
+          .setLabel("Message content")
+          .setRequired(true)
+          .setStyle(TextInputStyle.Paragraph)
+          .setMaxLength(4000),
+      ]),
+    ]);
+  return interaction.showModal(modal);
+});
+
+bot.registerModal("devtools:dm:modal", async (interaction) => {
+  const user = interaction.fields.getTextInputValue("user");
+  const content = interaction.fields.getTextInputValue("content");
+  await bot.client.users.cache.get(user)?.send(content);
+  interaction.reply({
+    content: "Message sent",
+    ephemeral: true,
+  });
+});
