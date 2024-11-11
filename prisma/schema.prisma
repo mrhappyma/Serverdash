@@ -31,6 +31,8 @@ model order {
   invite                 String?
   createdAt              DateTime    @default(now())
   updatedAt              DateTime    @updatedAt
+
+  @@index([status, guildId, customerId])
 }
 
 enum orderStatus {
