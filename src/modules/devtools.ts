@@ -7,12 +7,12 @@ import {
   TextInputBuilder,
   TextInputStyle,
 } from "discord.js";
-import bot, { prisma } from "..";
+import bot, { messagesClient, prisma } from "..";
 import env from "../utils/env";
 import { emojiInline } from "../utils/emoji";
 import { sendKitchenMessage, KitchenChannel } from "../utils/kitchenChannels";
 
-bot.addGlobalCommand(
+messagesClient.addGlobalCommand(
   new SlashCommandBuilder().setName("devtools").setDescription("secret sauce"),
   async (interaction) => {
     if (!interaction.isCommand()) return;
@@ -65,7 +65,7 @@ bot.addGlobalCommand(
   }
 );
 
-bot.registerButton("devtools:dm", async (interaction) => {
+messagesClient.registerButton("devtools:dm", async (interaction) => {
   const modal = new ModalBuilder()
     .setTitle("Message user")
     .setCustomId("devtools:dm:modal")
@@ -91,7 +91,7 @@ bot.registerButton("devtools:dm", async (interaction) => {
   return interaction.showModal(modal);
 });
 
-bot.registerModal("devtools:dm:modal", async (interaction) => {
+messagesClient.registerModal("devtools:dm:modal", async (interaction) => {
   const user = interaction.fields.getTextInputValue("user");
   const content = interaction.fields.getTextInputValue("content");
   await sendKitchenMessage(KitchenChannel.logs, {
