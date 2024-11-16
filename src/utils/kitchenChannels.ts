@@ -4,8 +4,7 @@ import bot, { prisma } from "..";
 
 export const enum KitchenChannel {
   orders = 0,
-  readyOrders = 2,
-  deliveringOrders = 3,
+  deliveries = 2,
   deliveredOrders = 4,
   cancelledOrders = 5,
   logs = 6,
@@ -17,11 +16,8 @@ const webhooks = {
   [KitchenChannel.orders]: new WebhookClient({
     url: env.NEW_ORDERS_WEBHOOK,
   }),
-  [KitchenChannel.readyOrders]: new WebhookClient({
+  [KitchenChannel.deliveries]: new WebhookClient({
     url: env.READY_ORDERS_WEBHOOK,
-  }),
-  [KitchenChannel.deliveringOrders]: new WebhookClient({
-    url: env.DELIVERING_ORDERS_WEBHOOK,
   }),
   [KitchenChannel.deliveredOrders]: new WebhookClient({
     url: env.DELIVERED_ORDERS_WEBHOOK,

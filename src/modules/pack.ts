@@ -209,7 +209,7 @@ export const finishPackOrder = async (orderId: number) => {
     .setDescription(order.order)
     .setFooter({ text: `Order ID: ${order.id}` });
   await sendKitchenMessage(
-    KitchenChannel.readyOrders,
+    KitchenChannel.deliveries,
     {
       embeds: [deliveryEmbed],
       components: [deliveryActionRow],

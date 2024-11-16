@@ -8,8 +8,6 @@ const envSchema = z.object({
   NEW_ORDERS_WEBHOOK: z.string(),
   READY_ORDERS_CHANNEL_ID: z.string(),
   READY_ORDERS_WEBHOOK: z.string(),
-  DELIVERING_ORDERS_CHANNEL_ID: z.string(),
-  DELIVERING_ORDERS_WEBHOOK: z.string(),
   DELIVERED_ORDERS_CHANNEL_ID: z.string(),
   DELIVERED_ORDERS_WEBHOOK: z.string(),
   CANCELLED_ORDERS_CHANNEL_ID: z.string(),

@@ -6,7 +6,6 @@ import {
   EmbedBuilder,
 } from "discord.js";
 import bot, { prisma } from "..";
-import env from "../utils/env";
 import { orderStatus, order } from "@prisma/client";
 import { emojiInline } from "../utils/emoji";
 import fillOrderMessage, { fileUrl } from "../utils/fillOrderMessage";
@@ -14,9 +13,11 @@ import updateOrderStatusMessage from "../utils/updateOrderStatusMessage";
 import {
   KitchenChannel,
   clearKitchenMessages,
+  editKitchenMessage,
   sendKitchenMessage,
 } from "../utils/kitchenChannels";
 import { updateProcessingOrders } from "./metrics";
+import env from "../utils/env";
 
 const sendDeliveryContent = async (
   o: order,
@@ -35,14 +36,6 @@ const sendDeliveryContent = async (
     },
   });
 
-  const actionRowInvite = new ActionRowBuilder<ButtonBuilder>().addComponents([
-    new ButtonBuilder()
-      .setLabel("Jump to buttons")
-      .setURL(
-        `https://discord.com/channels/${env.KITCHEN_SERVER_ID}/${env.DELIVERING_ORDERS_CHANNEL_ID}/${m}`
-      )
-      .setStyle(ButtonStyle.Link),
-  ]);
   const actionRowMessage = new ActionRowBuilder<ButtonBuilder>().addComponents([
     new ButtonBuilder()
       .setLabel("toggle codeblock")
@@ -51,7 +44,6 @@ const sendDeliveryContent = async (
   ]);
   await i.followUp({
     content: `<#${o.channelId}>\n${o.invite}`,
-    components: m ? [actionRowInvite] : [],
     ephemeral: true,
   });
   await i.followUp({
@@ -87,7 +79,10 @@ bot.registerButton(/order:(\d+):deliver/, async (interaction) => {
       content: "Can't start delivery- status is not PACKED",
       ephemeral: true,
     });
-  if (orderP.customerId == interaction.user.id) {
+  if (
+    orderP.customerId == interaction.user.id &&
+    !env.DEVELOPERS.split(" ").includes(interaction.user.id)
+  ) {
     return interaction.followUp({
       content: "you ordered this! who are you gonna deliver to, yourself?",
       ephemeral: true,
@@ -131,7 +126,6 @@ bot.registerButton(/order:(\d+):deliver/, async (interaction) => {
   });
   updateProcessingOrders(orderStatus.DELIVERING, order.id);
 
-  await clearKitchenMessages(order.id);
   const deliveringActionRow =
     new ActionRowBuilder<ButtonBuilder>().addComponents([
       new ButtonBuilder()
@@ -151,14 +145,14 @@ bot.registerButton(/order:(\d+):deliver/, async (interaction) => {
     .setTitle(`Order from **${order.customerUsername}**`)
     .setDescription(order.order)
     .setFooter({ text: `Order ID: ${order.id}` });
-  const deliveringOrderMessage = await sendKitchenMessage(
-    KitchenChannel.deliveringOrders,
+  const deliveringOrderMessage = await editKitchenMessage(
+    KitchenChannel.deliveries,
+    interaction.message.id,
     {
       embeds: [deliveringEmbed],
       components: [deliveringActionRow],
       content: `<@!${order.deliveryId}>`,
-    },
-    order.id
+    }
   );
 
   await sendDeliveryContent(order, interaction, deliveringOrderMessage.id);
