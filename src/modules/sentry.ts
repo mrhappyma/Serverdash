@@ -101,9 +101,7 @@ export const registerSentryButtons = async () => {
               .setStyle(TextInputStyle.Short)
               .setCustomId("email")
               .setLabel("email (optional)")
-              .setPlaceholder(
-                "replying in a DM can be surprisingly difficult, so this is helpful for follow-up"
-              )
+              .setPlaceholder("just in case a DM doesn't work")
               .setRequired(false)
           ),
         ])
@@ -126,7 +124,7 @@ export const registerSentryButtons = async () => {
                 .setStyle(TextInputStyle.Paragraph)
                 .setCustomId("comments")
                 .setLabel("What's your feedback?")
-                .setPlaceholder("How can we improve? Please don't use this form to complain about slow delivery time ;)")
+                .setPlaceholder("How can we improve?")
                 .setRequired(true)
             ),
             new ActionRowBuilder<ModalActionRowComponentBuilder>().addComponents(
@@ -135,7 +133,7 @@ export const registerSentryButtons = async () => {
                 .setCustomId("email")
                 .setLabel("email (optional)")
                 .setPlaceholder(
-                  "replying in a DM can be surprisingly difficult, so this is helpful for follow-up"
+                  "just in case a DM doesn't work. will never be shared or sold."
                 )
                 .setRequired(false)
             ),
