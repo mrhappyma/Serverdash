@@ -78,10 +78,6 @@ bot.registerButton("order:(\\d+):fill", async (interaction) => {
     content: `${emojiInline.materialEdit} <@!${interaction.user.id}> claimed order **#${order.id}**`,
     allowedMentions: { parse: [] },
   });
-  await interaction.reply({
-    content: `Claimed!`,
-    ephemeral: true,
-  });
   const ordersChannel = (await messagesClient.client.channels.fetch(
     env.NEW_ORDERS_CHANNEL_ID
   )) as TextBasedChannel;
