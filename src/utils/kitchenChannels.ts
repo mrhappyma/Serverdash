@@ -3,8 +3,7 @@ import env from "./env";
 import bot, { prisma } from "..";
 
 export const enum KitchenChannel {
-  newOrders = 0,
-  fillOrders = 1,
+  orders = 0,
   readyOrders = 2,
   deliveringOrders = 3,
   deliveredOrders = 4,
@@ -15,11 +14,8 @@ export const enum KitchenChannel {
 }
 
 const webhooks = {
-  [KitchenChannel.newOrders]: new WebhookClient({
+  [KitchenChannel.orders]: new WebhookClient({
     url: env.NEW_ORDERS_WEBHOOK,
-  }),
-  [KitchenChannel.fillOrders]: new WebhookClient({
-    url: env.FILL_ORDERS_WEBHOOK,
   }),
   [KitchenChannel.readyOrders]: new WebhookClient({
     url: env.READY_ORDERS_WEBHOOK,
@@ -67,6 +63,19 @@ export const sendKitchenMessage = async (
     });
   }
   return message;
+};
+
+export const editKitchenMessage = async (
+  channel: KitchenChannel,
+  messageId: string,
+  content: WebhookMessageCreateOptions
+) => {
+  const webhook = webhooks[channel];
+  return await webhook.editMessage(messageId, {
+    username: bot.client.user?.username,
+    avatarURL: bot.client.user?.avatarURL() ?? undefined,
+    ...content,
+  });
 };
 
 export const clearKitchenMessages = async (order: number) => {

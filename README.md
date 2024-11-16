@@ -20,7 +20,6 @@ S3_BUCKET=""
 FILE_URL_PREFIX="" # optional. no trailing slash.
 KITCHEN_SERVER_ID= # The server where all the orders will come in
 NEW_ORDERS_CHANNEL_ID= # Then a bunch of channel ids for various stages of the order
-FILL_ORDERS_CHANNEL_ID=
 READY_ORDERS_CHANNEL_ID=
 DELIVERING_ORDERS_CHANNEL_ID=
 DELIVERED_ORDERS_CHANNEL_ID=

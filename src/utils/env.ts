@@ -6,8 +6,6 @@ const envSchema = z.object({
   KITCHEN_SERVER_ID: z.string(),
   NEW_ORDERS_CHANNEL_ID: z.string(),
   NEW_ORDERS_WEBHOOK: z.string(),
-  FILL_ORDERS_CHANNEL_ID: z.string(),
-  FILL_ORDERS_WEBHOOK: z.string(),
   READY_ORDERS_CHANNEL_ID: z.string(),
   READY_ORDERS_WEBHOOK: z.string(),
   DELIVERING_ORDERS_CHANNEL_ID: z.string(),

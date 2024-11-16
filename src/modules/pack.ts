@@ -39,7 +39,7 @@ const ALLOWED_EXTERNAL_SITES = ["https://youtu.be/", "https://wikihow.com/"];
 messagesClient.client.on("messageCreate", async (message) => {
   try {
     if (!message.channel.isThread()) return;
-    if (message.channel.parentId != env.FILL_ORDERS_CHANNEL_ID) return;
+    if (message.channel.parentId != env.NEW_ORDERS_CHANNEL_ID) return;
     if (message.author.id == messagesClient.client.user?.id) return;
     if (message.content.startsWith("//")) return;
 
@@ -49,7 +49,7 @@ messagesClient.client.on("messageCreate", async (message) => {
     const orders = await prisma.order.findMany({
       where: {
         relatedKitchenMessages: {
-          has: `${KitchenChannel.fillOrders}:${message.channelId}`,
+          has: `${KitchenChannel.orders}:${message.channelId}`,
         },
       },
     });

@@ -12,7 +12,7 @@ import { emojiInline } from "../utils/emoji";
 import updateOrderStatusMessage from "../utils/updateOrderStatusMessage";
 import {
   KitchenChannel,
-  clearKitchenMessages,
+  editKitchenMessage,
   sendKitchenMessage,
 } from "../utils/kitchenChannels";
 import { updateProcessingOrders } from "./metrics";
@@ -58,7 +58,6 @@ bot.registerButton("order:(\\d+):fill", async (interaction) => {
       order.statusMessageId,
       `Your order is being filled by ${interaction.user.username}`
     );
-  await clearKitchenMessages(order.id);
   const orderFillingActionRow =
     new ActionRowBuilder<ButtonBuilder>().addComponents([
       new ButtonBuilder()
@@ -70,37 +69,24 @@ bot.registerButton("order:(\\d+):fill", async (interaction) => {
     .setTitle(`Order from **${order.customerUsername}**`)
     .setDescription(order.order)
     .setFooter({ text: `Order ID: ${order.id}` });
-  let orderFillAPIMessage = await sendKitchenMessage(
-    KitchenChannel.fillOrders,
-    {
-      embeds: [orderFillingEmbed],
-      components: [orderFillingActionRow],
-      content: `<@!${order.chefId}>`,
-    },
-    order.id
-  );
+  await editKitchenMessage(KitchenChannel.orders, interaction.message.id, {
+    embeds: [orderFillingEmbed],
+    components: [orderFillingActionRow],
+    content: `<@!${order.chefId}>`,
+  });
   await sendKitchenMessage(KitchenChannel.logs, {
     content: `${emojiInline.materialEdit} <@!${interaction.user.id}> claimed order **#${order.id}**`,
     allowedMentions: { parse: [] },
   });
-  const actionRow = new ActionRowBuilder<ButtonBuilder>().addComponents([
-    new ButtonBuilder()
-      .setLabel("Jump to thread")
-      .setURL(
-        `https://discord.com/channels/${env.KITCHEN_SERVER_ID}/${env.FILL_ORDERS_CHANNEL_ID}/threads/${orderFillAPIMessage.id}/`
-      )
-      .setStyle(ButtonStyle.Link),
-  ]);
   await interaction.reply({
     content: `Claimed!`,
-    components: [actionRow],
     ephemeral: true,
   });
-  const fillOrdersChannel = (await messagesClient.client.channels.fetch(
-    env.FILL_ORDERS_CHANNEL_ID
+  const ordersChannel = (await messagesClient.client.channels.fetch(
+    env.NEW_ORDERS_CHANNEL_ID
   )) as TextBasedChannel;
-  const orderFillMessage = await fillOrdersChannel.messages.fetch(
-    orderFillAPIMessage.id
+  const orderFillMessage = await ordersChannel.messages.fetch(
+    interaction.message.id
   );
   await orderFillMessage.startThread({
     name: `Order #${order.id}`,

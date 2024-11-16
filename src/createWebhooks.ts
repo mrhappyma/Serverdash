@@ -5,7 +5,6 @@ const limitedEnvSchema = z.object({
   DSC_TOKEN: z.string(),
   KITCHEN_SERVER_ID: z.string(),
   NEW_ORDERS_CHANNEL_ID: z.string(),
-  FILL_ORDERS_CHANNEL_ID: z.string(),
   READY_ORDERS_CHANNEL_ID: z.string(),
   DELIVERING_ORDERS_CHANNEL_ID: z.string(),
   DELIVERED_ORDERS_CHANNEL_ID: z.string(),

@@ -120,7 +120,7 @@ bot.addGlobalCommand(
       .setDescription(orderText)
       .setFooter({ text: `Order ID: ${record.id}` });
     await sendKitchenMessage(
-      KitchenChannel.newOrders,
+      KitchenChannel.orders,
       {
         embeds: [kitchenEmbed],
         components: [kitchenActionRow],
