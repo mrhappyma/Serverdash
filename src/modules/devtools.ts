@@ -97,7 +97,7 @@ messagesClient.registerModal("devtools:dm:modal", async (interaction) => {
   await sendKitchenMessage(KitchenChannel.logs, {
     content: `${emojiInline.materialMail} <@!${interaction.user.id}> sent a message to <@!${user}>\n\`\`\`${content}\`\`\``,
   });
-  await bot.client.users.cache.get(user)?.send(content);
+  await (await bot.client.users.fetch(user)).send(content);
   interaction.reply({
     content: "Message sent",
     ephemeral: true,
