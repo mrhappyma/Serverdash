@@ -9,6 +9,7 @@ export default {
   materialSync: "materialSync:1211509117794131968",
   materialDone: "materialDone:1212215187109711932",
   materialMail: "materialMail:1305607728286138429",
+  materialDelete: "materialDelete:1307172324243410944",
 };
 
 export const emojiInline = {
@@ -22,4 +23,5 @@ export const emojiInline = {
   materialSync: "<:materialSync:121150911779413196>",
   materialDone: "<:materialDone:1212215187109711932>",
   materialMail: "<:materialMail:1305607728286138429>",
+  materialDelete: "<:materialDelete:1307172324243410944>",
 };
