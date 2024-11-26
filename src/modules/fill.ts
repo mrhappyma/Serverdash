@@ -17,7 +17,6 @@ import {
   sendKitchenMessage,
 } from "../utils/kitchenChannels";
 import { updateProcessingOrders } from "./metrics";
-import env from "../utils/env";
 
 bot.registerButton("order:(\\d+):fill", async (interaction) => {
   const orderId = interaction.customId.split(":")[1];
