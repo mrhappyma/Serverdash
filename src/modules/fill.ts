@@ -17,6 +17,7 @@ import {
   sendKitchenMessage,
 } from "../utils/kitchenChannels";
 import { updateProcessingOrders } from "./metrics";
+import env from "../utils/env";
 
 bot.registerButton("order:(\\d+):fill", async (interaction) => {
   const orderId = interaction.customId.split(":")[1];
@@ -107,7 +108,7 @@ bot.registerButton("order:(\\d+):drop", async (interaction) => {
   });
   if (!order)
     return interaction.reply({ content: "Order not found", ephemeral: true });
-  if (order.chefId !== interaction.user.id)
+  if (order.chefId !== interaction.user.id && !(env.DEVELOPERS.split(" ").includes(interaction.user.id)))
     return interaction.reply({
       content: "Nice try, but this isn't your order!",
       ephemeral: true,
