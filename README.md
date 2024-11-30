@@ -4,7 +4,7 @@
 
 #### Order (a picture of) anything (within reason) from your Discord server! Powered by real life humans!
 
-[Invite Serverdash to your server](https://discord.kitchen/) to order something! You can also [join the kitchen](https://discord.kitchen/kitchen) to help fill orders (or if you need help, or if you just want to be there :)!
+[Invite Serverdash to your server](https://dsc.kitchen/) to order something! You can also [join the kitchen](https://dsc.kitchen/kitchen) to help fill orders (or if you need help, or if you just want to be there :)!
 
 ## Self-hosting
 

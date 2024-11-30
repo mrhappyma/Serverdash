@@ -20,15 +20,15 @@ bot.addGlobalCommand(
     const actionRow = new ActionRowBuilder<ButtonBuilder>().addComponents([
       new ButtonBuilder()
         .setLabel("Privacy")
-        .setURL("https://discord.kitchen/privacy")
+        .setURL("https://dsc.kitchen/privacy")
         .setStyle(ButtonStyle.Link),
       new ButtonBuilder()
         .setLabel("Open-source on GitHub")
-        .setURL("https://discord.kitchen/git")
+        .setURL("https://dsc.kitchen/git")
         .setStyle(ButtonStyle.Link),
       new ButtonBuilder()
         .setLabel("Roadmap")
-        .setURL("https://discord.kitchen/board")
+        .setURL("https://dsc.kitchen/board")
         .setStyle(ButtonStyle.Link),
       new ButtonBuilder()
         .setLabel("Invite to your server")
