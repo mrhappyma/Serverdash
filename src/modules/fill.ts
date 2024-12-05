@@ -152,7 +152,7 @@ bot.registerButton("order:(\\d+):drop", async (interaction) => {
       .setCustomId(`order:${order.id}:reject`),
   ]);
   const kitchenEmbed = new EmbedBuilder()
-    .setTitle(`Order from **${interaction.user.username}**`)
+    .setTitle(`Order from **${order.customerUsername}**`)
     .setDescription(order.order)
     .setFooter({ text: `Order ID: ${order.id}` });
   await sendKitchenMessage(
