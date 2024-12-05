@@ -77,7 +77,7 @@ messagesClient.registerButton("devtools:dm", async (interaction) => {
           .setRequired(true)
           .setStyle(TextInputStyle.Short)
           .setMinLength(18)
-          .setMaxLength(18),
+          .setMaxLength(19),
       ]),
       new ActionRowBuilder<TextInputBuilder>().addComponents([
         new TextInputBuilder()
