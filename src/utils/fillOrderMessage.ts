@@ -12,7 +12,6 @@ const fillOrderMessage = (order: order, message: string) => {
 };
 export default fillOrderMessage;
 
-export const fileUrl = (u?: string) => {
-  if (!u) return undefined;
+export const fileUrl = (u: string) => {
   return u.startsWith("s3 ") ? `${s3FilePrefix}/${u.split("s3 ")[1]}` : u;
 };
