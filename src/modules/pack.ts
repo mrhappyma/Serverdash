@@ -144,7 +144,7 @@ messagesClient.client.on("messageCreate", async (message) => {
       return;
     } else {
       const sqids = new Sqids();
-      const id = sqids.encode([order.id, Date.now()]);
+      const id = sqids.encode([order.id, Date.now()]).slice(0, 5);
 
       const s3Key = `orders/${order.id}/${id}.${
         request.headers.get("content-type")?.split("/")[1].split(";")[0]
