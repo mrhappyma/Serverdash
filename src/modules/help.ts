@@ -26,10 +26,10 @@ bot.addGlobalCommand(
         .setLabel("Open-source on GitHub")
         .setURL("https://dsc.kitchen/git")
         .setStyle(ButtonStyle.Link),
-      new ButtonBuilder()
-        .setLabel("Roadmap")
-        .setURL("https://dsc.kitchen/board")
-        .setStyle(ButtonStyle.Link),
+      // new ButtonBuilder()
+      //   .setLabel("Roadmap")
+      //   .setURL("https://dsc.kitchen/board")
+      //   .setStyle(ButtonStyle.Link),
       new ButtonBuilder()
         .setLabel("Invite to your server")
         .setURL(
