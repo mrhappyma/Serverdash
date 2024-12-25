@@ -49,6 +49,7 @@ export const createApplication = async (user: string) => {
   return `${env.APPLICATION_URL}?t=${application.token}`;
 };
 
+//TODO: use messagesClient
 bot.registerButton("devtools:apply-button", async (interaction) => {
   await interaction.deferUpdate();
   const embed = new EmbedBuilder()

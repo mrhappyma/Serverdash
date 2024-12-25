@@ -4,7 +4,7 @@ import {
   TextInputBuilder,
   TextInputStyle,
 } from "discord.js";
-import bot, { prisma } from "..";
+import { messagesClient, prisma } from "..";
 import { KitchenChannel, sendKitchenMessage } from "../utils/kitchenChannels";
 import { emojiInline } from "../utils/emoji";
 
@@ -23,7 +23,7 @@ const loadClosed = async () => {
 };
 loadClosed();
 
-bot.registerButton("devtools:closed-toggle", async (interaction) => {
+messagesClient.registerButton("devtools:closed-toggle", async (interaction) => {
   if (closed) {
     closed = false;
     await prisma.kitchenConfig.update({
@@ -67,7 +67,7 @@ bot.registerButton("devtools:closed-toggle", async (interaction) => {
   }
 });
 
-bot.registerModal("kitchen-close", async (interaction) => {
+messagesClient.registerModal("kitchen-close", async (interaction) => {
   const reason = interaction.fields.getTextInputValue("reason");
   closed = true;
   closedReason = reason;
