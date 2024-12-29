@@ -8,7 +8,7 @@ import {
   TextInputStyle,
   ThreadChannel,
 } from "discord.js";
-import { messagesClient, prisma } from "..";
+import bot, { messagesClient, prisma } from "..";
 import env from "../utils/env";
 import { orderStatus } from "@prisma/client";
 import emoji, { emojiInline } from "../utils/emoji";
@@ -22,6 +22,7 @@ import s3 from "./s3";
 import handleError from "./sentry";
 import Sqids from "sqids";
 import { updateProcessingOrders } from "./metrics";
+import updateOrderStatus from "../orders/updateStatus";
 
 // this took way too long to get copilot to spit out it had better work
 const URL_REGEX =
@@ -103,32 +104,13 @@ messagesClient.client.on("messageCreate", async (message) => {
 
     const finish = async (c: string) => {
       await message.react(emoji.materialDone);
-      await prisma.order.update({
-        where: {
-          id: order.id,
-        },
-        data: {
-          status: orderStatus.PACKING,
-          fileUrl: c,
-        },
-      });
-      updateProcessingOrders(orderStatus.PACKING, order.id);
-      setTimeout(() => finishPackOrder(order.id), 1000 * 60 * 5);
 
-      clearKitchenMessages(order.id);
-      const timestampIn5Minutes = new Date(Date.now() + 5 * 60 * 1000);
-      if (order.statusMessageId)
-        updateOrderStatusMessage(
-          order.guildId,
-          order.channelId,
-          order.statusMessageId,
-          `Your order is being packed! It will be done <t:${Math.round(
-            timestampIn5Minutes.getTime() / 1000
-          ).toString()}:R>`
-        );
-      await sendKitchenMessage(KitchenChannel.logs, {
-        content: `${emojiInline.materialLunchDining} <@!${message.author.id}> finished packing order **#${order.id}**`,
-        allowedMentions: { parse: [] },
+      await updateOrderStatus({
+        id: order.id,
+        status: orderStatus.PACKING,
+        chef: message.author.id,
+        chefUsername: message.author.username,
+        fileUrl: c,
       });
 
       const channel = message.channel as ThreadChannel;
@@ -173,56 +155,12 @@ messagesClient.client.on("messageCreate", async (message) => {
 });
 
 export const finishPackOrder = async (orderId: number) => {
-  try {
-    var order = await prisma.order.update({
-      where: {
-        id: orderId,
-      },
-      data: {
-        status: orderStatus.PACKED,
-      },
-    });
-    updateProcessingOrders(orderStatus.PACKED, order.id);
-  } catch (e) {
-    sendKitchenMessage(KitchenChannel.logs, {
-      content: `:x: Failed to finish packing order ${orderId}!! <@!${
-        env.DEVELOPERS.split(" ")[0]
-      }> go fix`,
-    });
-    return { success: false, message: "Failed to finish packing order" };
-  }
+  const update = await updateOrderStatus({
+    id: orderId,
+    status: orderStatus.PACKED,
+    chef: bot.client.user!.id,
+    chefUsername: bot.client.user!.username,
+  });
 
-  const deliveryActionRow = new ActionRowBuilder<ButtonBuilder>().addComponents(
-    [
-      new ButtonBuilder()
-        .setCustomId(`order:${order.id}:deliver`)
-        .setLabel("Deliver Order")
-        .setStyle(ButtonStyle.Primary),
-      new ButtonBuilder()
-        .setLabel("Reject Order")
-        .setStyle(ButtonStyle.Danger)
-        .setCustomId(`order:${order.id}:reject`),
-    ]
-  );
-  const deliveryEmbed = new EmbedBuilder()
-    .setTitle(`Order from **${order.customerUsername}**`)
-    .setDescription(order.order)
-    .setFooter({ text: `Order ID: ${order.id}` });
-  await sendKitchenMessage(
-    KitchenChannel.deliveries,
-    {
-      embeds: [deliveryEmbed],
-      components: [deliveryActionRow],
-      content: `<@&${env.DELIVERY_PING_ROLE_ID}>`,
-    },
-    order.id
-  );
-  if (order.statusMessageId)
-    updateOrderStatusMessage(
-      order.guildId,
-      order.channelId,
-      order.statusMessageId,
-      `Your order is ready for delivery!`
-    );
-  return true;
+  return update.success;
 };

@@ -34,7 +34,7 @@ bot.client.once("ready", async () => {
       },
     ],
   });
-  // pack all orders that are currently packing, and got inturrupted by a restart
+  // pack all orders that are currently packing, and got interrupted by a restart
   const packingOrders = await prisma.order.findMany({
     where: {
       status: orderStatus.PACKING,

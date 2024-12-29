@@ -18,12 +18,10 @@ import {
 } from "../utils/kitchenChannels";
 import { updateProcessingOrders } from "./metrics";
 import env from "../utils/env";
+import updateOrderStatus from "../orders/updateStatus";
+import { getOrder } from "../orders/cache";
 
-const sendDeliveryContent = async (
-  o: order,
-  i: ButtonInteraction,
-  m?: string
-) => {
+const sendDeliveryContent = async (o: order, i: ButtonInteraction) => {
   const chefRecord = await prisma.chef.upsert({
     where: {
       id: i.user.id,
@@ -56,191 +54,48 @@ const sendDeliveryContent = async (
 };
 
 bot.registerButton(/order:(\d+):deliver/, async (interaction) => {
-  await interaction.deferUpdate();
   const orderId = parseInt(interaction.customId.split(":")[1]);
 
-  const orderP = await prisma.order.findUnique({
-    where: {
-      id: orderId,
-    },
+  const update = await updateOrderStatus({
+    id: orderId,
+    status: orderStatus.DELIVERING,
+    chef: interaction.user.id,
+    chefUsername: interaction.user.username,
+    interactionMessageId: interaction.message.id,
   });
-  if (!orderP)
-    return interaction.followUp({
-      content: "Order not found",
+
+  if (!update.success) {
+    await interaction.reply({
+      content: update.message,
       ephemeral: true,
     });
-  if (orderP.status == orderStatus.DELIVERING)
-    return interaction.followUp({
-      content: "Too slow- somebody's already claimed this order.",
-      ephemeral: true,
-    });
-  if (orderP.status !== orderStatus.PACKED)
-    return interaction.followUp({
-      content: "Can't start delivery- status is not PACKED",
-      ephemeral: true,
-    });
-  if (
-    orderP.customerId == interaction.user.id &&
-    !env.DEVELOPERS.split(" ").includes(interaction.user.id)
-  ) {
-    return interaction.followUp({
-      content: "you ordered this! who are you gonna deliver to, yourself?",
-      ephemeral: true,
-    });
+  } else {
+    await interaction.deferUpdate();
+    await sendDeliveryContent(update.order, interaction);
   }
-
-  try {
-    var guild = await bot.client.guilds.fetch(orderP.guildId);
-  } catch (e) {
-    return interaction.followUp({
-      content: `Failed to fetch guild! This usually means the bot was kicked, and if so just reject the order. Here's the error:\n\`\`\`${e}\`\`\``,
-      ephemeral: true,
-    });
-  }
-  const targetChannel = guild.channels.cache.get(orderP.channelId);
-  if (!targetChannel?.isTextBased() || targetChannel.isThread())
-    return interaction.followUp({ content: "Failed to fetch order channel" });
-  try {
-    var invite = await targetChannel.createInvite({
-      maxAge: 3600,
-      maxUses: 1,
-      unique: true,
-      reason: `Order #${orderP.id} delivery invite`,
-    });
-  } catch (e) {
-    return interaction.followUp({
-      content: "Failed to create invite",
-      ephemeral: true,
-    });
-  }
-  var order = await prisma.order.update({
-    where: {
-      id: orderId,
-    },
-    data: {
-      status: orderStatus.DELIVERING,
-      deliveryId: interaction.user.id,
-      deliveryUsername: interaction.user.username,
-      invite: invite.url,
-    },
-  });
-  updateProcessingOrders(orderStatus.DELIVERING, order.id);
-
-  const deliveringActionRow =
-    new ActionRowBuilder<ButtonBuilder>().addComponents([
-      new ButtonBuilder()
-        .setCustomId(`order:${order.id}:complete`)
-        .setLabel("Complete Order")
-        .setStyle(ButtonStyle.Primary),
-      new ButtonBuilder()
-        .setLabel("Reject Order")
-        .setStyle(ButtonStyle.Danger)
-        .setCustomId(`order:${order.id}:reject`),
-      new ButtonBuilder()
-        .setLabel("Get Content")
-        .setStyle(ButtonStyle.Secondary)
-        .setCustomId(`order:${order.id}:content`),
-    ]);
-  const deliveringEmbed = new EmbedBuilder()
-    .setTitle(`Order from **${order.customerUsername}**`)
-    .setDescription(order.order)
-    .setFooter({ text: `Order ID: ${order.id}` });
-  const deliveringOrderMessage = await editKitchenMessage(
-    KitchenChannel.deliveries,
-    interaction.message.id,
-    {
-      embeds: [deliveringEmbed],
-      components: [deliveringActionRow],
-      content: `<@!${order.deliveryId}>`,
-    }
-  );
-
-  await sendDeliveryContent(order, interaction, deliveringOrderMessage.id);
-
-  await sendKitchenMessage(KitchenChannel.logs, {
-    content: `${emojiInline.materialPackage2} <@!${interaction.user.id}> started delivering order **#${order.id}**`,
-    allowedMentions: { parse: [] },
-  });
-  if (order.statusMessageId)
-    updateOrderStatusMessage(
-      order.guildId,
-      order.channelId,
-      order.statusMessageId,
-      `Your order is being delivered by ${order.deliveryUsername}`
-    );
 });
 
 bot.registerButton(/order:(\d+):complete/, async (interaction) => {
   const orderId = parseInt(interaction.customId.split(":")[1]);
-  const order = await prisma.order.findUnique({
-    where: {
-      id: orderId,
-    },
+
+  const update = await updateOrderStatus({
+    id: orderId,
+    status: orderStatus.DELIVERED,
+    chef: interaction.user.id,
+    chefUsername: interaction.user.username,
   });
-  if (!order) return { success: false, message: "Failed to fetch order" };
-  if (order.deliveryId != interaction.user.id)
-    return interaction.reply({
-      content: "Nice try, but this isn't your order!",
+
+  if (!update.success) {
+    await interaction.reply({
+      content: update.message,
       ephemeral: true,
     });
-
-  try {
-    await prisma.order.update({
-      where: {
-        id: orderId,
-      },
-      data: {
-        status: orderStatus.DELIVERED,
-      },
+  } else {
+    await interaction.reply({
+      content: `Done! Thanks!`,
+      ephemeral: true,
     });
-    updateProcessingOrders(orderStatus.DELIVERED, order.id);
-  } catch (e) {
-    return { success: false, message: "Failed to mark delivery finished" };
   }
-  await clearKitchenMessages(order.id);
-  await interaction.deferReply({ ephemeral: true });
-
-  const isImage =
-    order.fileUrl?.endsWith(".png") ||
-    order.fileUrl?.endsWith(".jpg") ||
-    order.fileUrl?.endsWith(".jpeg") ||
-    order.fileUrl?.endsWith(".gif") ||
-    order.fileUrl?.endsWith(".webp");
-
-  if (order.statusMessageId)
-    updateOrderStatusMessage(
-      order.guildId,
-      order.channelId,
-      order.statusMessageId,
-      `Your order has been delivered!`
-    );
-  const deliveredEmbed = new EmbedBuilder()
-    .setTitle(`Order #${order.id}`)
-    .setDescription(order.order)
-    .addFields([
-      {
-        name: "Customer",
-        value: `<@!${order.customerId}>`,
-      },
-      {
-        name: "Chef",
-        value: `<@!${order.chefId}>`,
-      },
-      {
-        name: "Delivery Driver",
-        value: `<@!${order.deliveryId}>`,
-      },
-    ]);
-  isImage ? deliveredEmbed.setImage(fileUrl(order.fileUrl!)!) : null;
-  await sendKitchenMessage(KitchenChannel.deliveredOrders, {
-    content: fileUrl(order.fileUrl!) ?? undefined,
-    embeds: [deliveredEmbed],
-  });
-  await sendKitchenMessage(KitchenChannel.logs, {
-    content: `${emojiInline.materialLocalPostOffice} <@!${order.deliveryId}> marked order **#${order.id}** delivered`,
-    allowedMentions: { parse: [] },
-  });
-  return interaction.editReply({ content: "Done! Thanks!" });
 });
 
 bot.registerButton("toggle_backticks", async (interaction) => {
@@ -280,11 +135,7 @@ bot.registerButton(/order:(\d+):content/, async (interaction) => {
   await interaction.deferUpdate();
 
   const orderId = parseInt(interaction.customId.split(":")[1]);
-  const order = await prisma.order.findUnique({
-    where: {
-      id: orderId,
-    },
-  });
+  const order = await getOrder(orderId);
   if (!order)
     return interaction.followUp({
       content: "Failed to fetch order :(",

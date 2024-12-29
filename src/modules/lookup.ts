@@ -2,6 +2,7 @@ import { EmbedBuilder, SlashCommandBuilder } from "discord.js";
 import bot, { prisma } from "..";
 import { orderStatus } from "@prisma/client";
 import { fileUrl } from "../utils/fillOrderMessage";
+import { getOrder } from "../orders/cache";
 
 bot.addGlobalCommand(
   new SlashCommandBuilder()
@@ -12,9 +13,9 @@ bot.addGlobalCommand(
       option.setName("order").setDescription("The order ID").setRequired(true)
     ) as SlashCommandBuilder,
   async (interaction) => {
-    const order = await prisma.order.findUnique({
-      where: { id: interaction.options.get("order", true).value as number },
-    });
+    const order = await getOrder(
+      interaction.options.get("order", true).value as number
+    );
 
     if (!order) {
       return await interaction.reply({

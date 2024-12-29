@@ -15,6 +15,7 @@ import {
   sendKitchenMessage,
 } from "../utils/kitchenChannels";
 import { updateProcessingOrders } from "./metrics";
+import updateOrderStatus from "../orders/updateStatus";
 
 bot.registerButton(/order:(\d+):reject/, async (interaction) => {
   const orderId = interaction.customId.split(":")[1];
@@ -38,48 +39,16 @@ bot.registerModal(/order:(\d+):reject:modal/, async (interaction) => {
   const orderId = parseInt(interaction.customId.split(":")[1]);
   const reason = interaction.components[0].components[0].value;
 
-  try {
-    var order = await prisma.order.update({
-      where: {
-        id: orderId,
-      },
-      data: {
-        status: orderStatus.REJECTED,
-        rejectedReason: reason,
-        rejectorId: interaction.user.id,
-      },
-    });
-    updateProcessingOrders(orderStatus.REJECTED, order.id);
-  } catch (e) {
-    return interaction.reply({
-      content: "Failed to reject order",
-      ephemeral: true,
-    });
+  const update = await updateOrderStatus({
+    id: orderId,
+    status: orderStatus.REJECTED,
+    chef: interaction.user.id,
+    reason,
+  });
+
+  if (update.success) {
+    await interaction.reply({ content: "Poof, gone.", ephemeral: true });
+  } else {
+    await interaction.reply({ content: update.message, ephemeral: true });
   }
-
-  await clearKitchenMessages(order.id);
-  if (order.statusMessageId)
-    updateOrderStatusMessage(
-      order.guildId,
-      order.channelId,
-      order.statusMessageId,
-      `Your order has been rejected by the kitchen\n\n${reason}\nplease review the order rules: https://dsc.kitchen/rules`
-    );
-  const orderRejectionEmbed = new EmbedBuilder()
-    .setTitle(`Order from **${order.customerUsername}**`)
-    .setDescription(order.order)
-    .addFields([
-      { name: "Reason", value: reason },
-      { name: "Rejected by", value: `<@!${interaction.user.id}>` },
-    ])
-    .setFooter({ text: `Order ID: ${order.id}` });
-  sendKitchenMessage(KitchenChannel.cancelledOrders, {
-    embeds: [orderRejectionEmbed],
-  });
-  sendKitchenMessage(KitchenChannel.logs, {
-    content: `${emojiInline.materialError} <@!${interaction.user.id}> rejected order **#${order.id}**\n\`\`\`${reason}\`\`\``,
-    allowedMentions: { parse: [] },
-  });
-
-  return interaction.reply({ content: "Poof, gone.", ephemeral: true });
 });

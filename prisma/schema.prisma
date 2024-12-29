@@ -15,11 +15,11 @@ model order {
   status                 orderStatus @default(ORDERED)
   order                  String
   guildId                String
-  guildName              String?
+  guildName              String? // was not stored in earlier versions
   customerId             String
   customerUsername       String
   channelId              String
-  statusMessageId        String?
+  statusMessageId        String
   chefId                 String?
   chefUsername           String?
   deliveryId             String?
@@ -42,7 +42,6 @@ enum orderStatus {
   PACKED
   DELIVERING
   DELIVERED
-  CANCELLED
   REJECTED
 }
 
