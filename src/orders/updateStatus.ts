@@ -58,6 +58,10 @@ const updateOrderStatus = async (
           //TODO: more packing logic could be moved here
           break;
         case orderStatus.DELIVERING:
+          if (active.length > 0)
+            throw new Error(
+              `You are already ${verb}ing order #**${active[0].id}**! One at a time please, go finish that one first!`
+            );
           if (order.status == orderStatus.DELIVERING)
             throw new Error(
               "Too slow- somebody's already started delivering this order"
@@ -176,13 +180,17 @@ const updateOrderStatus = async (
       try {
         var guild = await bot.client.guilds.fetch(order.guildId);
       } catch (e) {
-        throw new Error(
-          `Failed to fetch guild! This usually means the bot was kicked, and if so just reject the order. Here's the error:\n\`\`\`${e}\`\`\``
-        );
+        return {
+          success: false,
+          message: `Failed to fetch guild! This usually means the bot was kicked, and if so just reject the order. Here's the error:\n\`\`\`${e}\`\`\``,
+        };
       }
       const targetChannel = guild.channels.cache.get(order.channelId);
       if (!targetChannel?.isTextBased() || targetChannel.isThread())
-        throw new Error("Failed to fetch order channel");
+        return {
+          success: false,
+          message: "Failed to fetch order channel",
+        };
       try {
         var invite = await targetChannel.createInvite({
           maxAge: 3600,
@@ -191,9 +199,10 @@ const updateOrderStatus = async (
           reason: `Order #${id} delivery invite`,
         });
       } catch (e) {
-        throw new Error(
-          `Failed to create the invite! Here's the error:\n\`\`\`${e}\`\`\``
-        );
+        return {
+          success: false,
+          message: `Failed to create the invite! Here's the error:\n\`\`\`${e}\`\`\``,
+        };
       }
       const deliveringActionRow =
         new ActionRowBuilder<ButtonBuilder>().addComponents([
