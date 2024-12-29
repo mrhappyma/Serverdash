@@ -1,20 +1,11 @@
 import {
   ActionRowBuilder,
-  EmbedBuilder,
   ModalBuilder,
   TextInputBuilder,
   TextInputStyle,
 } from "discord.js";
-import bot, { prisma } from "..";
+import bot from "..";
 import { orderStatus } from "@prisma/client";
-import { emojiInline } from "../utils/emoji";
-import updateOrderStatusMessage from "../utils/updateOrderStatusMessage";
-import {
-  KitchenChannel,
-  clearKitchenMessages,
-  sendKitchenMessage,
-} from "../utils/kitchenChannels";
-import { updateProcessingOrders } from "./metrics";
 import updateOrderStatus from "../orders/updateStatus";
 
 bot.registerButton(/order:(\d+):reject/, async (interaction) => {

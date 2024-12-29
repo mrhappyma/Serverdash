@@ -2,6 +2,7 @@ import { orderStatus, type order } from "@prisma/client";
 import { prisma } from "..";
 import { sendOrderForFilling } from "./updateStatus";
 import sendLogMessage from "../utils/log";
+import { deleteKitchenMessage, KitchenChannel } from "../utils/kitchenChannels";
 
 const activeOrderStatuses: orderStatus[] = [
   orderStatus.ORDERED,
@@ -27,10 +28,43 @@ export const getOrder = async (id: number): Promise<order | null> => {
   return order;
 };
 
-export const updateOrder = async (id: number, data: Partial<order>) => {
-  const order = await prisma.order.update({ where: { id }, data });
+export const updateOrder = async (
+  id: number,
+  data: Partial<order>,
+  clearMessages = false
+) => {
+  if (clearMessages) {
+    const order = await getOrder(id);
+    if (order) {
+      for (const message of order.relatedKitchenMessages) {
+        const [channel, id] = message.split(":");
+        await deleteKitchenMessage(Number(channel) as KitchenChannel, id);
+      }
+      data.relatedKitchenMessages = [];
+    }
+  }
+
+  const order = await prisma.order.update({
+    where: { id },
+    data,
+  });
   cache.set(id, order);
   return order;
+};
+
+//TODO: rework this into update? somehow remove the extra db call
+export const addRelatedKitchenMessage = async (
+  orderId: number,
+  channel: KitchenChannel,
+  messageId: string
+) => {
+  const order = await getOrder(orderId);
+  if (!order) return;
+  await updateOrder(orderId, {
+    relatedKitchenMessages: order.relatedKitchenMessages.concat(
+      `${channel}:${messageId}`
+    ),
+  });
 };
 
 export const getActiveOrdersForUser = (id: string) => {

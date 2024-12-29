@@ -1,5 +1,5 @@
-import { OrderStatus } from "aws-sdk/clients/outposts";
-import { Counter, Gauge, Histogram, collectDefaultMetrics } from "prom-client";
+import type { OrderStatus } from "aws-sdk/clients/outposts";
+import { Gauge, collectDefaultMetrics } from "prom-client";
 import { prisma } from "..";
 import { orderStatus } from "@prisma/client";
 

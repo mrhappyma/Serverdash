@@ -1,5 +1,5 @@
 import { EmbedBuilder, SlashCommandBuilder } from "discord.js";
-import bot, { prisma } from "..";
+import bot from "..";
 import { orderStatus } from "@prisma/client";
 import { fileUrl } from "../utils/fillOrderMessage";
 import { getOrder } from "../orders/cache";

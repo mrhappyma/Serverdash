@@ -1,6 +1,7 @@
 import { WebhookClient, WebhookMessageCreateOptions } from "discord.js";
 import env from "./env";
 import bot, { prisma } from "..";
+import { addRelatedKitchenMessage } from "../orders/cache";
 
 export const enum KitchenChannel {
   orders = 0,
@@ -47,16 +48,7 @@ export const sendKitchenMessage = async (
     ...content,
   });
   if (order) {
-    await prisma.order.update({
-      where: {
-        id: order,
-      },
-      data: {
-        relatedKitchenMessages: {
-          push: `${channel}:${message.id}`,
-        },
-      },
-    });
+    await addRelatedKitchenMessage(order, channel, message.id);
   }
   return message;
 };
@@ -74,29 +66,10 @@ export const editKitchenMessage = async (
   });
 };
 
-export const clearKitchenMessages = async (order: number) => {
-  const orderRecord = await prisma.order.findUnique({
-    where: {
-      id: order,
-    },
-    select: {
-      relatedKitchenMessages: true,
-    },
-  });
-  if (!orderRecord) return;
-  for (const message of orderRecord.relatedKitchenMessages) {
-    const [channel, id] = message.split(":");
-    const webhook = webhooks[Number(channel) as KitchenChannel];
-    await webhook.deleteMessage(id);
-  }
-  await prisma.order.update({
-    where: {
-      id: order,
-    },
-    data: {
-      relatedKitchenMessages: {
-        set: [],
-      },
-    },
-  });
+export const deleteKitchenMessage = async (
+  channel: KitchenChannel,
+  messageId: string
+) => {
+  const webhook = webhooks[channel];
+  return await webhook.deleteMessage(messageId);
 };

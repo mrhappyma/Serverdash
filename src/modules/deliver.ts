@@ -3,21 +3,10 @@ import {
   ButtonBuilder,
   ButtonInteraction,
   ButtonStyle,
-  EmbedBuilder,
 } from "discord.js";
 import bot, { prisma } from "..";
 import { orderStatus, order } from "@prisma/client";
-import { emojiInline } from "../utils/emoji";
-import fillOrderMessage, { fileUrl } from "../utils/fillOrderMessage";
-import updateOrderStatusMessage from "../utils/updateOrderStatusMessage";
-import {
-  KitchenChannel,
-  clearKitchenMessages,
-  editKitchenMessage,
-  sendKitchenMessage,
-} from "../utils/kitchenChannels";
-import { updateProcessingOrders } from "./metrics";
-import env from "../utils/env";
+import fillOrderMessage from "../utils/fillOrderMessage";
 import updateOrderStatus from "../orders/updateStatus";
 import { getOrder } from "../orders/cache";
 

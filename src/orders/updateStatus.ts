@@ -11,7 +11,6 @@ import env from "../utils/env";
 import {
   sendKitchenMessage,
   KitchenChannel,
-  clearKitchenMessages,
   editKitchenMessage,
 } from "../utils/kitchenChannels";
 import { emojiInline } from "../utils/emoji";
@@ -129,12 +128,15 @@ const updateOrderStatus = async (
       });
       break;
     case orderStatus.PACKING:
-      order = await updateOrder(id, {
-        status,
-        fileUrl: p.fileUrl,
-      });
+      order = await updateOrder(
+        id,
+        {
+          status,
+          fileUrl: p.fileUrl,
+        },
+        true
+      );
       setTimeout(() => finishPackOrder(id), 1000 * 60 * 5);
-      await clearKitchenMessages(id);
       break;
     case orderStatus.PACKED:
       order = await updateOrder(id, {
@@ -227,10 +229,13 @@ const updateOrderStatus = async (
       });
       break;
     case orderStatus.DELIVERED:
-      order = await updateOrder(id, {
-        status,
-      });
-      await clearKitchenMessages(id);
+      order = await updateOrder(
+        id,
+        {
+          status,
+        },
+        true
+      );
       const isImage =
         order.fileUrl?.endsWith(".png") ||
         order.fileUrl?.endsWith(".jpg") ||
@@ -262,12 +267,15 @@ const updateOrderStatus = async (
       });
       break;
     case orderStatus.REJECTED:
-      order = await updateOrder(id, {
-        status,
-        rejectorId: chef,
-        rejectedReason: p.reason,
-      });
-      await clearKitchenMessages(id);
+      order = await updateOrder(
+        id,
+        {
+          status,
+          rejectorId: chef,
+          rejectedReason: p.reason,
+        },
+        true
+      );
       const orderRejectionEmbed = new EmbedBuilder()
         .setTitle(`Order from **${order.customerUsername}**`)
         .setDescription(order.order)
@@ -359,8 +367,8 @@ export default updateOrderStatus;
  * @param updateDB whether the database needs to be updated to reflect this. default true.
  */
 export const sendOrderForFilling = async (order: order, updateDB = true) => {
-  if (updateDB) await updateOrder(order.id, { status: orderStatus.ORDERED });
-  await clearKitchenMessages(order.id);
+  if (updateDB)
+    await updateOrder(order.id, { status: orderStatus.ORDERED }, true);
 
   const kitchenActionRow = new ActionRowBuilder<ButtonBuilder>().addComponents([
     new ButtonBuilder()

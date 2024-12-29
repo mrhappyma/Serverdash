@@ -1,27 +1,12 @@
-import {
-  ActionRowBuilder,
-  ButtonBuilder,
-  ButtonStyle,
-  EmbedBuilder,
-  ModalBuilder,
-  TextInputBuilder,
-  TextInputStyle,
-  ThreadChannel,
-} from "discord.js";
+import { ThreadChannel } from "discord.js";
 import bot, { messagesClient, prisma } from "..";
 import env from "../utils/env";
 import { orderStatus } from "@prisma/client";
-import emoji, { emojiInline } from "../utils/emoji";
-import updateOrderStatusMessage from "../utils/updateOrderStatusMessage";
-import {
-  KitchenChannel,
-  clearKitchenMessages,
-  sendKitchenMessage,
-} from "../utils/kitchenChannels";
+import emoji from "../utils/emoji";
+import { KitchenChannel } from "../utils/kitchenChannels";
 import s3 from "./s3";
 import handleError from "./sentry";
 import Sqids from "sqids";
-import { updateProcessingOrders } from "./metrics";
 import updateOrderStatus from "../orders/updateStatus";
 
 // this took way too long to get copilot to spit out it had better work
