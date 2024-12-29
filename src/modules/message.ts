@@ -6,11 +6,11 @@ import {
   TextInputBuilder,
   TextInputStyle,
 } from "discord.js";
-import bot, { prisma } from "..";
+import bot, { messagesClient, prisma } from "..";
 import fillOrderMessage from "../utils/fillOrderMessage";
 import { orderStatus } from "@prisma/client";
 
-bot.registerButton("devtools:message-set", async (interaction) => {
+messagesClient.registerButton("devtools:message-set", async (interaction) => {
   interaction.deferUpdate();
   const actionRow = new ActionRowBuilder<ButtonBuilder>().addComponents([
     new ButtonBuilder()
@@ -18,11 +18,13 @@ bot.registerButton("devtools:message-set", async (interaction) => {
       .setLabel("Set your delivery message")
       .setStyle(ButtonStyle.Primary),
   ]);
-  interaction.channel!.send({
-    content:
-      "Set your prefilled delivery message! The following variables will automatically be filled in. `$mention`, `$item`, and `$chef` are required.\n`$mention`-mention the customer\n`$item`-the image url\n`$number`-the order number\n`$chef`-the chef's username\n`$order`-the order\n`$server`-the customer server's name",
-    components: [actionRow],
-  });
+  const channel = await bot.client.channels.fetch(interaction.channelId);
+  if (channel?.isTextBased())
+    await channel.send({
+      content:
+        "Set your prefilled delivery message! The following variables will automatically be filled in. `$mention`, `$item`, and `$chef` are required.\n`$mention`-mention the customer\n`$item`-the image url\n`$number`-the order number\n`$chef`-the chef's username\n`$order`-the order\n`$server`-the customer server's name",
+      components: [actionRow],
+    });
 });
 
 bot.registerButton("message-set", async (interaction) => {

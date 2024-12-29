@@ -12,7 +12,7 @@ import {
   TextInputBuilder,
   TextInputStyle,
 } from "discord.js";
-import bot from "..";
+import bot, { messagesClient } from "..";
 import env from "../utils/env";
 
 export let usingSentry = false;
@@ -188,7 +188,7 @@ export const registerSentryButtons = async () => {
     });
   });
 
-  bot.registerButton("devtools:error-test", () => {
+  messagesClient.registerButton("devtools:error-test", () => {
     throw new Error("fire drill");
   });
 };

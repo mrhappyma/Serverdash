@@ -4,10 +4,10 @@ import {
   ButtonStyle,
   StringSelectMenuBuilder,
 } from "discord.js";
-import bot from "..";
+import bot, { messagesClient } from "..";
 import env from "../utils/env";
 
-bot.registerButton("devtools:role-select", async (interaction) => {
+messagesClient.registerButton("devtools:role-select", async (interaction) => {
   interaction.deferUpdate();
   const actionRow = new ActionRowBuilder<ButtonBuilder>().addComponents([
     new ButtonBuilder()
@@ -15,10 +15,12 @@ bot.registerButton("devtools:role-select", async (interaction) => {
       .setLabel("Select roles")
       .setStyle(ButtonStyle.Primary),
   ]);
-  interaction.channel!.send({
-    content: "Select ping roles to be notified of new orders",
-    components: [actionRow],
-  });
+  const channel = await bot.client.channels.fetch(interaction.channelId);
+  if (channel?.isTextBased())
+    channel!.send({
+      content: "Select ping roles to be notified of new orders",
+      components: [actionRow],
+    });
 });
 
 bot.registerButton("role-select", async (interaction) => {

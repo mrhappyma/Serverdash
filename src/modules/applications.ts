@@ -1,5 +1,5 @@
 import { z } from "zod";
-import bot, { prisma } from "..";
+import bot, { messagesClient, prisma } from "..";
 import { KitchenChannel, sendKitchenMessage } from "../utils/kitchenChannels";
 import env from "../utils/env";
 import {
@@ -49,8 +49,7 @@ export const createApplication = async (user: string) => {
   return `${env.APPLICATION_URL}?t=${application.token}`;
 };
 
-//TODO: use messagesClient
-bot.registerButton("devtools:apply-button", async (interaction) => {
+messagesClient.registerButton("devtools:apply-button", async (interaction) => {
   await interaction.deferUpdate();
   const embed = new EmbedBuilder()
     .setTitle("Applications")
@@ -63,7 +62,9 @@ bot.registerButton("devtools:apply-button", async (interaction) => {
       .setLabel("Apply")
       .setStyle(ButtonStyle.Primary),
   ]);
-  await interaction.channel!.send({ embeds: [embed], components: [actionRow] });
+  const channel = await bot.client.channels.fetch(interaction.channelId);
+  if (channel?.isTextBased())
+    await channel.send({ embeds: [embed], components: [actionRow] });
 });
 
 bot.registerButton("apply", async (interaction) => {
