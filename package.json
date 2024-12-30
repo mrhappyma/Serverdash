@@ -3,7 +3,7 @@
     "postinstall": "prisma generate"
   },
   "dependencies": {
-    "@prisma/client": "^5.1.1",
+    "@prisma/client": "^6.1.0",
     "@sentry/node": "^7.91.0",
     "aws-sdk": "^2.1565.0",
     "discord.js": "^14.13.0",
@@ -15,7 +15,7 @@
   "devDependencies": {
     "@types/express": "^4.17.21",
     "@types/node": "^20.14.8",
-    "prisma": "^5.1.1",
+    "prisma": "^6.1.0",
     "typescript": "^5.5.2"
   }
 }
