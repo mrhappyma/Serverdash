@@ -103,6 +103,7 @@ messagesClient.client.on("messageCreate", async (message) => {
         content: "Got it! Thanks!",
         allowedMentions: { repliedUser: false },
       });
+      await channel.members.remove(message.author.id, "Order filled!");
       await channel.setLocked(true, "Order filled!");
     };
 

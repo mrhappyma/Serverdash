@@ -300,6 +300,7 @@ messagesClient.registerButton(
             status,
             chef: userId,
             reason: content,
+            admin: interaction.user.id,
           });
         } else {
           await updateOrderStatus({
@@ -310,6 +311,7 @@ messagesClient.registerButton(
               .fetch(userId)
               .then((u) => u.username),
             fileUrl: content,
+            admin: interaction.user.id,
           });
         }
         await interaction.reply({
