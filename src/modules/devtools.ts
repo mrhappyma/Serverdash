@@ -49,6 +49,10 @@ messagesClient.addGlobalCommand(
         .setCustomId("devtools:dm")
         .setLabel("Message user")
         .setStyle(ButtonStyle.Secondary),
+      new ButtonBuilder()
+        .setCustomId("devtools:edit-order")
+        .setLabel("edit order")
+        .setStyle(ButtonStyle.Primary),
     ]);
     const a3 = new ActionRowBuilder<ButtonBuilder>().addComponents([
       new ButtonBuilder()
@@ -60,7 +64,6 @@ messagesClient.addGlobalCommand(
         .setLabel("fire drill")
         .setStyle(ButtonStyle.Secondary),
     ]);
-
     return interaction.reply({ components: [a1, a2, a3], ephemeral: true });
   }
 );

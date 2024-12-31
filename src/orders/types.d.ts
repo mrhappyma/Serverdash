@@ -27,7 +27,7 @@ declare type updateOrderStatusParams =
       chefUsername: string;
       status: "DELIVERING" | "FILLING";
       admin?: string;
-      interactionMessageId: string;
+      interactionMessageId?: string;
     }
   | {
       id: number;

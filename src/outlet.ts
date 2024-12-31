@@ -33,6 +33,10 @@ export default class Powercord {
     customId: RegExp | string;
     callback: (interaction: Discord.StringSelectMenuInteraction) => void;
   }[];
+  private userSelectMenus: {
+    customId: RegExp | string;
+    callback: (interaction: Discord.UserSelectMenuInteraction) => void;
+  }[];
   private modals: {
     customId: RegExp | string;
     callback: (interaction: Discord.ModalSubmitInteraction) => void;
@@ -42,6 +46,7 @@ export default class Powercord {
     this.globalCommands = [];
     this.buttons = [];
     this.stringSelectMenus = [];
+    this.userSelectMenus = [];
     this.modals = [];
 
     this.token = token;
@@ -88,6 +93,17 @@ export default class Powercord {
       return;
     }
     this.stringSelectMenus.push({ customId, callback });
+  }
+
+  registerUserSelectMenu(
+    customId: RegExp | string,
+    callback: (interaction: Discord.UserSelectMenuInteraction) => void
+  ) {
+    if (this.userSelectMenus.find((select) => select.customId === customId)) {
+      console.log(`UserSelectMenu ${customId} already registered`);
+      return;
+    }
+    this.userSelectMenus.push({ customId, callback });
   }
 
   registerModal(
@@ -169,6 +185,21 @@ export default class Powercord {
               }
               await stringSelectMenu.callback(
                 interaction as Discord.StringSelectMenuInteraction
+              );
+              return;
+            }
+            if (interaction.isUserSelectMenu()) {
+              const userSelectMenu = this.userSelectMenus.find(
+                (btn) =>
+                  interaction.customId.match(btn.customId)?.[0] ==
+                  interaction.customId
+              );
+              if (!userSelectMenu) {
+                console.log(`UserSelectMenu not found ${interaction.customId}`);
+                return;
+              }
+              await userSelectMenu.callback(
+                interaction as Discord.UserSelectMenuInteraction
               );
               return;
             }

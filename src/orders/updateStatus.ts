@@ -5,7 +5,9 @@ import {
   ButtonBuilder,
   ButtonStyle,
   EmbedBuilder,
+  Message,
   TextBasedChannel,
+  WebhookMessageCreateOptions,
 } from "discord.js";
 import env from "../utils/env";
 import {
@@ -93,11 +95,16 @@ const updateOrderStatus = async (
   //KITCHEN ACTION and db update
   switch (p.status) {
     case orderStatus.FILLING:
-      order = await updateOrder(id, {
-        status,
-        chefId: chef,
-        chefUsername: p.chefUsername,
-      });
+      const startingStatus = order.status;
+      order = await updateOrder(
+        id,
+        {
+          status,
+          chefId: chef,
+          chefUsername: p.chefUsername,
+        },
+        !p.interactionMessageId && true
+      );
       const orderFillingActionRow =
         new ActionRowBuilder<ButtonBuilder>().addComponents([
           new ButtonBuilder()
@@ -113,23 +120,33 @@ const updateOrderStatus = async (
         .setTitle(`Order from **${order.customerUsername}**`)
         .setDescription(order.order)
         .setFooter({ text: `Order ID: ${id}` });
-      await editKitchenMessage(KitchenChannel.orders, p.interactionMessageId, {
+
+      const fillingBody: WebhookMessageCreateOptions = {
         embeds: [orderFillingEmbed],
         components: [orderFillingActionRow],
         content: `<@!${chef}>`,
-      });
+      };
+      const fillingMessage = p.interactionMessageId
+        ? await editKitchenMessage(
+            KitchenChannel.orders,
+            p.interactionMessageId,
+            fillingBody
+          )
+        : await sendKitchenMessage(KitchenChannel.orders, fillingBody, id);
 
-      const ordersChannel = (await messagesClient.client.channels.fetch(
-        env.NEW_ORDERS_CHANNEL_ID
-      )) as TextBasedChannel;
-      const orderFillMessage = await ordersChannel.messages.fetch(
-        p.interactionMessageId
-      );
-      await orderFillMessage.startThread({
-        name: `Order #${id}`,
-        autoArchiveDuration: 60,
-        reason: `Order ${id} claimed by ${chef}`,
-      });
+      if (startingStatus != orderStatus.FILLING || !p.interactionMessageId) {
+        const ordersChannel = (await messagesClient.client.channels.fetch(
+          env.NEW_ORDERS_CHANNEL_ID
+        )) as TextBasedChannel;
+        const orderFillMessage = await ordersChannel.messages.fetch(
+          fillingMessage.id
+        );
+        await orderFillMessage.startThread({
+          name: `Order #${id}`,
+          autoArchiveDuration: 60,
+          reason: `Order ${id} claimed by ${chef}`,
+        });
+      }
       break;
     case orderStatus.PACKING:
       order = await updateOrder(
@@ -143,9 +160,13 @@ const updateOrderStatus = async (
       setTimeout(() => finishPackOrder(id), 1000 * 60 * 5);
       break;
     case orderStatus.PACKED:
-      order = await updateOrder(id, {
-        status,
-      });
+      order = await updateOrder(
+        id,
+        {
+          status,
+        },
+        true
+      );
       const deliveryActionRow =
         new ActionRowBuilder<ButtonBuilder>().addComponents([
           new ButtonBuilder()
@@ -172,11 +193,15 @@ const updateOrderStatus = async (
       );
       break;
     case orderStatus.DELIVERING:
-      order = await updateOrder(id, {
-        status,
-        deliveryId: chef,
-        deliveryUsername: p.chefUsername,
-      });
+      order = await updateOrder(
+        id,
+        {
+          status,
+          deliveryId: chef,
+          deliveryUsername: p.chefUsername,
+        },
+        !p.interactionMessageId && true
+      );
       try {
         var guild = await bot.client.guilds.fetch(order.guildId);
       } catch (e) {
@@ -223,15 +248,20 @@ const updateOrderStatus = async (
         .setTitle(`Order from **${order.customerUsername}**`)
         .setDescription(order.order)
         .setFooter({ text: `Order ID: ${id}` });
-      await editKitchenMessage(
-        KitchenChannel.deliveries,
-        p.interactionMessageId,
-        {
-          embeds: [deliveringEmbed],
-          components: [deliveringActionRow],
-          content: `<@!${chef}>`,
-        }
-      );
+      const deliveringBody: WebhookMessageCreateOptions = {
+        embeds: [deliveringEmbed],
+        components: [deliveringActionRow],
+        content: `<@!${chef}>`,
+      };
+      if (p.interactionMessageId) {
+        await editKitchenMessage(
+          KitchenChannel.deliveries,
+          p.interactionMessageId,
+          deliveringBody
+        );
+      } else {
+        await sendKitchenMessage(KitchenChannel.deliveries, deliveringBody, id);
+      }
       order = await updateOrder(id, {
         status,
         invite: invite.url,
@@ -354,7 +384,7 @@ const updateOrderStatus = async (
       emoji = "materialError";
       break;
   }
-  await sendLogMessage(emoji, logMessage);
+  await sendLogMessage(emoji, logMessage, admin);
 
   updateProcessingOrders(status, id);
 

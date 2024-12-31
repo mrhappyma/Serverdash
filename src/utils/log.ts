@@ -3,10 +3,13 @@ import { sendKitchenMessage, KitchenChannel } from "./kitchenChannels";
 
 const sendLogMessage = async (
   emoji: keyof typeof emojiInline,
-  message: string
+  message: string,
+  admin?: string
 ) => {
+  let content = `${emojiInline[emoji]} ${message}`;
+  if (admin) content += `\n-# manual action by admin <@!${admin}>`;
   await sendKitchenMessage(KitchenChannel.logs, {
-    content: `${emojiInline[emoji]} ${message}`,
+    content,
     allowedMentions: { parse: [] },
   });
 };

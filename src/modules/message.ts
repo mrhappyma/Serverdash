@@ -41,7 +41,7 @@ bot.registerButton("message-set", async (interaction) => {
           .setLabel("Message")
           .setRequired(true)
           .setStyle(TextInputStyle.Paragraph)
-          .setValue(exists?.message || "")
+          .setValue(exists?.message ?? "")
           .setMaxLength(1000),
       ]),
     ]);
