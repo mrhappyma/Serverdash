@@ -70,7 +70,7 @@ const updateOrderStatus = async (
             );
           if (order.status != orderStatus.PACKED)
             throw new Error("Order status is not PACKED");
-          if (order.customerUsername == chef)
+          if (order.customerId == chef)
             throw new Error(
               "you ordered this! who are you gonna deliver to, yourself?"
             );
