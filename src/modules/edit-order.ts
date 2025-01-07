@@ -320,7 +320,6 @@ messagesClient.registerButton(
         });
       });
     } else {
-      console.log("status", status);
       const update = await updateOrderStatus({
         id,
         status,
