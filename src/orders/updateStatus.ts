@@ -40,7 +40,7 @@ const updateOrderStatus = async (
   //CHECKS
   if (!admin) {
     const active = getActiveOrdersForChef(chef);
-    const verb = active[0]?.status === orderStatus.PACKING ? "pack" : "deliver";
+    const verb = active[0]?.status == orderStatus.FILLING ? "fill" : "deliver";
 
     try {
       switch (status) {
