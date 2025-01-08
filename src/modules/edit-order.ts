@@ -292,7 +292,7 @@ messagesClient.registerButton(
           ]),
         ]);
       await interaction.showModal(modal);
-      bot.registerModal(modalId, async (interaction) => {
+      messagesClient.registerModal(modalId, async (interaction) => {
         const content = interaction.fields.getTextInputValue("content");
         if (status == orderStatus.REJECTED) {
           await updateOrderStatus({
