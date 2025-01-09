@@ -28,8 +28,16 @@ messagesClient.registerButton("devtools:message-set", async (interaction) => {
 });
 
 bot.registerButton("message-set", async (interaction) => {
-  const exists = await prisma.chef.findUnique({
-    where: { id: interaction.user.id },
+  const exists = await prisma.chef.upsert({
+    where: {
+      id: interaction.user.id,
+    },
+    update: {},
+    create: {
+      id: interaction.user.id,
+      message:
+        "Hey $mention! Here's your order, prepared by the lovely @$chef! $item",
+    },
   });
   const modal = new ModalBuilder()
     .setTitle("Set your delivery message")
