@@ -82,6 +82,12 @@ export const getActiveOrdersForChef = (id: string) => {
   );
 };
 
+export const getActiveOrdersForGuild = (id: string) => {
+  return Array.from(cache.values()).filter(
+    (order) => order.guildId == id && activeOrderStatuses.includes(order.status)
+  );
+};
+
 export const createOrder = async (
   order: string,
   guildId: string,

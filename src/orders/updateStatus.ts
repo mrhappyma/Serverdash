@@ -5,7 +5,6 @@ import {
   ButtonBuilder,
   ButtonStyle,
   EmbedBuilder,
-  Message,
   TextBasedChannel,
   WebhookMessageCreateOptions,
 } from "discord.js";

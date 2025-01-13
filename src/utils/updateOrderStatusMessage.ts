@@ -17,22 +17,28 @@ const messages = [
 const updateOrderStatusMessage = async (order: order, message: string) => {
   const footerMessage = messages[Math.floor(Math.random() * messages.length)];
 
-  const orderChannel = await (
-    await bot.client.guilds.fetch(order.guildId)
-  ).channels.fetch(order.channelId);
-  if (!orderChannel?.isTextBased()) return false;
-  const orderMessage = await orderChannel.messages.fetch(order.statusMessageId);
+  try {
+    const orderChannel = await (
+      await bot.client.guilds.fetch(order.guildId)
+    ).channels.fetch(order.channelId);
+    if (!orderChannel?.isTextBased()) return false;
+    const orderMessage = await orderChannel.messages.fetch(
+      order.statusMessageId
+    );
 
-  orderMessage.edit({
-    embeds: [
-      {
-        title: `Order status - ${order.order}`,
-        description: message,
-        footer: {
-          text: `Order #${order.id} | ${footerMessage}`,
+    orderMessage.edit({
+      embeds: [
+        {
+          title: `Order status - ${order.order}`,
+          description: message,
+          footer: {
+            text: `Order #${order.id} | ${footerMessage}`,
+          },
         },
-      },
-    ],
-  });
+      ],
+    });
+  } catch {
+    return false;
+  }
 };
 export default updateOrderStatusMessage;
