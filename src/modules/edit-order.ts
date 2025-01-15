@@ -261,7 +261,7 @@ messagesClient.registerButton(
       await sendOrderForFilling(order);
       await sendLogMessage(
         "materialEdit",
-        `<@!${userId}> created order **#${id}** for **${order.order}**`,
+        `<@!${userId}> reset order **#${id}**`,
         interaction.user.id
       );
       await interaction.update({
