@@ -12,7 +12,7 @@ import {
   UserSelectMenuBuilder,
 } from "discord.js";
 import * as chrono from "chrono-node";
-import { getActiveOrdersForUser, updateOrder } from "../orders/cache";
+import { getActiveOrdersForUser } from "../orders/cache";
 import updateOrderStatus from "../orders/updateStatus";
 import bot from "..";
 
@@ -53,18 +53,27 @@ const addBan = async (
 };
 
 messagesClient.registerButton("devtools:manage-bans", async (interaction) => {
-  const a1 = new ActionRowBuilder<UserSelectMenuBuilder>().addComponents([
-    new UserSelectMenuBuilder().setCustomId("devtools:manage-bans:user"),
-  ]);
-  return await interaction.update({
-    components: [a1],
-  });
+  const modal = new ModalBuilder()
+    .setTitle("Manage bans")
+    .setCustomId("devtools:manage-bans:user")
+    .addComponents([
+      new ActionRowBuilder<TextInputBuilder>().addComponents([
+        new TextInputBuilder()
+          .setCustomId("user")
+          .setLabel("id")
+          .setStyle(TextInputStyle.Short),
+      ]),
+    ]);
+  return await interaction.showModal(modal);
 });
 
-messagesClient.registerUserSelectMenu(
+messagesClient.registerModal(
   "devtools:manage-bans:user",
   async (interaction) => {
-    const user = interaction.users.first()!;
+    const id = interaction.fields.getTextInputValue("user");
+    const user = await bot.client.users.fetch(id);
+    if (!user) return interaction.reply({ content: "User not found" });
+
     const bans = userActiveBans(user.id);
     const embed = new EmbedBuilder()
       .setTitle(`Bans for ${user.tag}`)
@@ -107,9 +116,10 @@ messagesClient.registerUserSelectMenu(
         .setStyle(ButtonStyle.Danger)
         .setEmoji("🔨"),
     ]);
-    return await interaction.update({
+    return await interaction.reply({
       embeds: [embed],
       components: [a1, a2],
+      ephemeral: true,
     });
   }
 );
