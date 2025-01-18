@@ -50,9 +50,13 @@ messagesClient.addGlobalCommand(
         .setLabel("Message user")
         .setStyle(ButtonStyle.Secondary),
       new ButtonBuilder()
+        .setCustomId("devtools:manage-bans")
+        .setLabel("manage bans")
+        .setStyle(ButtonStyle.Secondary),
+      new ButtonBuilder()
         .setCustomId("devtools:edit-order")
         .setLabel("edit order")
-        .setStyle(ButtonStyle.Primary),
+        .setStyle(ButtonStyle.Secondary),
     ]);
     const a3 = new ActionRowBuilder<ButtonBuilder>().addComponents([
       new ButtonBuilder()

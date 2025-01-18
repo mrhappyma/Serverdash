@@ -64,3 +64,14 @@ model application {
   active    Boolean  @default(true)
   createdAt DateTime @default(now())
 }
+
+model ban {
+  id        Int       @id @default(autoincrement())
+  user      String
+  reason    String
+  message   String
+  endAt     DateTime
+  appealAt  DateTime?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}

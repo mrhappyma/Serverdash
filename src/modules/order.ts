@@ -3,6 +3,7 @@ import bot from "..";
 import { closed, closedReason } from "./closed";
 
 import { createOrder, getActiveOrdersForUser } from "../orders/cache";
+import { userActiveBans } from "./bans";
 
 bot.addGlobalCommand(
   new SlashCommandBuilder()
@@ -79,6 +80,23 @@ bot.addGlobalCommand(
           {
             title: "You already have an active order!",
             description: "One at a time please!",
+          },
+        ],
+      });
+
+    const bans = userActiveBans(interaction.user.id);
+    if (bans.length > 0)
+      return interaction.editReply({
+        embeds: [
+          {
+            title: "You are banned from ordering!",
+            description: `${
+              bans[0].message
+            }\n\nYou may appeal your ban starting <t:${Math.floor(
+              (bans[0].appealAt?.getTime() ?? 0) / 1000
+            )}:R>. Otherwise, it will expire <t:${Math.floor(
+              bans[0].endAt.getTime() / 1000
+            )}:R>`,
           },
         ],
       });
