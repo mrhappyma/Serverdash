@@ -1,5 +1,5 @@
-import { ban } from "@prisma/client";
-import bot, { prisma } from "..";
+import { ban, orderStatus } from "@prisma/client";
+import { messagesClient, prisma } from "..";
 import {
   ActionRowBuilder,
   ButtonBuilder,
@@ -12,6 +12,9 @@ import {
   UserSelectMenuBuilder,
 } from "discord.js";
 import * as chrono from "chrono-node";
+import { getActiveOrdersForUser, updateOrder } from "../orders/cache";
+import updateOrderStatus from "../orders/updateStatus";
+import bot from "..";
 
 const bans: ban[] = [];
 //load active bans
@@ -22,7 +25,6 @@ const loadActiveBans = async () => {
     },
   });
   bans.push(...beans);
-  console.log(bans);
 };
 loadActiveBans();
 
@@ -47,9 +49,10 @@ const addBan = async (
     },
   });
   bans.push(ban);
+  return ban;
 };
 
-bot.registerButton("devtools:manage-bans", async (interaction) => {
+messagesClient.registerButton("devtools:manage-bans", async (interaction) => {
   const a1 = new ActionRowBuilder<UserSelectMenuBuilder>().addComponents([
     new UserSelectMenuBuilder().setCustomId("devtools:manage-bans:user"),
   ]);
@@ -58,92 +61,98 @@ bot.registerButton("devtools:manage-bans", async (interaction) => {
   });
 });
 
-bot.registerUserSelectMenu("devtools:manage-bans:user", async (interaction) => {
-  const user = interaction.users.first()!;
-  const bans = userActiveBans(user.id);
-  const embed = new EmbedBuilder()
-    .setTitle(`Bans for ${user.tag}`)
-    .setDescription(
-      bans.length > 0 ? "User is currently banned" : "User is not banned"
-    )
-    .addFields(
-      bans.map((ban) => ({
-        name: ban.id.toString(),
-        value: `Reason: ${ban.reason}\nMessage: ${
-          ban.message
-        }\nEnd at: <t:${Math.floor(
-          ban.endAt.getTime() / 1000
-        )}:R>\nAppeal at: <t:${Math.floor(
-          (ban.appealAt?.getTime() ?? 0) / 1000
-        )}:R>`,
-      }))
-    );
-  const a1 = new ActionRowBuilder<StringSelectMenuBuilder>().addComponents([
-    new StringSelectMenuBuilder()
-      .setCustomId("devtools:manage-bans:select")
-      .setPlaceholder("Select a ban")
-      .addOptions(
-        bans.map((ban) => ({
-          label: `Ban ${ban.id}`,
-          value: ban.id.toString(),
-        }))
+messagesClient.registerUserSelectMenu(
+  "devtools:manage-bans:user",
+  async (interaction) => {
+    const user = interaction.users.first()!;
+    const bans = userActiveBans(user.id);
+    const embed = new EmbedBuilder()
+      .setTitle(`Bans for ${user.tag}`)
+      .setDescription(
+        bans.length > 0 ? "User is currently banned" : "User is not banned"
       )
-      .setDisabled(bans.length == 0),
-  ]);
-  if (bans.length == 0)
-    a1.components[0].addOptions({
-      label: "No bans",
-      value: "no-bans",
-    });
-  const a2 = new ActionRowBuilder<ButtonBuilder>().addComponents([
-    new ButtonBuilder()
-      .setCustomId(`devtools:manage-bans:create:${user.id}`)
-      .setLabel("Create ban")
-      .setStyle(ButtonStyle.Danger)
-      .setEmoji("🔨"),
-  ]);
-  return await interaction.update({
-    embeds: [embed],
-    components: [a1, a2],
-  });
-});
-
-bot.registerButton(/devtools:manage-bans:create:(.+)/, async (interaction) => {
-  const userId = interaction.customId.split(":")[3];
-  const modal = new ModalBuilder()
-    .setTitle("Create ban")
-    .setCustomId(`devtools:manage-bans:create:${userId}:modal`)
-    .addComponents([
-      new ActionRowBuilder<TextInputBuilder>().addComponents([
-        new TextInputBuilder()
-          .setCustomId("reason")
-          .setLabel("reason")
-          .setStyle(TextInputStyle.Paragraph),
-      ]),
-      new ActionRowBuilder<TextInputBuilder>().addComponents([
-        new TextInputBuilder()
-          .setCustomId("message")
-          .setLabel("message")
-          .setStyle(TextInputStyle.Paragraph),
-      ]),
-      new ActionRowBuilder<TextInputBuilder>().addComponents([
-        new TextInputBuilder()
-          .setCustomId("endAt")
-          .setLabel("end at")
-          .setStyle(TextInputStyle.Short),
-      ]),
-      new ActionRowBuilder<TextInputBuilder>().addComponents([
-        new TextInputBuilder()
-          .setCustomId("appealAt")
-          .setLabel("appeal at")
-          .setStyle(TextInputStyle.Short)
-          .setRequired(false),
-      ]),
+      .addFields(
+        bans.map((ban) => ({
+          name: ban.id.toString(),
+          value: `Reason: ${ban.reason}\nMessage: ${
+            ban.message
+          }\nEnd at: <t:${Math.floor(
+            ban.endAt.getTime() / 1000
+          )}:R>\nAppeal at: <t:${Math.floor(
+            (ban.appealAt?.getTime() ?? 0) / 1000
+          )}:R>`,
+        }))
+      );
+    const a1 = new ActionRowBuilder<StringSelectMenuBuilder>().addComponents([
+      new StringSelectMenuBuilder()
+        .setCustomId("devtools:manage-bans:select")
+        .setPlaceholder("Select a ban")
+        .addOptions(
+          bans.map((ban) => ({
+            label: `Ban ${ban.id}`,
+            value: ban.id.toString(),
+          }))
+        )
+        .setDisabled(bans.length == 0),
     ]);
-  return await interaction.showModal(modal);
-});
+    if (bans.length == 0)
+      a1.components[0].addOptions({
+        label: "No bans",
+        value: "no-bans",
+      });
+    const a2 = new ActionRowBuilder<ButtonBuilder>().addComponents([
+      new ButtonBuilder()
+        .setCustomId(`devtools:manage-bans:create:${user.id}`)
+        .setLabel("Create ban")
+        .setStyle(ButtonStyle.Danger)
+        .setEmoji("🔨"),
+    ]);
+    return await interaction.update({
+      embeds: [embed],
+      components: [a1, a2],
+    });
+  }
+);
 
-bot.registerModal(
+messagesClient.registerButton(
+  /devtools:manage-bans:create:(.+)/,
+  async (interaction) => {
+    const userId = interaction.customId.split(":")[3];
+    const modal = new ModalBuilder()
+      .setTitle("Create ban")
+      .setCustomId(`devtools:manage-bans:create:${userId}:modal`)
+      .addComponents([
+        new ActionRowBuilder<TextInputBuilder>().addComponents([
+          new TextInputBuilder()
+            .setCustomId("reason")
+            .setLabel("reason")
+            .setStyle(TextInputStyle.Paragraph),
+        ]),
+        new ActionRowBuilder<TextInputBuilder>().addComponents([
+          new TextInputBuilder()
+            .setCustomId("message")
+            .setLabel("message")
+            .setStyle(TextInputStyle.Paragraph),
+        ]),
+        new ActionRowBuilder<TextInputBuilder>().addComponents([
+          new TextInputBuilder()
+            .setCustomId("endAt")
+            .setLabel("end at")
+            .setStyle(TextInputStyle.Short),
+        ]),
+        new ActionRowBuilder<TextInputBuilder>().addComponents([
+          new TextInputBuilder()
+            .setCustomId("appealAt")
+            .setLabel("appeal at")
+            .setStyle(TextInputStyle.Short)
+            .setRequired(false),
+        ]),
+      ]);
+    return await interaction.showModal(modal);
+  }
+);
+
+messagesClient.registerModal(
   /devtools:manage-bans:create:(.+):modal/,
   async (interaction) => {
     const userId = interaction.customId.split(":")[3];
@@ -162,10 +171,25 @@ bot.registerModal(
         ephemeral: true,
       });
 
-    await addBan(userId, reason, message, endAt, appealAt ?? undefined);
-    return await interaction.reply({
+    const ban = await addBan(
+      userId,
+      reason,
+      message,
+      endAt,
+      appealAt ?? undefined
+    );
+    await interaction.reply({
       content: "Ban added",
       ephemeral: true,
     });
+    const orders = getActiveOrdersForUser(userId);
+    for (const order of orders) {
+      await updateOrderStatus({
+        id: order.id,
+        status: orderStatus.REJECTED,
+        reason: `You are banned from ordering. Ban ID: ${ban.id}`,
+        chef: bot.client.user!.id,
+      });
+    }
   }
 );

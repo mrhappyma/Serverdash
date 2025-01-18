@@ -47,7 +47,7 @@ messagesClient.addGlobalCommand(
     const a2 = new ActionRowBuilder<ButtonBuilder>().addComponents([
       new ButtonBuilder()
         .setCustomId("devtools:dm")
-        .setLabel("Message user")
+        .setLabel("message user")
         .setStyle(ButtonStyle.Secondary),
       new ButtonBuilder()
         .setCustomId("devtools:manage-bans")
