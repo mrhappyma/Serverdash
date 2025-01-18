@@ -98,9 +98,26 @@ messagesClient.client.on("messageCreate", async (message) => {
         fileUrl: c,
       });
 
+      const words = [
+        "om",
+        "nom",
+        "scrumptious",
+        "yummy",
+        "delicious",
+        "scarf",
+        "scrunch",
+        "chomp",
+        "slurp",
+      ];
+      const sentenceLength = Math.floor(Math.random() * 10) + 1;
+      const sentence = Array.from(
+        { length: sentenceLength },
+        () => words[Math.floor(Math.random() * words.length)]
+      ).join(" ");
+
       const channel = message.channel as ThreadChannel;
       await message.reply({
-        content: "Got it! Thanks!",
+        content: sentence,
         allowedMentions: { repliedUser: false },
       });
       await channel.members.remove(message.author.id, "Order filled!");
