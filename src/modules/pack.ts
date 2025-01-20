@@ -117,7 +117,7 @@ messagesClient.client.on("messageCreate", async (message) => {
 
       const channel = message.channel as ThreadChannel;
       await message.reply({
-        content: sentence,
+        content: `${sentence} (thank you!)`,
         allowedMentions: { repliedUser: false },
       });
       await channel.members.remove(message.author.id, "Order filled!");

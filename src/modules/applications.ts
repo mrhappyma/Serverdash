@@ -13,6 +13,7 @@ export const submittedApplicationSchema = z.object({
   why: z.string(),
   source: z.string(),
   token: z.string(),
+  pronouns: z.string(),
   tz: z.string(),
 });
 
@@ -26,7 +27,7 @@ export const handleIncomingApplication = async (
   });
   if (!application || !application.active) return;
   await sendKitchenMessage(KitchenChannel.applications, {
-    content: `Application from <@!${application.user}>:\nWhy:\n\`\`\`${data.why}\`\`\`\nSource:\n\`\`\`${data.source}\`\`\`\nUTC Offset: \`${data.tz}\``,
+    content: `Application from <@!${application.user}>:\nWhy:\n\`\`\`${data.why}\`\`\`\nSource:\n\`\`\`${data.source}\`\`\`\nUTC Offset: \`${data.tz}\`\npronouns: \`${data.pronouns}\``,
   });
   await prisma.application.update({
     where: {
