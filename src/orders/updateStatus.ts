@@ -299,10 +299,14 @@ const updateOrderStatus = async (
           },
         ]);
       isImage ? deliveredEmbed.setImage(fileUrl(order.fileUrl!)!) : null;
-      await sendKitchenMessage(KitchenChannel.deliveredOrders, {
-        content: fileUrl(order.fileUrl!) ?? undefined,
-        embeds: [deliveredEmbed],
-      });
+      await sendKitchenMessage(
+        KitchenChannel.deliveredOrders,
+        {
+          content: fileUrl(order.fileUrl!) ?? undefined,
+          embeds: [deliveredEmbed],
+        },
+        id
+      );
       break;
     case orderStatus.REJECTED:
       order = await updateOrder(
@@ -322,9 +326,13 @@ const updateOrderStatus = async (
           { name: "Rejected by", value: `<@!${chef}>` },
         ])
         .setFooter({ text: `Order ID: ${id}` });
-      await sendKitchenMessage(KitchenChannel.cancelledOrders, {
-        embeds: [orderRejectionEmbed],
-      });
+      await sendKitchenMessage(
+        KitchenChannel.cancelledOrders,
+        {
+          embeds: [orderRejectionEmbed],
+        },
+        id
+      );
   }
 
   //CUSTOMER STATUS MESSAGE
