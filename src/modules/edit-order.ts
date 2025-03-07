@@ -250,12 +250,6 @@ messagesClient.registerButton(
         content: "Order not found",
         ephemeral: true,
       });
-    if (order.status == orderStatus.PACKING) {
-      return interaction.update({
-        content:
-          "not implemented, the packing scheduling thing rn is too janky to update the status of a packing order (:",
-      });
-    }
 
     if (status == orderStatus.ORDERED) {
       await sendOrderForFilling(order);

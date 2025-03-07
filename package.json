@@ -5,6 +5,8 @@
   "dependencies": {
     "@prisma/client": "^6.1.0",
     "@sentry/node": "^7.91.0",
+    "agenda": "^5.0.0",
+    "agendash": "^4.0.0",
     "aws-sdk": "^2.1565.0",
     "chrono-node": "^2.7.7",
     "discord.js": "^14.13.0",

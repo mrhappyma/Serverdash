@@ -4,6 +4,7 @@ import {
   submittedApplicationSchema,
 } from "./applications";
 import { register } from "prom-client";
+import agenda from "./jobs";
 
 const api = express();
 api.use(express.json());
@@ -23,6 +24,9 @@ api.get("/metrics", async (req, res) => {
     .header("Content-Type", register.contentType)
     .send(await register.metrics());
 });
+
+const Agendash = require("agendash");
+api.use("/admin/jobs", Agendash(agenda, {}));
 
 api.get("/", (req, res) => {
   res.sendStatus(200);

@@ -8,11 +8,12 @@
 
 ## Self-hosting
 
-if for some reason anyone ever wanted to. Get yourself a [Discord bot](https://discord.com/developers) and a postgres database and an s3 bucket. Clone the repo & run `pnpm install`. Then set up a ridiculous amount of environment variables:
+if for some reason anyone ever wanted to. Get yourself a [Discord bot](https://discord.com/developers) and a postgres database and a mongo database and an s3 bucket. Clone the repo & run `pnpm install`. Then set up a ridiculous amount of environment variables:
 
 ```env
 DSC_TOKEN= # Your bot token
-DATABASE_URL= # Your database url
+DATABASE_URL= # postgres uri
+MONGO_URI= # mongo uri (for job scheduling)
 AWS_ACCESS_KEY_ID="" # s3 credentials
 AWS_SECRET_ACCESS_KEY=""
 S3_REGION=""

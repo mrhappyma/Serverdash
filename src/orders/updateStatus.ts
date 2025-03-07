@@ -19,9 +19,10 @@ import updateOrderStatusMessage from "../utils/updateOrderStatusMessage";
 import sendLogMessage from "../utils/log";
 import { updateOrderStatusParams, updateOrderStatusResponse } from "./types";
 import bot, { messagesClient } from "..";
-import { finishPackOrder } from "../modules/pack";
+import { type PackOrderJob } from "../modules/pack";
 import { fileUrl } from "../utils/fillOrderMessage";
 import { updateProcessingOrders } from "../modules/metrics";
+import agenda from "../modules/jobs";
 
 const updateOrderStatus = async (
   p: updateOrderStatusParams
@@ -91,6 +92,9 @@ const updateOrderStatus = async (
     }
   }
 
+  //remove scheduled pack job if it exists
+  await agenda.cancel({ name: "finish packing order", "data.orderId": id });
+
   //KITCHEN ACTION and db update
   switch (p.status) {
     case orderStatus.FILLING:
@@ -156,7 +160,13 @@ const updateOrderStatus = async (
         },
         true
       );
-      setTimeout(() => finishPackOrder(id), 1000 * 60 * 5);
+      await agenda.schedule<PackOrderJob>(
+        "in 5 minutes",
+        "finish packing order",
+        {
+          orderId: id,
+        }
+      );
       break;
     case orderStatus.PACKED:
       order = await updateOrder(

@@ -8,6 +8,8 @@ import s3 from "./s3";
 import handleError from "./sentry";
 import Sqids from "sqids";
 import updateOrderStatus from "../orders/updateStatus";
+import agenda from "./jobs";
+import { Job, JobAttributesData } from "agenda";
 
 // this took way too long to get copilot to spit out it had better work
 const URL_REGEX =
@@ -157,13 +159,19 @@ messagesClient.client.on("messageCreate", async (message) => {
   }
 });
 
-export const finishPackOrder = async (orderId: number) => {
-  const update = await updateOrderStatus({
-    id: orderId,
-    status: orderStatus.PACKED,
-    chef: bot.client.user!.id,
-    chefUsername: bot.client.user!.username,
-  });
+export interface PackOrderJob extends JobAttributesData {
+  orderId: number;
+}
+agenda.define<PackOrderJob>(
+  "finish packing order",
+  async (job: Job<PackOrderJob>) => {
+    const update = await updateOrderStatus({
+      id: job.attrs.data.orderId,
+      status: orderStatus.PACKED,
+      chef: bot.client.user!.id,
+      chefUsername: bot.client.user!.username,
+    });
 
-  return update.success;
-};
+    return update.success;
+  }
+);

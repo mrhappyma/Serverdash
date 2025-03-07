@@ -22,8 +22,6 @@ export const messagesClient = collector ?? bot;
 registerSentryButtons();
 import "./modules/metrics";
 
-import { finishPackOrder } from "./modules/pack"; // this file imports the bot, so it must be imported after the bot is created
-
 bot.client.once("ready", async () => {
   bot.client.user!.setPresence({
     activities: [
@@ -34,13 +32,6 @@ bot.client.once("ready", async () => {
       },
     ],
   });
-  // pack all orders that are currently packing, and got interrupted by a restart
-  const packingOrders = await prisma.order.findMany({
-    where: {
-      status: orderStatus.PACKING,
-    },
-  });
-  for (const order of packingOrders) finishPackOrder(order.id);
 });
 
 const normalizedPath = path.join(__dirname, "modules");
