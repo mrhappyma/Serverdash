@@ -31,10 +31,7 @@ bot.registerButton("order:(\\d+):drop", async (interaction) => {
   const order = await getOrder(parseInt(orderId));
   if (!order)
     return interaction.reply({ content: "Order not found", ephemeral: true });
-  if (
-    order.chefId !== interaction.user.id &&
-    !env.DEVELOPERS.split(" ").includes(interaction.user.id)
-  )
+  if (order.chefId !== interaction.user.id)
     return interaction.reply({
       content: "Nice try, but this isn't your order!",
       ephemeral: true,
