@@ -23,6 +23,7 @@ import { type PackOrderJob } from "../modules/pack";
 import { fileUrl } from "../utils/fillOrderMessage";
 import { updateProcessingOrders } from "../modules/metrics";
 import agenda from "../modules/jobs";
+import { OrderReminderJob } from "../modules/abandonedOrders";
 
 const updateOrderStatus = async (
   p: updateOrderStatusParams
@@ -92,8 +93,8 @@ const updateOrderStatus = async (
     }
   }
 
-  //remove scheduled pack job if it exists
-  await agenda.cancel({ name: "finish packing order", "data.orderId": id });
+  //remove scheduled pack and abandonment jobs
+  await agenda.cancel({ "data.orderId": id });
 
   //KITCHEN ACTION and db update
   switch (p.status) {
@@ -345,6 +346,13 @@ const updateOrderStatus = async (
       );
   }
 
+  //ABANDONMENT JOBS
+  if (status == orderStatus.FILLING || status == orderStatus.DELIVERING) {
+    await agenda.schedule<OrderReminderJob>("in 5 minutes", "order reminder", {
+      orderId: id,
+    });
+  }
+
   //CUSTOMER STATUS MESSAGE
   let message = "";
   switch (status) {
@@ -423,6 +431,8 @@ export default updateOrderStatus;
  * @param updateDB whether the database needs to be updated to reflect this. default true.
  */
 export const sendOrderForFilling = async (order: order, updateDB = true) => {
+  await agenda.cancel({ "data.orderId": order.id });
+
   if (updateDB)
     await updateOrder(order.id, { status: orderStatus.ORDERED }, true);
 

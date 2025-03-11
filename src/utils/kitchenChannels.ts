@@ -1,6 +1,6 @@
 import { WebhookClient, WebhookMessageCreateOptions } from "discord.js";
 import env from "./env";
-import bot, { prisma } from "..";
+import bot from "..";
 import { addRelatedKitchenMessage } from "../orders/cache";
 
 export const enum KitchenChannel {
