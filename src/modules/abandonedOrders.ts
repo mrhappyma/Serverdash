@@ -51,7 +51,7 @@ agenda.define<OrderReminderJob>(
       }));
 
     const reminder = await thread.send({
-      content: `## <@!${target}>, still working on order #${order.id}?\nIf you don't respond within 2 minutes, I'll unclaim it for you.`,
+      content: `### <@!${target}>, still working on order #${order.id}?\nIf you don't respond within 2 minutes, I'll unclaim it for you.`,
       components: [
         new ActionRowBuilder<ButtonBuilder>().addComponents(
           new ButtonBuilder()
@@ -78,6 +78,20 @@ messagesClient.registerButton(
   "order:(\\d+):reminder:ack",
   async (interaction) => {
     const id = parseInt(interaction.customId.split(":")[1]);
+    const order = await getOrder(id);
+    if (
+      !order ||
+      (order.status == orderStatus.FILLING &&
+        order.chefId != interaction.user.id) ||
+      (order.status == orderStatus.DELIVERING &&
+        order.deliveryId != interaction.user.id)
+    ) {
+      await interaction.reply({
+        content: "this isn't your order >:(",
+        ephemeral: true,
+      });
+      return;
+    }
     await agenda.cancel({
       name: "order abandoned",
       "data.orderId": id,
