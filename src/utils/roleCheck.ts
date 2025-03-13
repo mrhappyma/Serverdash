@@ -1,4 +1,4 @@
-import { messagesClient } from "..";
+import bot from "..";
 import env from "./env";
 
 const roles = {
@@ -9,7 +9,7 @@ const roles = {
 
 declare type Role = keyof typeof roles;
 export default function hasKitchenRole(role: Role, userId: string) {
-  return messagesClient.client.guilds.cache
+  return bot.client.guilds.cache
     .get(env.KITCHEN_SERVER_ID)
     ?.members.cache.get(userId)
     ?.roles.cache.has(roles[role]);
