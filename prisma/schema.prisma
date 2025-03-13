@@ -58,11 +58,20 @@ model KitchenConfig {
 }
 
 model application {
-  id        Int      @id @default(autoincrement())
+  id        Int               @id @default(autoincrement())
   user      String
-  token     String   @unique @default(uuid())
-  active    Boolean  @default(true)
-  createdAt DateTime @default(now())
+  token     String            @unique @default(uuid())
+  status    applicationStatus @default(DRAFT)
+  createdAt DateTime          @default(now())
+  updatedAt DateTime          @default(now())
+}
+
+enum applicationStatus {
+  DRAFT
+  PENDING
+  APPROVED
+  REJECTED
+  STALE //ones from the old system that should be ignored
 }
 
 model ban {

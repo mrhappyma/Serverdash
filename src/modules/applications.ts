@@ -8,6 +8,8 @@ import {
   ButtonStyle,
   EmbedBuilder,
 } from "discord.js";
+import { applicationStatus, application } from "@prisma/client";
+import hasKitchenRole from "../utils/roleCheck";
 
 export const submittedApplicationSchema = z.object({
   why: z.string(),
@@ -23,32 +25,88 @@ export const handleIncomingApplication = async (
   const application = await prisma.application.findUnique({
     where: {
       token: data.token,
+      status: applicationStatus.DRAFT,
     },
   });
-  if (!application || !application.active) return;
+  if (!application) return;
+  const actionRow = new ActionRowBuilder<ButtonBuilder>().addComponents([
+    new ButtonBuilder()
+      .setCustomId(`application:${application.id}:approve`)
+      .setLabel("Approve")
+      .setStyle(ButtonStyle.Success),
+    new ButtonBuilder()
+      .setCustomId(`application:${application.id}:reject`)
+      .setLabel("Reject")
+      .setStyle(ButtonStyle.Danger),
+  ]);
   await sendKitchenMessage(KitchenChannel.applications, {
     content: `Application from <@!${application.user}>:\nWhy:\n\`\`\`${data.why}\`\`\`\nSource:\n\`\`\`${data.source}\`\`\`\nUTC Offset: \`${data.tz}\`\npronouns: \`${data.pronouns}\``,
+    components: [actionRow],
   });
   await prisma.application.update({
     where: {
       token: data.token,
     },
     data: {
-      active: false,
+      status: applicationStatus.PENDING,
     },
   });
   const user = await bot.client.users.fetch(application.user);
   await user.send("Got your application! Someone will get back to you soon.");
 };
 
-export const createApplication = async (user: string) => {
-  const application = await prisma.application.create({
-    data: {
-      user,
-    },
-  });
-  return `${env.APPLICATION_URL}?t=${application.token}`;
-};
+bot.registerButton(
+  /application:(\d+):(approve|reject)/,
+  async (interaction) => {
+    await interaction.deferUpdate();
+    const [, applicationId, action] = interaction.customId.split(":");
+    const application = await prisma.application.findUnique({
+      where: {
+        id: parseInt(applicationId),
+      },
+    });
+    if (!application) throw new Error("Application not found");
+    const user = await bot.client.users.fetch(application.user);
+    if (action == "approve") {
+      await user.send(
+        "Your chef application has been approved!\nWe stagger new chefs to make sure everything goes smoothly and the kitchen doesn't get overwhelmed. I'll let you know as soon as it's time to start your training! Shouldn't be too long, a few days at most, probably sooner."
+      );
+      const member = await bot.client.guilds.cache
+        .get(env.KITCHEN_SERVER_ID)
+        ?.members.fetch(application.user);
+      if (member) {
+        await member.roles.add(env.AWAITING_TRAINING_ROLE_ID);
+      }
+      await prisma.application.update({
+        where: {
+          id: application.id,
+        },
+        data: {
+          status: applicationStatus.APPROVED,
+        },
+      });
+    } else {
+      await user.send(
+        "Your chef application has been rejected :(\nExpect a DM from a reviewer soon with more info!"
+      );
+      await prisma.application.update({
+        where: {
+          id: application.id,
+        },
+        data: {
+          status: applicationStatus.REJECTED,
+        },
+      });
+      await interaction.followUp({
+        content: "Don't forget to DM them and say why!",
+        ephemeral: true,
+      });
+    }
+    await interaction.message.edit({
+      components: [],
+    });
+  }
+);
 
 messagesClient.registerButton("devtools:apply-button", async (interaction) => {
   await interaction.deferUpdate();
@@ -70,10 +128,87 @@ messagesClient.registerButton("devtools:apply-button", async (interaction) => {
 
 bot.registerButton("apply", async (interaction) => {
   await interaction.deferUpdate();
-  const application = await createApplication(interaction.user.id);
+
+  const isChef = hasKitchenRole("chef", interaction.user.id);
+  if (isChef) {
+    await interaction.followUp({
+      content: "You're already a chef! How are you gonna be a chef twice?",
+      ephemeral: true,
+    });
+    return;
+  }
+
+  const awaitingTraining = hasKitchenRole(
+    "awaitingTraining",
+    interaction.user.id
+  );
+  if (awaitingTraining) {
+    await interaction.followUp({
+      content:
+        "Your chef application has been approved!\nWe stagger new chefs to make sure everything goes smoothly and the kitchen doesn't get overwhelmed. I'll let you know as soon as it's time to start your training! Shouldn't be too long.",
+      ephemeral: true,
+    });
+    return;
+  }
+
+  const existingApplications = await prisma.application.findMany({
+    where: {
+      user: interaction.user.id,
+    },
+  });
+
+  const rejectedApplications = existingApplications.filter(
+    (app) =>
+      app.status == applicationStatus.REJECTED &&
+      app.updatedAt.getTime() > Date.now() - 1000 * 60 * 60 * 24 * 14
+  );
+  if (rejectedApplications.length > 0) {
+    const reapplyDate = new Date(
+      rejectedApplications[
+        rejectedApplications.length - 1
+      ].updatedAt.getTime() +
+        1000 * 60 * 60 * 24 * 14
+    );
+    await interaction.followUp({
+      content: `You've been rejected recently :( you can apply again <t:${Math.round(
+        reapplyDate.getTime() / 1000
+      ).toString()}:R>`,
+      ephemeral: true,
+    });
+    return;
+  }
+
+  const pendingApplications = existingApplications.filter(
+    (app) => app.status == applicationStatus.PENDING
+  );
+  if (pendingApplications.length > 0) {
+    await interaction.followUp({
+      content:
+        "You already have an application pending! We'll get back to you soon!",
+      ephemeral: true,
+    });
+    return;
+  }
+
+  let application: application;
+  const draftApplications = existingApplications.filter(
+    (app) => app.status == applicationStatus.DRAFT
+  );
+  if (draftApplications.length > 0) {
+    application = draftApplications[0];
+  } else {
+    application = await prisma.application.create({
+      data: {
+        user: interaction.user.id,
+        token: Math.random().toString(36).substring(2),
+        status: applicationStatus.DRAFT,
+      },
+    });
+  }
+
   const actionRow = new ActionRowBuilder<ButtonBuilder>().addComponents([
     new ButtonBuilder()
-      .setURL(application)
+      .setURL(`${env.APPLICATION_URL}?t=${application.token}`)
       .setLabel("Apply")
       .setStyle(ButtonStyle.Link),
   ]);

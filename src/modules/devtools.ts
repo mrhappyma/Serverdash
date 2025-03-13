@@ -11,15 +11,15 @@ import bot, { messagesClient, prisma } from "..";
 import env from "../utils/env";
 import { emojiInline } from "../utils/emoji";
 import { sendKitchenMessage, KitchenChannel } from "../utils/kitchenChannels";
+import hasKitchenRole from "../utils/roleCheck";
 
 messagesClient.addGlobalCommand(
   new SlashCommandBuilder().setName("devtools").setDescription("secret sauce"),
   async (interaction) => {
     if (!interaction.isCommand()) return;
-    const developers = env.DEVELOPERS.split(" ");
-    if (!developers.includes(interaction.user.id))
+    if (!hasKitchenRole("admin", interaction.user.id))
       return interaction.reply({
-        content: "There is no spoon",
+        content: "the levee is dry (haha cause the song is pie related)",
         ephemeral: true,
       });
 

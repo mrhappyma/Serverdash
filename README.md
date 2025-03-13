@@ -36,4 +36,4 @@ COLLECTOR_TOKEN= # secondary bot to collect order content so main doesn't need t
 Oh but wait, there's 8 more! The bot needs to create webhooks for each of those order channels. Run `npx tsx src/createWebhooks.ts` and copy the outputted variables. If it helps, this script only needs the bot token, kitchen server id, and ids of channels.
 It's important that the bot makes these webhooks, otherwise it won't be able to add components to messages.
 
-Then `npx tsc` and `node dist/index.js` and you're good to go!
+Then `npx prisma migrate deploy` and `npx tsc` and `node dist/index.js` and you're good to go!
