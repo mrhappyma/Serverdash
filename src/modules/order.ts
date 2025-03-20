@@ -38,6 +38,12 @@ bot.addGlobalCommand(
       });
     }
 
+    if (interaction.channel.isThread())
+      return interaction.reply({
+        content:
+          "Due to Discord limitations, you can't order in a thread. Sorry!",
+      });
+
     const orderText = interaction.options.getString("order", true);
     const channel = interaction.channel as GuildChannel;
     const permissions = channel.permissionsFor(interaction.client.user);
