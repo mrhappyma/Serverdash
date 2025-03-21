@@ -57,7 +57,10 @@ bot.addGlobalCommand(
         content:
           "I don't have permission to create invites! How do you expect your order to be delivered without that?",
       });
-    if (!permissions.has("ReadMessageHistory"))
+    if (
+      !permissions.has("ReadMessageHistory") ||
+      !permissions.has("ViewChannel")
+    )
       return interaction.reply({
         content:
           "I don't have permission to read message history! I need this to update you on your order.",
