@@ -8,7 +8,7 @@
 
 ## Self-hosting
 
-If for some reason anyone ever wanted to: get yourself a [Discord bot](https://discord.com/developers) and a postgres database, a mongo database and an s3 bucket. Clone the repo & run `pnpm install`. Then set up a ridiculous amount of environment variables:
+If for some reason anyone ever wanted to: get yourself a [Discord bot](https://discord.com/developers), a postgres database, a mongo database and an s3 bucket. Clone the repo & run `pnpm install`. Then set up a ridiculous amount of environment variables:
 
 ```env
 DSC_TOKEN= # Your bot token
