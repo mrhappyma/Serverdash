@@ -177,7 +177,7 @@ bot.registerButton("apply", async (interaction) => {
       rejectedApplications[
         rejectedApplications.length - 1
       ].updatedAt.getTime() +
-        1000 * 60 * 60 * 24 * 14
+        1000 * 60 * 60 * 24 * 3
     );
     await interaction.followUp({
       content: `You've been rejected recently :( you can apply again <t:${Math.round(
