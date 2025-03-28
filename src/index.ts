@@ -15,7 +15,7 @@ const bot = new Powercord(env.DSC_TOKEN, {
 export default bot;
 export const collector = env.COLLECTOR_TOKEN
   ? new Powercord(env.COLLECTOR_TOKEN, {
-      intents: ["GuildMessages", "MessageContent", "GuildMembers"],
+      intents: ["GuildMessages", "MessageContent", "GuildMembers", "Guilds"],
     })
   : null;
 export const messagesClient = collector ?? bot;

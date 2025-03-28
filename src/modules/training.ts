@@ -1,7 +1,6 @@
 import {
   ButtonStyle,
   ComponentType,
-  GuildTextBasedChannel,
   TextBasedChannel,
   ThreadAutoArchiveDuration,
   ThreadChannel,
@@ -10,7 +9,6 @@ import bot, { messagesClient, prisma } from "..";
 import env from "../utils/env";
 import {
   applicationStatus,
-  order,
   orderStatus,
   trainingSession,
 } from "@prisma/client";
