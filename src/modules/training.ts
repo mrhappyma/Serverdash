@@ -419,6 +419,9 @@ messagesClient.registerButton("training-delivery-go", async (interaction) => {
     },
   });
 
+  await interaction.message.edit({
+    components: [],
+  });
   await interaction.channel!.send({
     content: `<#${env.TRAINING_READY_ORDERS_CHANNEL_ID}>! go get 'em!`,
   });
@@ -451,6 +454,7 @@ export const trainingOrderDelivered = async (training: trainingSession) => {
   //TODO: new chefs chat, specifically for questions!
   await thread.send({
     content: `It's been great training you! If you have any questions, feel free to ask in <#${env.CHEF_CHAT_CHANNEL_ID}> and ping the <@&${env.TRAINERS_ROLE_ID}>, they'd love to help! Have fun cooking!`,
+    allowedMentions: {},
   });
   await thread.setArchived(true, "Training complete!");
 
