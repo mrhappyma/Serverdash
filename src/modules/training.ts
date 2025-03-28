@@ -478,7 +478,7 @@ agenda.define<RemoveTraineeJob>(
   "remove trainee",
   async (job: Job<RemoveTraineeJob>) => {
     const member = await messagesClient.client.guilds
-      .fetch(env.TRAINING_SERVER_ID)
+      .fetch(env.KITCHEN_SERVER_ID)
       .then((g) => g.members.fetch(job.attrs.data.memberId));
     await member.roles.remove(env.TRAINING_ROLE_ID);
   }
