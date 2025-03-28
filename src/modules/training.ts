@@ -16,6 +16,7 @@ import { createOrder } from "../orders/cache";
 import updateOrderStatus from "../orders/updateStatus";
 import agenda from "./jobs";
 import { Job, JobAttributesData } from "agenda";
+import { KitchenChannel, sendKitchenMessage } from "../utils/kitchenChannels";
 
 //training starts when someone is given the training role
 messagesClient.client.on("guildMemberUpdate", async (oldMember, newMember) => {
@@ -36,7 +37,7 @@ messagesClient.client.on("guildMemberUpdate", async (oldMember, newMember) => {
       {
         title: "Welcome to the kitchen!",
         description:
-          "Thanks for wanting help out in the kitchen, so glad to have you here!\nBefore you start cooking up real orders, I'll guide you through a quick training session to get you acquainted with everything! Say hi in the thread and we'll get started 👇",
+          "Thanks for wanting help out in the kitchen!\nBefore you start cooking up real orders, I'll guide you through a quick training session to get you acquainted with everything! Say hi in the thread and we'll get started 👇",
       },
     ],
   });
@@ -457,6 +458,10 @@ export const trainingOrderDelivered = async (training: trainingSession) => {
     allowedMentions: {},
   });
   await thread.setArchived(true, "Training complete!");
+
+  await sendKitchenMessage(KitchenChannel.chefChat, {
+    content: `everyone welcome our newest chef, <@!${training.user}>!`,
+  });
 
   await prisma.trainingSession.update({
     where: {

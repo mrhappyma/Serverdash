@@ -228,12 +228,15 @@ const updateOrderStatus = async (
         .setTitle(`Order from **${order.customerUsername}**`)
         .setDescription(order.order)
         .setFooter({ text: `Order ID: ${id}` });
+      const ping = order.trainingSession
+        ? `<@!${order.trainingSession.user}>`
+        : `<@&${env.DELIVERY_PING_ROLE_ID}>`;
       await sendKitchenMessage(
         deliveriesChannel,
         {
           embeds: [deliveryEmbed],
           components: [deliveryActionRow],
-          content: `<@&${env.DELIVERY_PING_ROLE_ID}>`,
+          content: ping,
         },
         id
       );

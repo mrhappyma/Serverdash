@@ -80,13 +80,12 @@ enum applicationStatus {
 }
 
 model trainingSession {
-  id        Int     @id @default(autoincrement())
-  user      String
-  threadId  String  @unique
-  completed Boolean @default(false)
-  state     String  @default("welcome")
-  order     order?  @relation(fields: [orderId], references: [id])
-  orderId   Int?    @unique
+  id       Int    @id @default(autoincrement())
+  user     String
+  threadId String @unique
+  state    String @default("welcome")
+  order    order? @relation(fields: [orderId], references: [id])
+  orderId  Int?   @unique
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
