@@ -395,12 +395,20 @@ messagesClient.registerButton("training-delivery-go", async (interaction) => {
 
   await interaction.channel!.sendTyping();
   const order = training.order!;
-  await updateOrderStatus({
+
+  const deliver = await updateOrderStatus({
     id: order.id,
     status: orderStatus.PACKED,
-    chef: messagesClient.client.user!.id,
-    chefUsername: messagesClient.client.user!.username,
+    chef: bot.client.user!.id,
+    chefUsername: bot.client.user!.username,
   });
+  if (!deliver.success) {
+    await interaction.followUp({
+      content: "Something went wrong! Please try again.\n" + deliver.message,
+      ephemeral: true,
+    });
+    return;
+  }
 
   await prisma.trainingSession.update({
     where: {
@@ -413,9 +421,6 @@ messagesClient.registerButton("training-delivery-go", async (interaction) => {
 
   await interaction.channel!.send({
     content: `<#${env.TRAINING_READY_ORDERS_CHANNEL_ID}>! go get 'em!`,
-  });
-  await interaction.message.edit({
-    components: [],
   });
 });
 

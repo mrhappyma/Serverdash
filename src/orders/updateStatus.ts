@@ -47,7 +47,11 @@ const updateOrderStatus = async (
     const active = getActiveOrdersForChef(chef);
     const verb = active[0]?.status == orderStatus.FILLING ? "fill" : "deliver";
 
-    if (order.trainingSession && order.trainingSession.user != chef) {
+    if (
+      order.trainingSession &&
+      order.trainingSession.user != chef &&
+      status != orderStatus.PACKED
+    ) {
       return {
         success: false,
         message: `You are not the trainee for this order`,
