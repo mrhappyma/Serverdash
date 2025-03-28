@@ -3,7 +3,7 @@ import env from "./env";
 
 const roles = {
   admin: env.ADMIN_ROLE_ID,
-  awaitingTraining: env.AWAITING_TRAINING_ROLE_ID,
+  training: env.TRAINING_ROLE_ID,
   chef: env.CHEF_ROLE_ID,
 };
 

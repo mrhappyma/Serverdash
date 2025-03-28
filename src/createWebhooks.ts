@@ -11,6 +11,8 @@ const limitedEnvSchema = z.object({
   LOGS_CHANNEL_ID: z.string(),
   CHEF_CHAT_CHANNEL_ID: z.string(),
   APPLICATIONS_CHANNEL_ID: z.string(),
+  TRAINING_NEW_ORDERS_CHANNEL_ID: z.string(),
+  TRAINING_READY_ORDERS_CHANNEL_ID: z.string(),
 });
 const env = limitedEnvSchema.parse(process.env);
 

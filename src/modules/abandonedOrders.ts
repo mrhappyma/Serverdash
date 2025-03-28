@@ -12,7 +12,6 @@ import {
 } from "discord.js";
 import { orderStatus } from "@prisma/client";
 import updateOrderStatus, { sendOrderForFilling } from "../orders/updateStatus";
-import { threadId } from "worker_threads";
 
 export interface OrderReminderJob extends JobAttributesData {
   orderId: number;

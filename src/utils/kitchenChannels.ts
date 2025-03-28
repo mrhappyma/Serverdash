@@ -11,6 +11,8 @@ export const enum KitchenChannel {
   logs = 6,
   chefChat = 7,
   applications = 8,
+  training_orders = 9,
+  training_deliveries = 10,
 }
 
 const webhooks = {
@@ -30,6 +32,12 @@ const webhooks = {
   [KitchenChannel.chefChat]: new WebhookClient({ url: env.CHEF_CHAT_WEBHOOK }),
   [KitchenChannel.applications]: new WebhookClient({
     url: env.APPLICATIONS_WEBHOOK,
+  }),
+  [KitchenChannel.training_orders]: new WebhookClient({
+    url: env.TRAINING_NEW_ORDERS_WEBHOOK,
+  }),
+  [KitchenChannel.training_deliveries]: new WebhookClient({
+    url: env.TRAINING_READY_ORDERS_WEBHOOK,
   }),
 };
 
@@ -70,6 +78,8 @@ export const deleteKitchenMessage = async (
   channel: KitchenChannel,
   messageId: string
 ) => {
-  const webhook = webhooks[channel];
-  return await webhook.deleteMessage(messageId);
+  try {
+    const webhook = webhooks[channel];
+    return await webhook.deleteMessage(messageId);
+  } catch {}
 };

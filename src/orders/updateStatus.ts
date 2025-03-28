@@ -1,4 +1,4 @@
-import { order, orderStatus } from "@prisma/client";
+import { order, orderStatus, trainingSession } from "@prisma/client";
 import { getActiveOrdersForChef, getOrder, updateOrder } from "./cache";
 import {
   ActionRowBuilder,
@@ -24,6 +24,10 @@ import { fileUrl } from "../utils/fillOrderMessage";
 import { updateProcessingOrders } from "../modules/metrics";
 import agenda from "../modules/jobs";
 import { OrderReminderJob } from "../modules/abandonedOrders";
+import {
+  trainingOrderDelivered,
+  trainingOrderFilled,
+} from "../modules/training";
 
 const updateOrderStatus = async (
   p: updateOrderStatusParams
@@ -42,6 +46,13 @@ const updateOrderStatus = async (
   if (!admin) {
     const active = getActiveOrdersForChef(chef);
     const verb = active[0]?.status == orderStatus.FILLING ? "fill" : "deliver";
+
+    if (order.trainingSession && order.trainingSession.user != chef) {
+      return {
+        success: false,
+        message: `You are not the trainee for this order`,
+      };
+    }
 
     try {
       switch (status) {
@@ -97,6 +108,17 @@ const updateOrderStatus = async (
   await agenda.cancel({ "data.orderId": id });
 
   //KITCHEN ACTION and db update
+
+  const ordersChannel = order.trainingSession
+    ? KitchenChannel.training_orders
+    : KitchenChannel.orders;
+  const ordersChannelId = order.trainingSession
+    ? env.TRAINING_NEW_ORDERS_CHANNEL_ID
+    : env.NEW_ORDERS_CHANNEL_ID;
+  const deliveriesChannel = order.trainingSession
+    ? KitchenChannel.training_deliveries
+    : KitchenChannel.deliveries;
+
   switch (p.status) {
     case orderStatus.FILLING:
       const startingStatus = order.status;
@@ -118,7 +140,8 @@ const updateOrderStatus = async (
           new ButtonBuilder()
             .setLabel("Reject Order")
             .setStyle(ButtonStyle.Danger)
-            .setCustomId(`order:${id}:reject`),
+            .setCustomId(`order:${id}:reject`)
+            .setDisabled(order.trainingSession ? true : false),
         ]);
       const orderFillingEmbed = new EmbedBuilder()
         .setTitle(`Order from **${order.customerUsername}**`)
@@ -132,24 +155,28 @@ const updateOrderStatus = async (
       };
       const fillingMessage = p.interactionMessageId
         ? await editKitchenMessage(
-            KitchenChannel.orders,
+            ordersChannel,
             p.interactionMessageId,
             fillingBody
           )
-        : await sendKitchenMessage(KitchenChannel.orders, fillingBody, id);
+        : await sendKitchenMessage(ordersChannel, fillingBody, id);
 
       if (startingStatus != orderStatus.FILLING || !p.interactionMessageId) {
-        const ordersChannel = (await messagesClient.client.channels.fetch(
-          env.NEW_ORDERS_CHANNEL_ID
+        const channel = (await messagesClient.client.channels.fetch(
+          ordersChannelId
         )) as TextBasedChannel;
-        const orderFillMessage = await ordersChannel.messages.fetch(
+        const orderFillMessage = await channel.messages.fetch(
           fillingMessage.id
         );
-        await orderFillMessage.startThread({
-          name: `Order #${id}`,
-          autoArchiveDuration: 60,
-          reason: `Order ${id} claimed by ${chef}`,
-        });
+        if (!orderFillMessage.thread) {
+          await orderFillMessage.startThread({
+            name: `Order #${id}`,
+            autoArchiveDuration: 60,
+            reason: `Order ${id} claimed by ${chef}`,
+          });
+        } else {
+          await orderFillMessage.thread.join();
+        }
       }
       break;
     case orderStatus.PACKING:
@@ -161,13 +188,17 @@ const updateOrderStatus = async (
         },
         true
       );
-      await agenda.schedule<PackOrderJob>(
-        "in 5 minutes",
-        "finish packing order",
-        {
-          orderId: id,
-        }
-      );
+      if (!order.trainingSession) {
+        await agenda.schedule<PackOrderJob>(
+          "in 5 minutes",
+          "finish packing order",
+          {
+            orderId: id,
+          }
+        );
+      } else {
+        await trainingOrderFilled(order.trainingSession);
+      }
       break;
     case orderStatus.PACKED:
       order = await updateOrder(
@@ -186,14 +217,15 @@ const updateOrderStatus = async (
           new ButtonBuilder()
             .setLabel("Reject Order")
             .setStyle(ButtonStyle.Danger)
-            .setCustomId(`order:${id}:reject`),
+            .setCustomId(`order:${id}:reject`)
+            .setDisabled(order.trainingSession ? true : false),
         ]);
       const deliveryEmbed = new EmbedBuilder()
         .setTitle(`Order from **${order.customerUsername}**`)
         .setDescription(order.order)
         .setFooter({ text: `Order ID: ${id}` });
       await sendKitchenMessage(
-        KitchenChannel.deliveries,
+        deliveriesChannel,
         {
           embeds: [deliveryEmbed],
           components: [deliveryActionRow],
@@ -248,7 +280,8 @@ const updateOrderStatus = async (
           new ButtonBuilder()
             .setLabel("Reject Order")
             .setStyle(ButtonStyle.Danger)
-            .setCustomId(`order:${id}:reject`),
+            .setCustomId(`order:${id}:reject`)
+            .setDisabled(order.trainingSession ? true : false),
           new ButtonBuilder()
             .setLabel("Get Content")
             .setStyle(ButtonStyle.Secondary)
@@ -265,12 +298,12 @@ const updateOrderStatus = async (
       };
       if (p.interactionMessageId) {
         await editKitchenMessage(
-          KitchenChannel.deliveries,
+          deliveriesChannel,
           p.interactionMessageId,
           deliveringBody
         );
       } else {
-        await sendKitchenMessage(KitchenChannel.deliveries, deliveringBody, id);
+        await sendKitchenMessage(deliveriesChannel, deliveringBody, id);
       }
       order = await updateOrder(id, {
         status,
@@ -318,6 +351,9 @@ const updateOrderStatus = async (
         },
         id
       );
+      if (order.trainingSession) {
+        await trainingOrderDelivered(order.trainingSession);
+      }
       break;
     case orderStatus.REJECTED:
       order = await updateOrder(
@@ -430,7 +466,12 @@ export default updateOrderStatus;
  * @param order target order
  * @param updateDB whether the database needs to be updated to reflect this. default true.
  */
-export const sendOrderForFilling = async (order: order, updateDB = true) => {
+export const sendOrderForFilling = async (
+  order: order & {
+    trainingSession: trainingSession | null;
+  },
+  updateDB = true
+) => {
   await agenda.cancel({ "data.orderId": order.id });
 
   if (updateDB)
@@ -444,18 +485,25 @@ export const sendOrderForFilling = async (order: order, updateDB = true) => {
     new ButtonBuilder()
       .setLabel("Reject Order")
       .setStyle(ButtonStyle.Danger)
-      .setCustomId(`order:${order.id}:reject`),
+      .setCustomId(`order:${order.id}:reject`)
+      .setDisabled(order.trainingSession ? true : false),
   ]);
   const kitchenEmbed = new EmbedBuilder()
     .setTitle(`Order from **${order.customerUsername}**`)
     .setDescription(order.order)
     .setFooter({ text: `Order ID: ${order.id}` });
+
+  const ping = order.trainingSession
+    ? `<@!${order.trainingSession.user}>`
+    : `<@&${env.ORDER_PING_ROLE_ID}>`;
   await sendKitchenMessage(
-    KitchenChannel.orders,
+    order.trainingSession
+      ? KitchenChannel.training_orders
+      : KitchenChannel.orders,
     {
       embeds: [kitchenEmbed],
       components: [kitchenActionRow],
-      content: `<@&${env.ORDER_PING_ROLE_ID}>`,
+      content: ping,
     },
     order.id
   );

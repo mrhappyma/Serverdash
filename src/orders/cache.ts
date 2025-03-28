@@ -1,4 +1,4 @@
-import { orderStatus, type order } from "@prisma/client";
+import { orderStatus, trainingSession, type order } from "@prisma/client";
 import { prisma } from "..";
 import { sendOrderForFilling } from "./updateStatus";
 import sendLogMessage from "../utils/log";
@@ -11,19 +11,30 @@ const activeOrderStatuses: orderStatus[] = [
   orderStatus.DELIVERING,
 ];
 
-const cache = new Map<number, order>();
+const cache = new Map<
+  number,
+  order & {
+    trainingSession: trainingSession | null;
+  }
+>();
 //load active orders into cache
 prisma.order
   .findMany({
     where: {
       status: { in: activeOrderStatuses },
     },
+    include: {
+      trainingSession: true,
+    },
   })
   .then((orders) => orders.forEach((order) => cache.set(order.id, order)));
 
-export const getOrder = async (id: number): Promise<order | null> => {
+export const getOrder = async (id: number) => {
   if (cache.has(id)) return cache.get(id)!;
-  const order = await prisma.order.findUnique({ where: { id } });
+  const order = await prisma.order.findUnique({
+    where: { id },
+    include: { trainingSession: true },
+  });
   if (order) cache.set(id, order);
   return order;
 };
@@ -47,6 +58,7 @@ export const updateOrder = async (
   const order = await prisma.order.update({
     where: { id },
     data,
+    include: { trainingSession: true },
   });
   cache.set(id, order);
   return order;
@@ -95,7 +107,8 @@ export const createOrder = async (
   customerId: string,
   customerUsername: string,
   channelId: string,
-  statusMessageId: string
+  statusMessageId: string,
+  options: { training: trainingSession | null } = { training: null }
 ) => {
   const newOrder = await prisma.order.create({
     data: {
@@ -106,7 +119,13 @@ export const createOrder = async (
       customerUsername,
       channelId,
       statusMessageId,
+      trainingSession: options.training
+        ? {
+            connect: { id: options.training.id },
+          }
+        : undefined,
     },
+    include: { trainingSession: true },
   });
 
   cache.set(newOrder.id, newOrder);
@@ -115,4 +134,6 @@ export const createOrder = async (
     "materialEdit",
     `<@!${customerId}> created order **#${newOrder.id}** for **${order}**`
   );
+
+  return newOrder;
 };

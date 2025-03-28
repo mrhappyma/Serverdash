@@ -1,8 +1,10 @@
 import {
   ActionRowBuilder,
   ButtonBuilder,
+  ButtonInteraction,
   ButtonStyle,
   ModalBuilder,
+  ModalSubmitInteraction,
   TextInputBuilder,
   TextInputStyle,
 } from "discord.js";
@@ -27,7 +29,7 @@ messagesClient.registerButton("devtools:message-set", async (interaction) => {
     });
 });
 
-bot.registerButton("message-set", async (interaction) => {
+const handleMessageSetButton = async (interaction: ButtonInteraction) => {
   const exists = await prisma.chef.upsert({
     where: {
       id: interaction.user.id,
@@ -54,9 +56,9 @@ bot.registerButton("message-set", async (interaction) => {
       ]),
     ]);
   return interaction.showModal(modal);
-});
+};
 
-bot.registerModal("message-set:modal", async (interaction) => {
+const handleMessageSetModal = async (interaction: ModalSubmitInteraction) => {
   const message = interaction.fields.getTextInputValue("message");
   if (
     !message.includes("$mention") ||
@@ -72,8 +74,19 @@ bot.registerModal("message-set:modal", async (interaction) => {
     update: { message },
     create: { id: interaction.user.id, message },
   });
+
+  await prisma.trainingSession.updateMany({
+    where: {
+      user: interaction.user.id,
+      state: "message-set",
+    },
+    data: {
+      state: "message-set-done",
+    },
+  });
+
   return interaction.reply({
-    content: `Your message has been set!\n\n${fillOrderMessage(
+    content: `Your message has been set! It'll look like this:\n\n${fillOrderMessage(
       {
         id: 0,
         status: orderStatus.DELIVERING,
@@ -95,9 +108,16 @@ bot.registerModal("message-set:modal", async (interaction) => {
         invite: "discord.gg/deez-nuts",
         createdAt: new Date(),
         updatedAt: new Date(),
+        trainingSessionId: null,
       },
       message
     )}`,
     ephemeral: true,
   });
-});
+};
+
+bot.registerButton("message-set", handleMessageSetButton);
+messagesClient.registerButton("message-set", handleMessageSetButton);
+
+bot.registerModal("message-set:modal", handleMessageSetModal);
+messagesClient.registerModal("message-set:modal", handleMessageSetModal);

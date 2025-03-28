@@ -1,9 +1,12 @@
 import Agenda from "agenda";
 import env from "../utils/env";
+import bot from "..";
 
 const agenda = new Agenda({
   db: { address: env.MONGO_URI },
 });
 export default agenda;
 
-agenda.start();
+bot.client.once("ready", () => {
+  agenda.start();
+});

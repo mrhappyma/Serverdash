@@ -1,5 +1,4 @@
 import bot from "..";
-import env from "../utils/env";
 import { orderStatus } from "@prisma/client";
 import { emojiInline } from "../utils/emoji";
 import { KitchenChannel, sendKitchenMessage } from "../utils/kitchenChannels";

@@ -71,12 +71,6 @@ bot.registerButton(
       await user.send(
         "Your chef application has been approved!\nWe stagger new chefs to make sure everything goes smoothly and the kitchen doesn't get overwhelmed. I'll let you know as soon as it's time to start your training! Shouldn't be too long, a few days at most, probably sooner."
       );
-      const member = await bot.client.guilds.cache
-        .get(env.KITCHEN_SERVER_ID)
-        ?.members.fetch(application.user);
-      if (member) {
-        await member.roles.add(env.AWAITING_TRAINING_ROLE_ID);
-      }
       await prisma.application.update({
         where: {
           id: application.id,
@@ -102,7 +96,7 @@ bot.registerButton(
         ephemeral: true,
       });
     }
-    await interaction.message.edit({
+    await interaction.update({
       components: [],
     });
   }
@@ -138,14 +132,10 @@ bot.registerButton("apply", async (interaction) => {
     return;
   }
 
-  const awaitingTraining = hasKitchenRole(
-    "awaitingTraining",
-    interaction.user.id
-  );
-  if (awaitingTraining) {
+  const training = hasKitchenRole("training", interaction.user.id);
+  if (training) {
     await interaction.followUp({
-      content:
-        "Your chef application has been approved!\nWe stagger new chefs to make sure everything goes smoothly and the kitchen doesn't get overwhelmed. I'll let you know as soon as it's time to start your training! Shouldn't be too long.",
+      content: "You're already in training!",
       ephemeral: true,
     });
     return;
@@ -156,6 +146,18 @@ bot.registerButton("apply", async (interaction) => {
       user: interaction.user.id,
     },
   });
+
+  const awaitingTraining = existingApplications.filter(
+    (app) => app.status == applicationStatus.APPROVED
+  );
+  if (awaitingTraining.length > 0) {
+    await interaction.followUp({
+      content:
+        "Your chef application has been approved!\nWe stagger new chefs to make sure everything goes smoothly and the kitchen doesn't get overwhelmed. I'll let you know as soon as it's time to start your training! Shouldn't be too long.",
+      ephemeral: true,
+    });
+    return;
+  }
 
   const rejectedApplications = existingApplications.filter(
     (app) =>

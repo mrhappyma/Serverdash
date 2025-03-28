@@ -11,8 +11,8 @@ datasource db {
 }
 
 model order {
-  id                     Int         @id @default(autoincrement())
-  status                 orderStatus @default(ORDERED)
+  id                     Int              @id @default(autoincrement())
+  status                 orderStatus      @default(ORDERED)
   order                  String
   guildId                String
   guildName              String? // was not stored in earlier versions
@@ -29,8 +29,11 @@ model order {
   rejectorId             String?
   relatedKitchenMessages String[] // `enum:messageID` format
   invite                 String?
-  createdAt              DateTime    @default(now())
-  updatedAt              DateTime    @updatedAt
+  trainingSession        trainingSession?
+  trainingSessionId      Int?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([status, guildId, customerId])
 }
@@ -58,29 +61,45 @@ model KitchenConfig {
 }
 
 model application {
-  id        Int               @id @default(autoincrement())
-  user      String
-  token     String            @unique @default(uuid())
-  status    applicationStatus @default(DRAFT)
-  createdAt DateTime          @default(now())
-  updatedAt DateTime          @default(now())
+  id     Int               @id @default(autoincrement())
+  user   String
+  token  String            @unique @default(uuid())
+  status applicationStatus @default(DRAFT)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
 }
 
 enum applicationStatus {
   DRAFT
   PENDING
-  APPROVED
   REJECTED
+  APPROVED //awaiting training
+  TRAINING //added to training channel, or done with training
   STALE //ones from the old system that should be ignored
 }
 
-model ban {
-  id        Int       @id @default(autoincrement())
+model trainingSession {
+  id        Int     @id @default(autoincrement())
   user      String
-  reason    String
-  message   String
-  endAt     DateTime
-  appealAt  DateTime?
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  threadId  String  @unique
+  completed Boolean @default(false)
+  state     String  @default("welcome")
+  order     order?  @relation(fields: [orderId], references: [id])
+  orderId   Int?    @unique
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model ban {
+  id       Int       @id @default(autoincrement())
+  user     String
+  reason   String
+  message  String
+  endAt    DateTime
+  appealAt DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }

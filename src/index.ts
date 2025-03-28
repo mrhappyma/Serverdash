@@ -10,12 +10,12 @@ export const prisma = new PrismaClient();
 const bot = new Powercord(env.DSC_TOKEN, {
   intents: env.COLLECTOR_TOKEN
     ? ["Guilds"]
-    : ["Guilds", "GuildMessages", "MessageContent"],
+    : ["Guilds", "GuildMessages", "MessageContent", "GuildMembers"],
 });
 export default bot;
 export const collector = env.COLLECTOR_TOKEN
   ? new Powercord(env.COLLECTOR_TOKEN, {
-      intents: ["GuildMessages", "MessageContent"],
+      intents: ["GuildMessages", "MessageContent", "GuildMembers"],
     })
   : null;
 export const messagesClient = collector ?? bot;
