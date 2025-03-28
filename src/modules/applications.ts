@@ -1,6 +1,10 @@
 import { z } from "zod";
 import bot, { messagesClient, prisma } from "..";
-import { KitchenChannel, sendKitchenMessage } from "../utils/kitchenChannels";
+import {
+  editKitchenMessage,
+  KitchenChannel,
+  sendKitchenMessage,
+} from "../utils/kitchenChannels";
 import env from "../utils/env";
 import {
   ActionRowBuilder,
@@ -96,9 +100,13 @@ bot.registerButton(
         ephemeral: true,
       });
     }
-    await interaction.update({
-      components: [],
-    });
+    await editKitchenMessage(
+      KitchenChannel.applications,
+      interaction.message.id,
+      {
+        components: [],
+      }
+    );
   }
 );
 
