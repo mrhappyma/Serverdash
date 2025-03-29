@@ -50,6 +50,19 @@
         "PACKING": "¡Tu pedido está siendo empaquetado! Estará listo {timestamp}.",
         "PACKED": "¡Su pedido está listo para la entrega!",
         "DELIVERING": "Su pedido está siendo entregado por **{deliverer}!",
-        "DELIVERED": "¡Tu pedido ha sido entregado!"
+        "DELIVERED": "¡Tu pedido ha sido entregado!",
+        "FOOTER_TEXT": "Pedido #{order} | {message}",
+        "FOOTER_MESSAGES": [
+            "Ayuda a apoyar el bot votando en top.gg! https://dsc.kitchen/vote/top.gg",
+            "Este mensaje será actualizado con el estatus de tu pedido",
+            "Si tiene alguna pregunta, ingrese al servidor de la cocina: https://dsc.kitchen/kitchen",
+            "Serverdash es fuente abierta! Echa un vistazo al código de GitHub: https://dsc.kitchen/git",
+            "¿Quieres ayudarnos a llenar pedidos? ¡Únete al servidor de cocina para aplicar! https://dsc.kitchen/kitchen",
+            "¡Todos nuestros chefs son voluntarios! Por favor sea paciente ya que trabajan para llenar su pedido",
+            "Los chefs deben dejar su servidor después de que hayan terminado de entregar un pedido. Por favor háganos saber si tiene algún problema",
+            "Si usted tiene alguna sugerencia o retroalimentación, por favor ejecute /feedback para avisarnos!",
+            "¿Necesitas ayuda? Corre /ayuda para aprender más sobre el bot",
+            "por favor envíeme sugerencias para más mensajes para poner aquí que estoy sin ideas "
+        ]
     }
 }
