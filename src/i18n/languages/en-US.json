@@ -1,6 +1,7 @@
 {
   "NAME": "Serverdash",
   "TAGLINE": "Order (a picture of) anything (within reason) from your Discord server! Powered by real life humans!",
+  "EXTENDED_DESCRIPTION": "Want a cheeseburger? An ice cream cone? A bald guy? Just run `/order`, wait a bit, and one of our expert chefs will join your server to deliver a picture of whatever you ordered!",
   "HELP_COMMAND": {
     "COMMAND_NAME": "help",
     "COMMAND_DESCRIPTION": "Learn about & get help with the bot",
