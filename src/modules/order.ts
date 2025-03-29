@@ -1,20 +1,28 @@
-import { GuildChannel, SlashCommandBuilder } from "discord.js";
+import { GuildChannel, Locale, SlashCommandBuilder } from "discord.js";
 import bot from "..";
 import { closed, closedReason } from "./closed";
 import { createOrder, getActiveOrdersForUser } from "../orders/cache";
 import { userActiveBans } from "./bans";
-import L from "../i18n";
+import L, { eng, localizationMap } from "../i18n";
 
 bot.addGlobalCommand(
   new SlashCommandBuilder()
-    .setName("order")
-    .setDescription("Place an order for delivery")
+    .setName(L[eng].ORDER_COMMAND.COMMAND_NAME())
+    .setNameLocalizations(localizationMap("ORDER_COMMAND.COMMAND_NAME"))
+    .setDescription(L[eng].ORDER_COMMAND.COMMAND_DESCRIPTION())
+    .setDescriptionLocalizations(
+      localizationMap("ORDER_COMMAND.COMMAND_DESCRIPTION")
+    )
     .setDMPermission(false)
     .addStringOption((option) =>
       option
-        .setName("order")
-        .setDescription(
-          "What would you like to order? - 1 reasonable item per order :)"
+        .setName(L[eng].ORDER_COMMAND.ORDER_OPTION_NAME())
+        .setNameLocalizations(
+          localizationMap("ORDER_COMMAND.ORDER_OPTION_NAME")
+        )
+        .setDescription(L[eng].ORDER_COMMAND.ORDER_OPTION_DESCRIPTION())
+        .setDescriptionLocalizations(
+          localizationMap("ORDER_COMMAND.ORDER_OPTION_DESCRIPTION")
         )
         .setRequired(true)
         .setMaxLength(241)

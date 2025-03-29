@@ -13,7 +13,7 @@
         "EXISTING_ORDER_ERROR_TITLE": "¡Ya tienes un pedido activo!",
         "EXISTING_ORDER_ERROR_DESCRIPTION": "¡Uno a la vez por favor!",
         "BANNED_ERROR_TITLE": "¡Estas prohibido a hacer pedidos!",
-        "COMMAND_NAME": "crear pedido",
+        "COMMAND_NAME": "crear-pedido",
         "BANNED_ERROR_DESCRIPTION": "{message}\n\nPuedes apelar tú prohibición empezando {appealTimestamp}. Si no haces, caducará {expireTimestamp}.",
         "ORDER_OPTION_DESCRIPTION": "¿Que es su pedido? - 1 artículo razonable por pedido :)",
         "ORDER_IN_THREAD_ERROR": "No puedes crear un pedido dentro de un hilo por unos límites de Discord. ¡Perdón!"

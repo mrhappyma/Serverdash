@@ -1,4 +1,15 @@
 {
+  "NAME": "Serverdash",
+  "TAGLINE": "Order (a picture of) anything (within reason) from your Discord server! Powered by real life humans!",
+  "HELP_COMMAND": {
+    "COMMAND_NAME": "help",
+    "COMMAND_DESCRIPTION": "Learn about & get help with the bot",
+    "BODY": "{tagline}\nJoin the kitchen if you want to help fill orders, or if you need any help.",
+    "BUTTON_PRIVACY_LABEL": "Privacy",
+    "BUTTON_GIT_LABEL": "Open-source on GitHub",
+    "BUTTON_INVITE_LABEL": "Invite to your server",
+    "BUTTON_KITCHEN_LABEL": "Join the kitchen"
+  },
   "ORDER_COMMAND": {
     "COMMAND_NAME": "order",
     "COMMAND_DESCRIPTION": "Place an order for delivery",
@@ -8,12 +19,26 @@
     "ORDER_INVITE_PERMISSIONS_ERROR": "I don't have permission to create invites! How do you expect your order to be delivered without that?",
     "ORDER_CHANNEL_PERMISSIONS_ERROR": "I don't have permission to read messages in this channel! I need this to update you on your order.",
     "SENDING_TITLE": "Order status - {order}",
-    "SENDING_DESCRIPTION": "Sending your order to the kitchen...",
+    "SENDING_DESCRIPTION": "Sending your order to the kitchen…",
     "SENDING_FOOTER": "This message will be updated with the status of your order.",
     "EXISTING_ORDER_ERROR_TITLE": "You already have an active order!",
     "EXISTING_ORDER_ERROR_DESCRIPTION": "One at a time please!",
     "BANNED_ERROR_TITLE": "You are banned from ordering!",
     "BANNED_ERROR_DESCRIPTION": "{message}\n\nYou may appeal your ban starting {appealTimestamp}. Otherwise, it will expire {expireTimestamp}."
+  },
+  "LOOKUP_COMMAND": {
+    "COMMAND_NAME": "lookup",
+    "COMMAND_DESCRIPTION": "Get information about an order",
+    "ORDER_ID_OPTION_NAME": "order",
+    "ORDER_ID_OPTION_DESCRIPTION": "The order ID",
+    "ORDER_NOT_FOUND_ERROR": "Order not found",
+    "RESULT_TITLE": "Order #{id}",
+    "CREATED_LABEL": "Created",
+    "UPDATED_LABEL": "Last updated",
+    "STATUS_LABEL": "Status",
+    "CHEF_LABEL": "Chef",
+    "DELIVERY_LABEL": "Deliverer",
+    "FILE_LABEL": "File"
   },
   "KITCHEN_CLOSED": {
     "TITLE": "Kitchen closed"
