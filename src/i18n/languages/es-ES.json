@@ -19,7 +19,7 @@
         "ORDER_IN_THREAD_ERROR": "No puedes crear un pedido dentro de un hilo por unos límites de Discord. ¡Perdón!"
     },
     "NAME": "Serverdash",
-    "TAGLINE": "¡Puedes hacer un pedido de (una foto) de cualquier artículo (con límites) en tu servidor!",
+    "TAGLINE": "¡Puedes hacer un pedido de (una foto de) cualquier artículo (con límites) en tu servidor!",
     "LOOKUP_COMMAND": {
         "UPDATED_LABEL": "Última actualización",
         "COMMAND_NAME": "buscar",
