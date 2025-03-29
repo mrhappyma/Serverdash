@@ -20,6 +20,50 @@
     },
     "NAME": "Serverdash",
     "LOOKUP_COMMAND": {
-        "ORDER_ID_OPTION_NAME": "order"
-    }
+        "ORDER_ID_OPTION_NAME": "order",
+        "COMMAND_NAME": "lookup",
+        "COMMAND_DESCRIPTION": "Get information about an order",
+        "ORDER_ID_OPTION_DESCRIPTION": "The order ID",
+        "ORDER_NOT_FOUND_ERROR": "Order not found",
+        "RESULT_TITLE": "Order #{id}",
+        "CREATED_LABEL": "Created",
+        "UPDATED_LABEL": "Last updated",
+        "STATUS_LABEL": "Status",
+        "CHEF_LABEL": "Chef",
+        "DELIVERY_LABEL": "Deliverer",
+        "FILE_LABEL": "File"
+    },
+    "HELP_COMMAND": {
+        "COMMAND_NAME": "help",
+        "COMMAND_DESCRIPTION": "Learn about & get help with the bot",
+        "BODY": "{tagline}\nJoin the kitchen if you want to help fill orders, or if you need any help.",
+        "BUTTON_PRIVACY_LABEL": "Privacy",
+        "BUTTON_GIT_LABEL": "Open-source on GitHub",
+        "BUTTON_INVITE_LABEL": "Invite to your server",
+        "BUTTON_KITCHEN_LABEL": "Join the kitchen"
+    },
+    "TAGLINE": "Order (a picture of) anything (within reason) from your Discord server! Powered by real life humans!",
+    "CUSTOMER_STATUS_MESSAGE": {
+        "FOOTER_MESSAGES": [
+            "Help support the bot by voting on top.gg! https://dsc.kitchen/vote/top.gg",
+            "This message will be updated as your order is filled",
+            "If you have any questions, please join the kitchen server: https://dsc.kitchen/kitchen",
+            "Serverdash is open source! Check out the code on GitHub: https://dsc.kitchen/git",
+            "Want to help us fill orders? Join the kitchen server to apply! https://dsc.kitchen/kitchen",
+            "All our chefs are volunteers! Please be patient as they work to fill your order",
+            "Chefs are required to leave your server after they've finished delivering an order. Please let us know if you have any issues",
+            "If you have any suggestions or feedback, please run /feedback to let us know!",
+            "Need help? Run /help to learn more about the bot",
+            "please send me suggestions for more messages to put here i'm running out of ideas "
+        ],
+        "ORDERED": "Order #{id} has been sent to the kitchen!",
+        "FILLING": "Your order is being filled by **{chef}**",
+        "PACKING": "Your order is being packed! It will be ready {timestamp}.",
+        "PACKED": "Your order is ready for delivery!",
+        "DELIVERING": "Your order is being delivered by **{deliverer}**!",
+        "DELIVERED": "Your order has been delivered!",
+        "REJECTED": "Your order has been rejected by the kitchen\n\n{reason}\nplease review the order rules: {link}",
+        "FOOTER_TEXT": "Order #{order} | {message}"
+    },
+    "EXTENDED_DESCRIPTION": "Want a cheeseburger? Some tea and crumpets? A bald guy? Just run `/order`, wait a bit, and one of our expert chefs will join your server to deliver a picture of whatever you ordered!"
 }
