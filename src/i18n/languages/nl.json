@@ -57,11 +57,13 @@
             "Dit bericht wordt bijgewerkt terwijl je bestelling wordt bereidt",
             "Als je vragen hebt, kom dan alsjeblieft naar de serverdash server: https://dsc.kitchen/kitchen",
             "Serverdash is een open bron! Bekijk de code in GitHub: https://dsc.kitchen/git",
-            "Wil je ons helpen met het bereiden van bestellingen? Kom naar de Serverdash server om je aan te melden!\nhttps://dsc.kitchen/kitchen",
+            "Wil je ons helpen met het bereiden van bestellingen? Kom naar de Serverdash server om je aan te melden!https://dsc.kitchen/kitchen",
             "Al onze koks zijn vrijwilligers! Heb alsjeblieft geduld terwijl wij bezig zijn met je bestelling",
             "Koks zijn vereist om je server te verlaten nadat ze een bestelling hebben bezorgd. Laat het ons alsjeblieft weten als je een probleem hebt",
             "Als je suggesties of commentaar hebt, gebruik alsjeblieft /feedback en laat het ons weten!",
-            "Hulp nodig? Gebruik /help om meer te leren over de bot"
+            "Hulp nodig? Gebruik /help om meer te leren over de bot",
+            "Geef me alsjeblieft suggesties voor meer tekstjes om hier te zetten, ik heb geen ideeën meer. "
         ]
-    }
+    },
+    "EXTENDED_DESCRIPTION": "Wil je een stroopwafel? Een Philips stofzuiger D380? Een kale man? Gebruik gewoon `/order ` , wacht eventjes, en een van onze geweldige koks zal naar je server komen om een foto van je bestselling te bezorgen!"
 }
