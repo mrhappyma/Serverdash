@@ -2,9 +2,9 @@
     "NAME": "Serverdash",
     "ORDER_COMMAND": {
         "ORDER_OPTION_DESCRIPTION": "Wat wil je bestelling? - 1 redelijk voorwerk per bestelling :)",
-        "COMMAND_NAME": "Bestelling",
+        "COMMAND_NAME": "bestelling",
         "COMMAND_DESCRIPTION": "Maak een bestelling voor bezorging",
-        "ORDER_OPTION_NAME": "Bestelling",
+        "ORDER_OPTION_NAME": "bestelling",
         "ORDER_IN_THREAD_ERROR": "Door limieten van Discord kan je helaas geen bestelling plaatsen in een thread. Sorry!",
         "ORDER_INVITE_PERMISSIONS_ERROR": "Ik heb geen toestemming om uitnodigingen te maken! Hoe verwacht je om je bestelling te krijgen zonder dat?",
         "SENDING_TITLE": "Status van bestelling - {order}",
@@ -27,9 +27,9 @@
         "BUTTON_KITCHEN_LABEL": "Sluit je aan bij de keuken"
     },
     "LOOKUP_COMMAND": {
-        "COMMAND_NAME": "zoek op",
+        "COMMAND_NAME": "zoek",
         "COMMAND_DESCRIPTION": "Krijg informatie over een bestelling",
-        "ORDER_ID_OPTION_NAME": "Bestelling",
+        "ORDER_ID_OPTION_NAME": "bestelling",
         "ORDER_ID_OPTION_DESCRIPTION": "The ID van de bestelling",
         "ORDER_NOT_FOUND_ERROR": "Bestelling is niet gevonden",
         "RESULT_TITLE": "Bestelling #{id}",
