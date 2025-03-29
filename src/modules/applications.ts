@@ -11,6 +11,7 @@ import {
   ButtonBuilder,
   ButtonStyle,
   EmbedBuilder,
+  Locale,
 } from "discord.js";
 import { applicationStatus, application } from "@prisma/client";
 import hasKitchenRole from "../utils/roleCheck";
@@ -223,7 +224,11 @@ bot.registerButton("apply", async (interaction) => {
       .setStyle(ButtonStyle.Link),
   ]);
   await interaction.followUp({
-    content: "Click that button to apply!",
+    content:
+      "Click that button to apply!" +
+      (![Locale.EnglishUS, Locale.EnglishGB].includes(interaction.locale)
+        ? "\n-# **Please note that our kitchen operates only in English**, and we can only accept chefs that know the language at this time"
+        : ""),
     components: [actionRow],
     ephemeral: true,
   });

@@ -12,6 +12,7 @@ datasource db {
 
 model order {
   id                     Int              @id @default(autoincrement())
+  locale                 String           @default("en-US")
   status                 orderStatus      @default(ORDERED)
   order                  String
   guildId                String

@@ -3,6 +3,7 @@ import {
   ButtonBuilder,
   ButtonInteraction,
   ButtonStyle,
+  Locale,
   ModalBuilder,
   ModalSubmitInteraction,
   TextInputBuilder,
@@ -109,6 +110,7 @@ const handleMessageSetModal = async (interaction: ModalSubmitInteraction) => {
         createdAt: new Date(),
         updatedAt: new Date(),
         trainingSessionId: null,
+        locale: Locale.EnglishUS,
       },
       message
     )}`,

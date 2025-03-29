@@ -3,6 +3,7 @@ import { prisma } from "..";
 import { sendOrderForFilling } from "./updateStatus";
 import sendLogMessage from "../utils/log";
 import { deleteKitchenMessage, KitchenChannel } from "../utils/kitchenChannels";
+import { SupportedLocale } from "../i18n";
 
 const activeOrderStatuses: orderStatus[] = [
   orderStatus.ORDERED,
@@ -108,6 +109,7 @@ export const createOrder = async (
   customerUsername: string,
   channelId: string,
   statusMessageId: string,
+  locale: SupportedLocale,
   options: { training: trainingSession | null } = { training: null }
 ) => {
   const newOrder = await prisma.order.create({
@@ -119,6 +121,7 @@ export const createOrder = async (
       customerUsername,
       channelId,
       statusMessageId,
+      locale,
       trainingSession: options.training
         ? {
             connect: { id: options.training.id },

@@ -26,6 +26,28 @@
     "BANNED_ERROR_TITLE": "You are banned from ordering!",
     "BANNED_ERROR_DESCRIPTION": "{message}\n\nYou may appeal your ban starting {appealTimestamp}. Otherwise, it will expire {expireTimestamp}."
   },
+  "CUSTOMER_STATUS_MESSAGE": {
+    "ORDERED": "Order #{id} has been sent to the kitchen!",
+    "FILLING": "Your order is being filled by **{chef}**",
+    "PACKING": "Your order is being packed! It will be ready {timestamp}.",
+    "PACKED": "Your order is ready for delivery!",
+    "DELIVERING": "Your order is being delivered by **{deliverer}!",
+    "DELIVERED": "Your order has been delivered!",
+    "REJECTED": "Your order has been rejected by the kitchen\n\n{reason}\nplease review the order rules: {link}",
+    "FOOTER_TEXT": "Order #{order} | {message}",
+    "FOOTER_MESSAGES": [
+      "Help support the bot by voting on top.gg! https://dsc.kitchen/vote/top.gg",
+      "This message will be updated as your order is filled",
+      "If you have any questions, please join the kitchen server: https://dsc.kitchen/kitchen",
+      "Serverdash is open source! Check out the code on GitHub: https://dsc.kitchen/git",
+      "Want to help us fill orders? Join the kitchen server to apply! https://dsc.kitchen/kitchen",
+      "All our chefs are volunteers! Please be patient as they work to fill your order",
+      "Chefs are required to leave your server after they've finished delivering an order. Please let us know if you have any issues",
+      "If you have any suggestions or feedback, please run /feedback to let us know!",
+      "Need help? Run /help to learn more about the bot",
+      "please send me suggestions for more messages to put here i'm running out of ideas "
+    ]
+  },
   "LOOKUP_COMMAND": {
     "COMMAND_NAME": "lookup",
     "COMMAND_DESCRIPTION": "Get information about an order",

@@ -1,6 +1,7 @@
 import {
   ButtonStyle,
   ComponentType,
+  Locale,
   TextBasedChannel,
   ThreadAutoArchiveDuration,
   ThreadChannel,
@@ -116,6 +117,7 @@ messagesClient.client.on("messageCreate", async (message) => {
     messagesClient.client.user!.username,
     orderMessage.channelId,
     orderMessage.id,
+    Locale.EnglishUS,
     { training: session }
   );
 

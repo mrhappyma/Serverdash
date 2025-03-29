@@ -28,6 +28,7 @@ import {
   trainingOrderDelivered,
   trainingOrderFilled,
 } from "../modules/training";
+import L, { SupportedLocale } from "../i18n";
 
 const updateOrderStatus = async (
   p: updateOrderStatusParams
@@ -41,6 +42,8 @@ const updateOrderStatus = async (
       message: "Order not found",
     };
   }
+
+  const locale = order.locale as SupportedLocale;
 
   //CHECKS
   if (!admin) {
@@ -400,25 +403,34 @@ const updateOrderStatus = async (
   let message = "";
   switch (status) {
     case orderStatus.FILLING:
-      message = `Your order is being filled by **${p.chefUsername}**!`;
+      message = L[locale].CUSTOMER_STATUS_MESSAGE.FILLING({
+        chef: p.chefUsername,
+      });
       break;
     case orderStatus.PACKING:
       const timestampIn5Minutes = new Date(Date.now() + 5 * 60 * 1000);
-      message = `Your order is being packed! It will be done <t:${Math.round(
-        timestampIn5Minutes.getTime() / 1000
-      ).toString()}:R>`;
+      message = L[locale].CUSTOMER_STATUS_MESSAGE.PACKING({
+        timestamp: `<t:${Math.round(
+          timestampIn5Minutes.getTime() / 1000
+        ).toString()}:R>`,
+      });
       break;
     case orderStatus.PACKED:
-      message = `Your order is ready for delivery!`;
+      message = L[locale].CUSTOMER_STATUS_MESSAGE.PACKED();
       break;
     case orderStatus.DELIVERING:
-      message = `Your order is being delivered by **${p.chefUsername}**!`;
+      message = L[locale].CUSTOMER_STATUS_MESSAGE.DELIVERING({
+        deliverer: p.chefUsername,
+      });
       break;
     case orderStatus.DELIVERED:
-      message = `Your order has been delivered!`;
+      message = L[locale].CUSTOMER_STATUS_MESSAGE.DELIVERED();
       break;
     case orderStatus.REJECTED:
-      message = `Your order has been rejected by the kitchen\n\n${p.reason}\nplease review the order rules: https://dsc.kitchen/rules`;
+      message = L[locale].CUSTOMER_STATUS_MESSAGE.REJECTED({
+        reason: p.reason,
+        link: "https://dsc.kitchen/rules",
+      });
       break;
   }
   await updateOrderStatusMessage(order, message);
@@ -517,6 +529,8 @@ export const sendOrderForFilling = async (
 
   await updateOrderStatusMessage(
     order,
-    `Order ${order.id} has been sent to the kitchen!`
+    L[order.locale as SupportedLocale].CUSTOMER_STATUS_MESSAGE.ORDERED({
+      id: order.id,
+    })
   );
 };

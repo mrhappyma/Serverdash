@@ -127,7 +127,8 @@ bot.addGlobalCommand(
       interaction.user.id,
       interaction.user.username,
       interaction.channel.id,
-      message.id
+      message.id,
+      locale
     );
   }
 );
