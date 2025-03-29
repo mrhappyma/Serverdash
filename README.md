@@ -1,10 +1,12 @@
 # Serverdash
 
-![A Discord message reading "Hey @BEVERS! Here's your order!". A picture of a bacon cheeseburger is attatched.](image.png)
+![A discord message of Micah delivering ginkgo (the most amazing cat)](image.png)
 
 #### Order (a picture of) anything (within reason) from your Discord server! Powered by real life humans!
 
 [Invite Serverdash to your server](https://dsc.kitchen/) to order something! You can also [join the kitchen](https://dsc.kitchen/kitchen) to help fill orders (or if you need help, or if you just want to be there :)!
+
+[![Translation status](https://i18n.dsc.kitchen/widget/serverdash/bot/multi-auto.svg)](https://i18n.dsc.kitchen/engage/serverdash/)
 
 ## Self-hosting
 
