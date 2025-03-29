@@ -31,7 +31,7 @@
     "FILLING": "Your order is being filled by **{chef}**",
     "PACKING": "Your order is being packed! It will be ready {timestamp}.",
     "PACKED": "Your order is ready for delivery!",
-    "DELIVERING": "Your order is being delivered by **{deliverer}!",
+    "DELIVERING": "Your order is being delivered by **{deliverer}**!",
     "DELIVERED": "Your order has been delivered!",
     "REJECTED": "Your order has been rejected by the kitchen\n\n{reason}\nplease review the order rules: {link}",
     "FOOTER_TEXT": "Order #{order} | {message}",
