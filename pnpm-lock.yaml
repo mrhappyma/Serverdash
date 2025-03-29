@@ -38,6 +38,9 @@ importers:
       sqids:
         specifier: ^0.3.0
         version: 0.3.0
+      typesafe-i18n:
+        specifier: ^5.26.2
+        version: 5.26.2(typescript@5.5.2)
       zod:
         specifier: ^3.22.3
         version: 3.22.4
@@ -986,6 +989,12 @@ packages:
   type-is@1.6.18:
     resolution: {integrity: sha512-TkRKr9sUTxEH8MdfuCSP7VizJyzRNMjj2J2do2Jr3Kym598JVdEksuzPQCnlFPW4ky9Q+iA+ma9BGm06XQBy8g==}
     engines: {node: '>= 0.6'}
+
+  typesafe-i18n@5.26.2:
+    resolution: {integrity: sha512-2QAriFmiY5JwUAJtG7yufoE/XZ1aFBY++wj7YFS2yo89a3jLBfKoWSdq5JfQYk1V2BS7V2c/u+KEcaCQoE65hw==}
+    hasBin: true
+    peerDependencies:
+      typescript: '>=3.5.1'
 
   typescript@5.5.2:
     resolution: {integrity: sha512-NcRtPEOsPFFWjobJEtfihkLCZCXZt/os3zf8nTxjVH3RvTSxjrCamJpbExGvYOF+tFHc3pA65qpdwPbzjohhew==}
@@ -2539,6 +2548,10 @@ snapshots:
     dependencies:
       media-typer: 0.3.0
       mime-types: 2.1.35
+
+  typesafe-i18n@5.26.2(typescript@5.5.2):
+    dependencies:
+      typescript: 5.5.2
 
   typescript@5.5.2: {}
 

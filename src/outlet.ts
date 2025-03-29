@@ -4,6 +4,7 @@
 import * as Discord from "discord.js";
 import type { BitFieldResolvable, GatewayIntentsString } from "discord.js";
 import handleError from "./modules/sentry";
+import { SupportedLocale, SupportedLocales } from "./i18n";
 
 declare type powercordConfig = {
   intents: BitFieldResolvable<GatewayIntentsString, number>;
@@ -22,7 +23,10 @@ export default class Powercord {
 
   private globalCommands: {
     command: Discord.SlashCommandBuilder | Discord.ContextMenuCommandBuilder;
-    callback: (interaction: Discord.CommandInteraction) => void;
+    callback: (
+      interaction: Discord.CommandInteraction,
+      locale: SupportedLocale
+    ) => void;
     autocomplete?: (interaction: Discord.AutocompleteInteraction) => void;
   }[];
   private buttons: {
@@ -63,7 +67,10 @@ export default class Powercord {
    */
   addGlobalCommand(
     command: Discord.SlashCommandBuilder | Discord.ContextMenuCommandBuilder, //TODO: seperate these to make interaction types correct
-    callback: (interaction: Discord.CommandInteraction) => void,
+    callback: (
+      interaction: Discord.CommandInteraction,
+      locale: SupportedLocale
+    ) => void,
     autocomplete?: (interaction: Discord.AutocompleteInteraction) => void
   ) {
     if (this.globalCommands.find((cmd) => cmd.command.name === command.name)) {
@@ -135,6 +142,9 @@ export default class Powercord {
     }
 
     this.client.on("interactionCreate", async (interaction) => {
+      const locale = SupportedLocales.includes(interaction.locale)
+        ? (interaction.locale as SupportedLocale)
+        : Discord.Locale.EnglishUS;
       try {
         switch (interaction.type) {
           case Discord.InteractionType.ApplicationCommand:
@@ -145,7 +155,10 @@ export default class Powercord {
               console.log(`Command not found ${interaction.commandName}`);
               return;
             }
-            await command.callback(interaction as Discord.CommandInteraction);
+            await command.callback(
+              interaction as Discord.CommandInteraction,
+              locale
+            );
             break;
           case Discord.InteractionType.ApplicationCommandAutocomplete:
             const autocomplete = this.globalCommands.find(

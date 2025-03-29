@@ -1,9 +1,9 @@
 import { GuildChannel, SlashCommandBuilder } from "discord.js";
 import bot from "..";
 import { closed, closedReason } from "./closed";
-
 import { createOrder, getActiveOrdersForUser } from "../orders/cache";
 import { userActiveBans } from "./bans";
+import L from "../i18n";
 
 bot.addGlobalCommand(
   new SlashCommandBuilder()
@@ -19,7 +19,7 @@ bot.addGlobalCommand(
         .setRequired(true)
         .setMaxLength(241)
     ) as SlashCommandBuilder,
-  async (interaction) => {
+  async (interaction, locale) => {
     if (
       !interaction.isChatInputCommand() ||
       !interaction.guild ||
@@ -31,7 +31,7 @@ bot.addGlobalCommand(
       return interaction.reply({
         embeds: [
           {
-            title: "Kitchen closed",
+            title: L[locale].KITCHEN_CLOSED.TITLE(),
             description: closedReason,
           },
         ],
@@ -40,8 +40,7 @@ bot.addGlobalCommand(
 
     if (interaction.channel.isThread())
       return interaction.reply({
-        content:
-          "Due to Discord limitations, you can't order in a thread. Sorry!",
+        content: L[locale].ORDER_COMMAND.ORDER_IN_THREAD_ERROR(),
       });
 
     const orderText = interaction.options.getString("order", true);
@@ -54,25 +53,25 @@ bot.addGlobalCommand(
       });
     if (!permissions.has("CreateInstantInvite"))
       return interaction.reply({
-        content:
-          "I don't have permission to create invites! How do you expect your order to be delivered without that?",
+        content: L[locale].ORDER_COMMAND.ORDER_INVITE_PERMISSIONS_ERROR(),
       });
     if (
       !permissions.has("ReadMessageHistory") ||
       !permissions.has("ViewChannel")
     )
       return interaction.reply({
-        content:
-          "I don't have permission to read message history! I need this to update you on your order.",
+        content: L[locale].ORDER_COMMAND.ORDER_CHANNEL_PERMISSIONS_ERROR(),
       });
 
     const message = await interaction.reply({
       embeds: [
         {
-          title: `Order status - ${orderText}`,
-          description: `Sending your order to the kitchen...`,
+          title: L[locale].ORDER_COMMAND.SENDING_TITLE({
+            order: orderText,
+          }),
+          description: L[locale].ORDER_COMMAND.SENDING_DESCRIPTION(),
           footer: {
-            text: `This message will be updated as your order is filled`,
+            text: L[locale].ORDER_COMMAND.SENDING_FOOTER(),
           },
         },
       ],
@@ -87,8 +86,9 @@ bot.addGlobalCommand(
       return interaction.editReply({
         embeds: [
           {
-            title: "You already have an active order!",
-            description: "One at a time please!",
+            title: L[locale].ORDER_COMMAND.EXISTING_ORDER_ERROR_TITLE(),
+            description:
+              L[locale].ORDER_COMMAND.EXISTING_ORDER_ERROR_DESCRIPTION(),
           },
         ],
       });
@@ -98,14 +98,16 @@ bot.addGlobalCommand(
       return interaction.editReply({
         embeds: [
           {
-            title: "You are banned from ordering!",
-            description: `${
-              bans[0].message
-            }\n\nYou may appeal your ban starting <t:${Math.floor(
-              (bans[0].appealAt?.getTime() ?? 0) / 1000
-            )}:R>. Otherwise, it will expire <t:${Math.floor(
-              bans[0].endAt.getTime() / 1000
-            )}:R>`,
+            title: L[locale].ORDER_COMMAND.BANNED_ERROR_TITLE(),
+            description: L[locale].ORDER_COMMAND.BANNED_ERROR_DESCRIPTION({
+              message: bans[0].message,
+              appealTimestamp: `<t:${Math.floor(
+                (bans[0].appealAt?.getTime() ?? 0) / 1000
+              )}:R>`,
+              expireTimestamp: `<t:${Math.floor(
+                bans[0].endAt.getTime() / 1000
+              )}:R>`,
+            }),
           },
         ],
       });
