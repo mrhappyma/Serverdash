@@ -64,5 +64,6 @@
             "¿Necesitas ayuda? Corre /ayuda para aprender más sobre el bot",
             "por favor envíeme sugerencias para más mensajes para poner aquí que estoy sin ideas "
         ]
-    }
+    },
+    "EXTENDED_DESCRIPTION": "¿Quieres una hamburguesa con queso? ¿Un cono de helado? ¿Un tipo calvo? Sólo ejecute `/order`, espera un poco, y uno de nuestros chefs expertos se unirá a su servidor para ofrecer una foto de lo que ordenó!"
 }
