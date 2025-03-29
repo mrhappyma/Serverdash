@@ -42,5 +42,14 @@
         "BUTTON_GIT_LABEL": "Código abierto en GitHub",
         "BUTTON_INVITE_LABEL": "Añádelo a tu servidor",
         "BUTTON_KITCHEN_LABEL": "Únete a la cocina"
+    },
+    "CUSTOMER_STATUS_MESSAGE": {
+        "FILLING": "Su pedido está siendo llenada por **{chef}**",
+        "REJECTED": "Your order ha sido rechazada por la cocina\n\n{reason}\nPor favor revise las reglas para las pedidas: {link}",
+        "ORDERED": "¡Pedido #{id} ya sido enviado a la cocina!",
+        "PACKING": "¡Tu pedido está siendo empaquetado! Estará listo {timestamp}.",
+        "PACKED": "¡Su pedido está listo para la entrega!",
+        "DELIVERING": "Su pedido está siendo entregado por **{deliverer}!",
+        "DELIVERED": "¡Tu pedido ha sido entregado!"
     }
 }
