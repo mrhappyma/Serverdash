@@ -5,8 +5,8 @@
     "ORDER_COMMAND": {
         "COMMAND_DESCRIPTION": "Realizar un pedido de entrega",
         "ORDER_OPTION_NAME": "pedido",
-        "ORDER_INVITE_PERMISSIONS_ERROR": "¡No tengo permiso para crear invitaciones! ¿Cómo podemos entregar tu pedido sin eso?",
-        "ORDER_CHANNEL_PERMISSIONS_ERROR": "¡No tengo permiso para leer mensajes en ese lugar! Necesito eso para mantenerle informado sobre su pedido.",
+        "ORDER_INVITE_PERMISSIONS_ERROR": "¡No tengo permiso para crear invites! ¿Cómo podemos entregar tu pedido sin eso?",
+        "ORDER_CHANNEL_PERMISSIONS_ERROR": "¡No tengo permiso de leer mensajes dentro de este canal! Necesito eso para mantenerle informado sobre tu pedido.",
         "SENDING_TITLE": "Estatus de pedido - {order}",
         "SENDING_DESCRIPTION": "Enviando su pedido a la cocina…",
         "SENDING_FOOTER": "Este mensaje se actualizará con el estado de su pedido.",
