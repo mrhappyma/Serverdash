@@ -1,8 +1,8 @@
 import { i18n } from "typesafe-i18n";
 import { Locale } from "discord.js";
-import en_US from "./base/en-US.json";
-import en_GB from "./translations/es-GB.json";
-import es_ES from "./translations/es-ES.json";
+import en_US from "./languages/en-US.json";
+import en_GB from "./languages/en-GB.json";
+import es_ES from "./languages/es-ES.json";
 
 const base = en_US;
 
