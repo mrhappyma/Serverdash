@@ -1,3 +1,46 @@
 {
-    "NAME": "Serverdash"
+    "NAME": "Serverdash",
+    "ORDER_COMMAND": {
+        "ORDER_OPTION_DESCRIPTION": "Wat wil je bestelling? - 1 redelijk voorwerk per bestelling :)",
+        "COMMAND_NAME": "Bestelling",
+        "COMMAND_DESCRIPTION": "Maak een bestelling voor bezorging",
+        "ORDER_OPTION_NAME": "Bestelling",
+        "ORDER_IN_THREAD_ERROR": "Door limieten van Discord kan je helaas geen bestelling plaatsen in een thread. Sorry!",
+        "ORDER_INVITE_PERMISSIONS_ERROR": "Ik heb geen toestemming om uitnodigingen te maken! Hoe verwacht je om je bestelling te krijgen zonder dat?",
+        "SENDING_TITLE": "Status van bestelling - {order}",
+        "ORDER_CHANNEL_PERMISSIONS_ERROR": "Ik heb geen toestemming om berichten in dit kanaal te lezen! Ik heb dat nodig om je op de hoogte te houden over je bestelling.",
+        "BANNED_ERROR_DESCRIPTION": "{message}\n\nJe mag je verbanning aanklagen na {appealTimestamp}. Anders vervalt deze verbanning om {expireTimestamp}.",
+        "SENDING_DESCRIPTION": "Bezig met je bestelling naar de keuken sturen…",
+        "SENDING_FOOTER": "Dit bericht wordt bijgewerkt met de status van je bestelling.",
+        "EXISTING_ORDER_ERROR_TITLE": "Je hebt al een actieve bestelling!",
+        "EXISTING_ORDER_ERROR_DESCRIPTION": "Een per keer alsjeblieft!",
+        "BANNED_ERROR_TITLE": "Je bent verbannen van bestellingen plaatsen!"
+    },
+    "TAGLINE": "Bestel (een foto van) wat dan ook (met rede) vanuit je discord server! Aangedreven door echte mensen!",
+    "HELP_COMMAND": {
+        "COMMAND_NAME": "help",
+        "COMMAND_DESCRIPTION": "leer over & krijg hulp met de bot",
+        "BODY": "{tagline}\nKom naar de keuken als je wilt helpen met het bereiden van bestellingen, of als je hulp nodig hebt.",
+        "BUTTON_PRIVACY_LABEL": "Privacy",
+        "BUTTON_GIT_LABEL": "Openbare bron bij GitHub",
+        "BUTTON_INVITE_LABEL": "Uitnodiging naar jouw server",
+        "BUTTON_KITCHEN_LABEL": "Sluit je aan bij de keuken"
+    },
+    "LOOKUP_COMMAND": {
+        "COMMAND_NAME": "zoek op",
+        "COMMAND_DESCRIPTION": "Krijg informatie over een bestelling",
+        "ORDER_ID_OPTION_NAME": "Bestelling",
+        "ORDER_ID_OPTION_DESCRIPTION": "The ID van de bestelling",
+        "ORDER_NOT_FOUND_ERROR": "Bestelling is niet gevonden",
+        "RESULT_TITLE": "Bestelling #{id}",
+        "CREATED_LABEL": "Aangemaakt",
+        "UPDATED_LABEL": "Laatst bijgewerkt",
+        "STATUS_LABEL": "Status",
+        "CHEF_LABEL": "Kok",
+        "DELIVERY_LABEL": "bezorger",
+        "FILE_LABEL": "Bestand"
+    },
+    "KITCHEN_CLOSED": {
+        "TITLE": "de keuken is gesloten"
+    }
 }
