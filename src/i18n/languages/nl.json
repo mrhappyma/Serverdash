@@ -45,6 +45,23 @@
     },
     "CUSTOMER_STATUS_MESSAGE": {
         "ORDERED": "Bestelling #{id} is naar de keuken verzonden!",
-        "FILLING": "Je bestelling is bereidt aan het worden door **{chef}**"
+        "FILLING": "Je bestelling is bereidt aan het worden door **{chef}**",
+        "PACKING": "Je bestelling wordt nu ingepakt! Het is klaar om {timestamp}.",
+        "PACKED": "Je bestelling staat klaar om bezorgt te worden!",
+        "DELIVERED": "Je bestelling is bezorgd!",
+        "DELIVERING": "Je bestelling is bezorgt aan het worden door **{deliverer}**!",
+        "REJECTED": "Je bestelling is afgewezen door de keuken\n\n{reason}\nLees alsjeblieft de bestel regels door: {link}",
+        "FOOTER_TEXT": "Bestelling #{order} | {message}",
+        "FOOTER_MESSAGES": [
+            "Steun de bot door te stemmen bij top.gg! https//dsc.kitchen/vote/top.gg",
+            "Dit bericht wordt bijgewerkt terwijl je bestelling wordt bereidt",
+            "Als je vragen hebt, kom dan alsjeblieft naar de serverdash server: https://dsc.kitchen/kitchen",
+            "Serverdash is een open bron! Bekijk de code in GitHub: https://dsc.kitchen/git",
+            "Wil je ons helpen met het bereiden van bestellingen? Kom naar de Serverdash server om je aan te melden!\nhttps://dsc.kitchen/kitchen",
+            "Al onze koks zijn vrijwilligers! Heb alsjeblieft geduld terwijl wij bezig zijn met je bestelling",
+            "Koks zijn vereist om je server te verlaten nadat ze een bestelling hebben bezorgd. Laat het ons alsjeblieft weten als je een probleem hebt",
+            "Als je suggesties of commentaar hebt, gebruik alsjeblieft /feedback en laat het ons weten!",
+            "Hulp nodig? Gebruik /help om meer te leren over de bot"
+        ]
     }
 }
