@@ -17,5 +17,9 @@
     },
     "KITCHEN_CLOSED": {
         "TITLE": "Kitchen closed"
+    },
+    "NAME": "Serverdash",
+    "LOOKUP_COMMAND": {
+        "ORDER_ID_OPTION_NAME": "order"
     }
 }
