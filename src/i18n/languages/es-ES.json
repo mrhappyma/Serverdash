@@ -17,5 +17,30 @@
         "BANNED_ERROR_DESCRIPTION": "{message}\n\nPuedes apelar tú prohibición empezando {appealTimestamp}. Si no haces, caducará {expireTimestamp}.",
         "ORDER_OPTION_DESCRIPTION": "¿Que es su pedido? - 1 artículo razonable por pedido :)",
         "ORDER_IN_THREAD_ERROR": "No puedes crear un pedido dentro de un hilo por unos límites de Discord. ¡Perdón!"
+    },
+    "NAME": "Serverdash",
+    "TAGLINE": "¡Puedes hacer un pedido de (una foto) de cualquier artículo (con límites) en tu servidor!",
+    "LOOKUP_COMMAND": {
+        "UPDATED_LABEL": "Última actualización",
+        "COMMAND_NAME": "buscar",
+        "ORDER_ID_OPTION_NAME": "pedido",
+        "ORDER_ID_OPTION_DESCRIPTION": "El ID del pedido",
+        "ORDER_NOT_FOUND_ERROR": "Pedido no encontrado",
+        "RESULT_TITLE": "Pedido #{ID}",
+        "CREATED_LABEL": "Creado",
+        "STATUS_LABEL": "Estatus",
+        "CHEF_LABEL": "Cocinero",
+        "DELIVERY_LABEL": "Entregador",
+        "FILE_LABEL": "Fichero",
+        "COMMAND_DESCRIPTION": "Obtener información sobre un pedido"
+    },
+    "HELP_COMMAND": {
+        "COMMAND_NAME": "apoyo",
+        "COMMAND_DESCRIPTION": "Aprender más sobre el bot y obtener ayuda con él",
+        "BODY": "{tagline}\nÚnete a la cocina si quieres ser cocinero o si necesitas ayuda.",
+        "BUTTON_PRIVACY_LABEL": "Privacidad",
+        "BUTTON_GIT_LABEL": "Código abierto en GitHub",
+        "BUTTON_INVITE_LABEL": "Añádelo a tu servidor",
+        "BUTTON_KITCHEN_LABEL": "Únete a la cocina"
     }
 }
