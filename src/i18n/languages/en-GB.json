@@ -1,1 +1,21 @@
-{}
+{
+    "ORDER_COMMAND": {
+        "ORDER_IN_THREAD_ERROR": "Due to Discord limitations, you can't order in a thread. Sorry!",
+        "ORDER_INVITE_PERMISSIONS_ERROR": "I don't have permission to create invites! How do you expect your order to be delivered without that?",
+        "ORDER_CHANNEL_PERMISSIONS_ERROR": "I don't have permission to read messages in this channel! I need this to update you on your order.",
+        "SENDING_TITLE": "Order status - {order}",
+        "SENDING_DESCRIPTION": "Sending your order to the kitchen...",
+        "SENDING_FOOTER": "This message will be updated with the status of your order.",
+        "EXISTING_ORDER_ERROR_TITLE": "You already have an active order!",
+        "EXISTING_ORDER_ERROR_DESCRIPTION": "One at a time please!",
+        "BANNED_ERROR_TITLE": "You are banned from ordering!",
+        "BANNED_ERROR_DESCRIPTION": "{message}\n\nYou may appeal your ban starting {appealTimestamp}. Otherwise, it will expire {expireTimestamp}.",
+        "COMMAND_NAME": "order",
+        "COMMAND_DESCRIPTION": "Place an order for delivery",
+        "ORDER_OPTION_NAME": "order",
+        "ORDER_OPTION_DESCRIPTION": "What would you like to order? - 1 reasonable item per order :)"
+    },
+    "KITCHEN_CLOSED": {
+        "TITLE": "Kitchen closed"
+    }
+}
