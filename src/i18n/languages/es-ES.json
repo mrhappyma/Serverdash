@@ -1,5 +1,21 @@
 {
-  "KITCHEN_CLOSED": {
-    "TITLE": "Cocina cerrada"
-  }
+    "KITCHEN_CLOSED": {
+        "TITLE": "Cocina cerrada"
+    },
+    "ORDER_COMMAND": {
+        "COMMAND_DESCRIPTION": "Realizar un pedido de entrega",
+        "ORDER_OPTION_NAME": "pedido",
+        "ORDER_INVITE_PERMISSIONS_ERROR": "¡No tengo permiso para crear invitaciones! ¿Cómo podemos entregar tu pedido sin eso?",
+        "ORDER_CHANNEL_PERMISSIONS_ERROR": "¡No tengo permiso para leer mensajes en ese lugar! Necesito eso para mantenerle informado sobre su pedido.",
+        "SENDING_TITLE": "Estatus de pedido - {order}",
+        "SENDING_DESCRIPTION": "Enviando su pedido a la cocina…",
+        "SENDING_FOOTER": "Este mensaje se actualizará con el estado de su pedido.",
+        "EXISTING_ORDER_ERROR_TITLE": "¡Ya tienes un pedido activo!",
+        "EXISTING_ORDER_ERROR_DESCRIPTION": "¡Uno a la vez por favor!",
+        "BANNED_ERROR_TITLE": "¡Estas prohibido a hacer pedidos!",
+        "COMMAND_NAME": "crear pedido",
+        "BANNED_ERROR_DESCRIPTION": "{message}\n\nPuedes apelar tú prohibición empezando {appealTimestamp}. Si no haces, caducará {expireTimestamp}.",
+        "ORDER_OPTION_DESCRIPTION": "¿Que es su pedido? - 1 artículo razonable por pedido :)",
+        "ORDER_IN_THREAD_ERROR": "No puedes crear un pedido dentro de un hilo por unos límites de Discord. ¡Perdón!"
+    }
 }
