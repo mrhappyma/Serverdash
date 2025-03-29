@@ -42,5 +42,9 @@
     },
     "KITCHEN_CLOSED": {
         "TITLE": "de keuken is gesloten"
+    },
+    "CUSTOMER_STATUS_MESSAGE": {
+        "ORDERED": "Bestelling #{id} is naar de keuken verzonden!",
+        "FILLING": "Je bestelling is bereidt aan het worden door **{chef}**"
     }
 }
