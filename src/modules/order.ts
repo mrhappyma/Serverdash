@@ -74,7 +74,7 @@ bot.addGlobalCommand(
     const message = await interaction.reply({
       embeds: [
         {
-          title: L[locale].ORDER_COMMAND.SENDING_TITLE({
+          title: L[locale].CUSTOMER_STATUS_MESSAGE.TITLE({
             order: orderText,
           }),
           description: L[locale].ORDER_COMMAND.SENDING_DESCRIPTION(),

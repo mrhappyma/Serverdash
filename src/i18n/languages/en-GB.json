@@ -3,7 +3,6 @@
         "ORDER_IN_THREAD_ERROR": "Due to Discord limitations, you can't order in a thread. Sorry!",
         "ORDER_INVITE_PERMISSIONS_ERROR": "I don't have permission to create invites! How do you expect your order to be delivered without that?",
         "ORDER_CHANNEL_PERMISSIONS_ERROR": "I don't have permission to read messages in this channel! I need this to update you on your order.",
-        "SENDING_TITLE": "Order status - {order}",
         "SENDING_DESCRIPTION": "Sending your order to the kitchen…",
         "SENDING_FOOTER": "This message will be updated with the status of your order.",
         "EXISTING_ORDER_ERROR_TITLE": "You already have an active order!",
@@ -44,6 +43,7 @@
     },
     "TAGLINE": "Order (a picture of) anything (within reason) from your Discord server! Powered by real life humans!",
     "CUSTOMER_STATUS_MESSAGE": {
+        "TITLE": "Order status - {order}",
         "FOOTER_MESSAGES": [
             "Help support the bot by voting on top.gg! https://dsc.kitchen/vote/top.gg",
             "This message will be updated as your order is filled",

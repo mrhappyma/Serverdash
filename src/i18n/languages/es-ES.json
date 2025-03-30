@@ -7,7 +7,6 @@
         "ORDER_OPTION_NAME": "pedido",
         "ORDER_INVITE_PERMISSIONS_ERROR": "¡No tengo permiso para crear invites! ¿Cómo podemos entregar tu pedido sin eso?",
         "ORDER_CHANNEL_PERMISSIONS_ERROR": "¡No tengo permiso de leer mensajes dentro de este canal! Necesito eso para mantenerle informado sobre tu pedido.",
-        "SENDING_TITLE": "Estatus de pedido - {order}",
         "SENDING_DESCRIPTION": "Enviando su pedido a la cocina…",
         "SENDING_FOOTER": "Este mensaje se actualizará con el estado de su pedido.",
         "EXISTING_ORDER_ERROR_TITLE": "¡Ya tienes un pedido activo!",
@@ -44,6 +43,7 @@
         "BUTTON_KITCHEN_LABEL": "Únete a la cocina"
     },
     "CUSTOMER_STATUS_MESSAGE": {
+        "TITLE": "Estatus de pedido - {order}",
         "FILLING": "Su pedido está siendo llenada por **{chef}**",
         "REJECTED": "Your order ha sido rechazada por la cocina\n\n{reason}\nPor favor revise las reglas para las pedidas: {link}",
         "ORDERED": "¡Pedido #{id} ya sido enviado a la cocina!",

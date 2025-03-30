@@ -23,7 +23,9 @@ const updateOrderStatusMessage = async (order: order, message: string) => {
     orderMessage.edit({
       embeds: [
         {
-          title: `Order status - ${order.order}`,
+          title: L[locale].CUSTOMER_STATUS_MESSAGE.TITLE({
+            order: order.order,
+          }),
           description: message,
           footer: {
             text: L[locale].CUSTOMER_STATUS_MESSAGE.FOOTER_TEXT({
