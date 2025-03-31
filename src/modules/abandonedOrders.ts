@@ -37,7 +37,11 @@ agenda.define<OrderReminderJob>(
 
     const channel = (await messagesClient.client.channels.fetch(
       order.status == orderStatus.FILLING
-        ? env.NEW_ORDERS_CHANNEL_ID
+        ? order.trainingSession
+          ? env.TRAINING_NEW_ORDERS_CHANNEL_ID
+          : env.NEW_ORDERS_CHANNEL_ID
+        : order.trainingSession
+        ? env.TRAINING_READY_ORDERS_CHANNEL_ID
         : env.READY_ORDERS_CHANNEL_ID
     )) as TextChannel;
     const message = await channel.messages.fetch(targetMessage.split(":")[1]);
