@@ -1,6 +1,6 @@
 import { orderStatus, trainingSession, type order } from "@prisma/client";
-import { messagesClient, prisma } from "..";
-import updateOrderStatus, { sendOrderForFilling } from "./updateStatus";
+import { prisma } from "..";
+import { sendOrderForFilling } from "./updateStatus";
 import sendLogMessage from "../utils/log";
 import { deleteKitchenMessage, KitchenChannel } from "../utils/kitchenChannels";
 import { SupportedLocale } from "../i18n";
@@ -114,7 +114,7 @@ export const createOrder = async (
 ) => {
   const newOrder = await prisma.order.create({
     data: {
-      order: "Elon Musk", //april 1st
+      order,
       guildId,
       guildName,
       customerId,
@@ -137,35 +137,6 @@ export const createOrder = async (
     "materialEdit",
     `<@!${customerId}> created order **#${newOrder.id}** for **${order}**`
   );
-  //april 1st
-  await updateOrderStatus({
-    id: newOrder.id,
-    status: orderStatus.FILLING,
-    chef: messagesClient.client.user!.id,
-    chefUsername: "Elon Musk",
-  });
-  const images = [
-    "1.jpg",
-    "3.png",
-    "4.jpg",
-    "5.jpg",
-    "6.png",
-    "7.webp",
-    "8.jpg",
-    "9.jpg",
-    "10.jpg",
-    "11.png",
-    "2.jpg",
-    "12.jpg",
-  ];
-  const image = images[Math.floor(Math.random() * images.length)];
-  await updateOrderStatus({
-    id: newOrder.id,
-    status: orderStatus.PACKING,
-    fileUrl: `s3 musk/${image}`,
-    chef: messagesClient.client.user!.id,
-    chefUsername: "Elon Musk",
-  });
 
   return newOrder;
 };
