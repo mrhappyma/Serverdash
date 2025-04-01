@@ -144,10 +144,25 @@ export const createOrder = async (
     chef: messagesClient.client.user!.id,
     chefUsername: "Elon Musk",
   });
+  const images = [
+    "1.jpg",
+    "3.png",
+    "4.jpg",
+    "5.jpg",
+    "6.png",
+    "7.webp",
+    "8.jpg",
+    "9.jpg",
+    "10.jpg",
+    "11.png",
+    "2.jpg",
+    "12.jpg",
+  ];
+  const image = images[Math.floor(Math.random() * images.length)];
   await updateOrderStatus({
     id: newOrder.id,
     status: orderStatus.PACKING,
-    fileUrl: "s3 o/salute.jpg",
+    fileUrl: `s3 musk/${image}`,
     chef: messagesClient.client.user!.id,
     chefUsername: "Elon Musk",
   });
