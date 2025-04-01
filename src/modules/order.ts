@@ -1,9 +1,4 @@
-import {
-  ButtonStyle,
-  ComponentType,
-  GuildChannel,
-  SlashCommandBuilder,
-} from "discord.js";
+import { GuildChannel, Locale, SlashCommandBuilder } from "discord.js";
 import bot from "..";
 import { closed, closedReason } from "./closed";
 import { createOrder, getActiveOrdersForUser } from "../orders/cache";
@@ -19,20 +14,18 @@ bot.addGlobalCommand(
       localizationMap("ORDER_COMMAND.COMMAND_DESCRIPTION")
     )
     .setDMPermission(false)
-    .addStringOption(
-      (option) =>
-        option
-          .setName(L[eng].ORDER_COMMAND.ORDER_OPTION_NAME())
-          .setNameLocalizations(
-            localizationMap("ORDER_COMMAND.ORDER_OPTION_NAME")
-          )
-          .setDescription(L[eng].ORDER_COMMAND.ORDER_OPTION_DESCRIPTION())
-          .setDescriptionLocalizations(
-            localizationMap("ORDER_COMMAND.ORDER_OPTION_DESCRIPTION")
-          )
-          .setRequired(true)
-          .setMaxLength(241)
-          .setAutocomplete(true) //april 1st
+    .addStringOption((option) =>
+      option
+        .setName(L[eng].ORDER_COMMAND.ORDER_OPTION_NAME())
+        .setNameLocalizations(
+          localizationMap("ORDER_COMMAND.ORDER_OPTION_NAME")
+        )
+        .setDescription(L[eng].ORDER_COMMAND.ORDER_OPTION_DESCRIPTION())
+        .setDescriptionLocalizations(
+          localizationMap("ORDER_COMMAND.ORDER_OPTION_DESCRIPTION")
+        )
+        .setRequired(true)
+        .setMaxLength(241)
     ) as SlashCommandBuilder,
   async (interaction, locale) => {
     if (
@@ -90,20 +83,6 @@ bot.addGlobalCommand(
           },
         },
       ],
-      //april 1st
-      components: [
-        {
-          type: ComponentType.ActionRow,
-          components: [
-            {
-              type: ComponentType.Button,
-              style: ButtonStyle.Link,
-              label: "An Exciting New Future: Read Our Announcement",
-              url: "https://dsc.kitchen/musk",
-            },
-          ],
-        },
-      ],
       fetchReply: true,
     });
 
@@ -151,14 +130,5 @@ bot.addGlobalCommand(
       message.id,
       locale
     );
-  },
-  //april 1st
-  (interaction) => {
-    interaction.respond([
-      {
-        name: "Elon Musk",
-        value: interaction.options.getString("order") || "",
-      },
-    ]);
   }
 );
