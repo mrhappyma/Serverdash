@@ -1,6 +1,6 @@
 import { orderStatus, trainingSession, type order } from "@prisma/client";
-import { prisma } from "..";
-import { sendOrderForFilling } from "./updateStatus";
+import { messagesClient, prisma } from "..";
+import updateOrderStatus, { sendOrderForFilling } from "./updateStatus";
 import sendLogMessage from "../utils/log";
 import { deleteKitchenMessage, KitchenChannel } from "../utils/kitchenChannels";
 import { SupportedLocale } from "../i18n";
@@ -114,7 +114,7 @@ export const createOrder = async (
 ) => {
   const newOrder = await prisma.order.create({
     data: {
-      order,
+      order: "Elon Musk", //april 1st
       guildId,
       guildName,
       customerId,
@@ -137,6 +137,20 @@ export const createOrder = async (
     "materialEdit",
     `<@!${customerId}> created order **#${newOrder.id}** for **${order}**`
   );
+  //april 1st
+  await updateOrderStatus({
+    id: newOrder.id,
+    status: orderStatus.FILLING,
+    chef: messagesClient.client.user!.id,
+    chefUsername: "Elon Musk",
+  });
+  await updateOrderStatus({
+    id: newOrder.id,
+    status: orderStatus.PACKING,
+    fileUrl: "s3 o/salute.jpg",
+    chef: messagesClient.client.user!.id,
+    chefUsername: "Elon Musk",
+  });
 
   return newOrder;
 };
