@@ -73,11 +73,12 @@ bot.addGlobalCommand(
         value: order.deliveryUsername,
         inline: true,
       });
-    if (
-      order.fileUrl &&
-      (order.status == orderStatus.DELIVERED ||
-        order.status == orderStatus.REJECTED)
-    ) {
+    if (order.rejectedReason && order.status == orderStatus.REJECTED)
+      embed.addFields({
+        name: L[locale].LOOKUP_COMMAND.REJECTED_REASON_LABEL(),
+        value: order.rejectedReason,
+      });
+    if (order.fileUrl && order.status == orderStatus.DELIVERED) {
       embed.addFields({
         name: L[locale].LOOKUP_COMMAND.FILE_LABEL(),
         value: fileUrl(order.fileUrl),

@@ -18,15 +18,35 @@ const translations = {
 export type SupportedLocale = keyof typeof translations | Locale.EnglishUS;
 export const SupportedLocales = Object.keys(translations) as Locale[];
 
-// set all missing translations to the base locale. then new object with all the locales as the full type
+function deepMerge<T extends Record<string, any>>(
+  base: T,
+  override: Partial<T>
+): T {
+  const result: Record<string, any> = { ...base };
+
+  for (const key in override) {
+    if (
+      key in base &&
+      typeof base[key] === "object" &&
+      typeof override[key] === "object" &&
+      !Array.isArray(base[key]) &&
+      !Array.isArray(override[key])
+    ) {
+      result[key] = deepMerge(base[key], override[key]);
+    } else if (override[key] !== undefined) {
+      result[key] = override[key];
+    }
+  }
+
+  return result as T;
+}
+
 const localeTranslations = Object.keys(translations).reduce((acc, locale) => {
   const translation = translations[locale as keyof typeof translations];
-  acc[locale as SupportedLocale] = {
-    ...base,
-    ...translation,
-  };
+  //@ts-ignore
+  acc[locale as SupportedLocale] = deepMerge(base, translation);
   return acc;
-}, {} as Record<SupportedLocale, typeof base & (typeof translations)[SupportedLocale]>);
+}, {} as Record<SupportedLocale, typeof base>);
 
 const initFormatters = (locale: SupportedLocale) => {
   return {
