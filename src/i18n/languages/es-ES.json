@@ -31,7 +31,8 @@
         "CHEF_LABEL": "Cocinero",
         "DELIVERY_LABEL": "Entregador",
         "FILE_LABEL": "Fichero",
-        "COMMAND_DESCRIPTION": "Obtener información sobre un pedido"
+        "COMMAND_DESCRIPTION": "Obtener información sobre un pedido",
+        "REJECTED_REASON_LABEL": "Razón por el rechazo"
     },
     "HELP_COMMAND": {
         "COMMAND_NAME": "apoyo",
@@ -49,7 +50,7 @@
         "ORDERED": "¡Pedido #{id} ya sido enviado a la cocina!",
         "PACKING": "¡Tu pedido está siendo empaquetado! Estará listo {timestamp}.",
         "PACKED": "¡Su pedido está listo para la entrega!",
-        "DELIVERING": "Su pedido está siendo entregado por **{deliverer}!",
+        "DELIVERING": "Su pedido está siendo entregado por **{deliverer**}!",
         "DELIVERED": "¡Tu pedido ha sido entregado!",
         "FOOTER_TEXT": "Pedido #{order} | {message}",
         "FOOTER_MESSAGES": [
