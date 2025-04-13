@@ -1,11 +1,11 @@
 import bot from "..";
 import { order } from "@prisma/client";
-import L, { SupportedLocale } from "../i18n";
+import L, { SupportedLocale, translations } from "../i18n";
 
 const updateOrderStatusMessage = async (order: order, message: string) => {
   const locale = order.locale as SupportedLocale;
   const messagesLength =
-    L[locale].CUSTOMER_STATUS_MESSAGE.FOOTER_MESSAGES.length;
+    translations[locale].CUSTOMER_STATUS_MESSAGE.FOOTER_MESSAGES.length;
   const footerMessage =
     L[locale].CUSTOMER_STATUS_MESSAGE.FOOTER_MESSAGES[
       Math.floor(Math.random() * messagesLength)

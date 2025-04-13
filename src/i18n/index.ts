@@ -8,7 +8,7 @@ import nl from "./languages/nl.json";
 const base = en_US;
 export const eng = Locale.EnglishUS;
 
-const translations = {
+export const translations = {
   [Locale.EnglishUS]: base,
   [Locale.EnglishGB]: en_GB,
   [Locale.SpanishES]: es_ES,
