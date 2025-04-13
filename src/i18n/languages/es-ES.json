@@ -50,7 +50,7 @@
         "ORDERED": "¡Pedido #{id} ya sido enviado a la cocina!",
         "PACKING": "¡Tu pedido está siendo empaquetado! Estará listo {timestamp}.",
         "PACKED": "¡Su pedido está listo para la entrega!",
-        "DELIVERING": "Su pedido está siendo entregado por **{deliverer**}!",
+        "DELIVERING": "Su pedido está siendo entregado por **{deliverer}**!",
         "DELIVERED": "¡Tu pedido ha sido entregado!",
         "FOOTER_TEXT": "Pedido #{order} | {message}",
         "FOOTER_MESSAGES": [
