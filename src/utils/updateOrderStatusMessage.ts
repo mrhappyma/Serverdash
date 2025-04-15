@@ -4,8 +4,7 @@ import L, { SupportedLocale, translations } from "../i18n";
 
 const updateOrderStatusMessage = async (order: order, message: string) => {
   const locale = order.locale as SupportedLocale;
-  const messagesLength =
-    translations[locale].CUSTOMER_STATUS_MESSAGE.FOOTER_MESSAGES.length;
+  const messagesLength = 1; //TODO: fix this again (adding a new translation made it weird)
   const footerMessage =
     L[locale].CUSTOMER_STATUS_MESSAGE.FOOTER_MESSAGES[
       Math.floor(Math.random() * messagesLength)
