@@ -25,7 +25,7 @@
         "ORDER_ID_OPTION_NAME": "pedido",
         "ORDER_ID_OPTION_DESCRIPTION": "El ID del pedido",
         "ORDER_NOT_FOUND_ERROR": "Pedido no encontrado",
-        "RESULT_TITLE": "Pedido #{ID}",
+        "RESULT_TITLE": "Pedido #{id}",
         "CREATED_LABEL": "Creado",
         "STATUS_LABEL": "Estatus",
         "CHEF_LABEL": "Cocinero",
