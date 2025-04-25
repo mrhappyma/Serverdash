@@ -1,1 +1,20 @@
-{}
+{
+    "NAME": "Serverdash",
+    "TAGLINE": "Commandez (une photo de) n'importe quoi (dans la limite du raisonnable) depuis votre serveur Discord ! Alimenté par des humains en chair et en humains!",
+    "HELP_COMMAND": {
+        "COMMAND_NAME": "Aide",
+        "COMMAND_DESCRIPTION": "En savoir plus et obtenir de l'aide avec le robot",
+        "BODY": "{tagline}\nRejoignez la cuisine si vous voulez aider à remplir les commandes, ou si vous avez besoin d'aide.",
+        "BUTTON_PRIVACY_LABEL": "Vie privée",
+        "BUTTON_GIT_LABEL": "source-ouvert sur GitHub",
+        "BUTTON_INVITE_LABEL": "Inviter sur votre serveur",
+        "BUTTON_KITCHEN_LABEL": "Rejoindre la cuisine"
+    },
+    "ORDER_COMMAND": {
+        "COMMAND_NAME": "commande",
+        "COMMAND_DESCRIPTION": "Passer une commande pour la livraison",
+        "ORDER_OPTION_NAME": "commande",
+        "ORDER_OPTION_DESCRIPTION": "Que voulez-vous commander ? - 1 article raisonnable par commande :)"
+    },
+    "EXTENDED_DESCRIPTION": "Envie d'un cheeseburger ? Un cornet de glace ? Un chauve ? Il vous suffit de lancer `/commande`, d'attendre un peu, et l'un de nos chefs experts rejoindra votre serveur pour vous livrer une photo de ce que vous avez commandé!"
+}
