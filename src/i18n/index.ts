@@ -6,6 +6,7 @@ import es_ES from "./languages/es-ES.json";
 import nl from "./languages/nl.json";
 import fr from "./languages/fr.json";
 import hi from "./languages/hi.json";
+import pl from "./languages/pl.json";
 
 const base = en_US;
 export const eng = Locale.EnglishUS;
@@ -17,6 +18,7 @@ export const translations = {
   [Locale.Dutch]: nl,
   [Locale.French]: fr,
   [Locale.Hindi]: hi,
+  [Locale.Polish]: pl,
 };
 
 export type SupportedLocale = keyof typeof translations | Locale.EnglishUS;

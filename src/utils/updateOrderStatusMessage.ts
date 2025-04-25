@@ -1,10 +1,15 @@
 import bot from "..";
 import { order } from "@prisma/client";
 import L, { SupportedLocale, translations } from "../i18n";
+import { Locale } from "discord.js";
 
 const updateOrderStatusMessage = async (order: order, message: string) => {
   const locale = order.locale as SupportedLocale;
-  const messagesLength = 1; //TODO: fix this again (adding a new translation made it weird)
+  const messagesLength =
+    //@ts-ignore
+    (translations[locale]?.CUSTOMER_STATUS_MESSAGE?.FOOTER_MESSAGES || [])
+      .length ??
+    L[Locale.EnglishUS].CUSTOMER_STATUS_MESSAGE.FOOTER_MESSAGES.length;
   const footerMessage =
     L[locale].CUSTOMER_STATUS_MESSAGE.FOOTER_MESSAGES[
       Math.floor(Math.random() * messagesLength)
