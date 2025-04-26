@@ -1,1 +1,39 @@
-{}
+{
+    "TAGLINE": "Zamów (zdjęcie) czegokolwiek na co masz ochotę (z pewnymi ograniczeniami) ze swojego serwera Discord! Wszelkie zamówienia spełniane są przez ludzi!",
+    "EXTENDED_DESCRIPTION": "Masz ochotę na kanapkę? Lody? A może coś bardziej szalonego? Po prostu użyj komendy `/order`, poczekaj chwilę, a jeden z naszych kelnerów dołączy do twojego serwera aby dostarczyć zdjęcie czegokolwiek sobie zażyczyłeś\\aś!",
+    "HELP_COMMAND": {
+        "COMMAND_NAME": "pomoc",
+        "BODY": "{tagline}\nDołącz do naszej kuchni jeżeli chcesz pomóc nam w spełnianiu zamówień, lub jeżeli potrzebujesz pomocy.",
+        "BUTTON_PRIVACY_LABEL": "Prywatność",
+        "BUTTON_GIT_LABEL": "Otwarty kod źródłowy jest dostępny na GitHub",
+        "BUTTON_KITCHEN_LABEL": "Dołącz do kuchni"
+    },
+    "ORDER_COMMAND": {
+        "COMMAND_NAME": "zamów",
+        "ORDER_OPTION_NAME": "zamówienie",
+        "ORDER_OPTION_DESCRIPTION": "Na co masz ochotę? - 1",
+        "ORDER_IN_THREAD_ERROR": "Przez ograniczenia Discorda, nie możesz składać zamówień w wątku.",
+        "SENDING_DESCRIPTION": "Wysyłam twoje zamówienie do kuchni…",
+        "EXISTING_ORDER_ERROR_TITLE": "Już utworzyłeś zamówienie, poczekaj aż zostanie ono dostarczone.",
+        "EXISTING_ORDER_ERROR_DESCRIPTION": "Proszę poczekać na swoją kolej.",
+        "BANNED_ERROR_TITLE": "Nie masz pozwolenia na składanie zamówień.",
+        "COMMAND_DESCRIPTION": "Złóż zamówienie do dostarczenia",
+        "ORDER_INVITE_PERMISSIONS_ERROR": "Nie jestem w stanie spełniać zamówień ponieważ nie mam pozwolenia na tworzenie zaproszeń.",
+        "BANNED_ERROR_DESCRIPTION": "{message}\n\nMożesz złożyć odwołanie od {appealTimestamp}. Lub poczekać aż minie {expireTimestamp}."
+    },
+    "CUSTOMER_STATUS_MESSAGE": {
+        "TITLE": "Status zamówienia - {order}",
+        "ORDERED": "Zamówienie numer #{id} zostało wysłane do kuchni.",
+        "FILLING": "Twoje zamówienie jest spełniane przez **{chef}**",
+        "PACKED": "Twoje zamówienie jest gotowe do dostawy.",
+        "DELIVERING": "Twoje zamówienie jest dostarczane przez **{deliverer}**.",
+        "DELIVERED": "Twoje zamówienie zostało dostarczone.",
+        "FOOTER_TEXT": "Zamówienie #{order} | {message}",
+        "FOOTER_MESSAGES": [
+            "Wesprzyj nas poprzez głosowanie na top.gg! https://dsc.kitchen/vote/top.gg",
+            "Ta wiadomość będzie aktualizowana podczas gdy twoje zamówienie będzie spełniane.",
+            "Jeżeli masz jakieś pytania, please join the kitchen server: https://dsc.kitchen/kitchen"
+        ],
+        "REJECTED": "Twoje zamówienie zostało odrzucone\n\n{reason}\n\nproszę zapoznać się z zasadami składania zamówień: {link}"
+    }
+}
