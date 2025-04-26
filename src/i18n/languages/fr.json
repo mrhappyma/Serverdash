@@ -2,7 +2,7 @@
     "NAME": "Serverdash",
     "TAGLINE": "Commandez (une photo de) n'importe quoi (dans la limite du raisonnable) depuis votre serveur Discord ! Alimenté par des humains en chair et en humains!",
     "HELP_COMMAND": {
-        "COMMAND_NAME": "Aide",
+        "COMMAND_NAME": "aide",
         "COMMAND_DESCRIPTION": "En savoir plus et obtenir de l'aide avec le robot",
         "BODY": "{tagline}\nRejoignez la cuisine si vous voulez aider à remplir les commandes, ou si vous avez besoin d'aide.",
         "BUTTON_PRIVACY_LABEL": "Vie privée",
