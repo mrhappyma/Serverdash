@@ -106,7 +106,14 @@ messagesClient.client.on("messageCreate", async (message) => {
     ],
   });
 
-  const items = ["lasagna", "pizza", "burger", "sushi", "taco"];
+  const items = [
+    "lasagna",
+    "pizza",
+    "burger",
+    "sushi",
+    "taco",
+    "bowl of mac and cheese",
+  ];
   const item = items[Math.floor(Math.random() * items.length)];
 
   const order = await createOrder(

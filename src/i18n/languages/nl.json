@@ -53,7 +53,7 @@
         "REJECTED": "Je bestelling is afgewezen door de keuken\n\n{reason}\nLees alsjeblieft de bestel regels door: {link}",
         "FOOTER_TEXT": "Bestelling #{order} | {message}",
         "FOOTER_MESSAGES": [
-            "Steun de bot door te stemmen bij top.gg! https//dsc.kitchen/vote/top.gg",
+            "Steun de bot door te stemmen bij top.gg! https://dsc.kitchen/vote/top.gg",
             "Dit bericht wordt bijgewerkt terwijl je bestelling wordt bereidt",
             "Als je vragen hebt, kom dan alsjeblieft naar de serverdash server: https://dsc.kitchen/kitchen",
             "Serverdash is een open bron! Bekijk de code in GitHub: https://dsc.kitchen/git",
