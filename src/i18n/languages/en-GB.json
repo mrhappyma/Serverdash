@@ -30,7 +30,8 @@
         "STATUS_LABEL": "Status",
         "CHEF_LABEL": "Chef",
         "DELIVERY_LABEL": "Deliverer",
-        "FILE_LABEL": "File"
+        "FILE_LABEL": "File",
+        "REJECTED_REASON_LABEL": "Rejection reason"
     },
     "HELP_COMMAND": {
         "COMMAND_NAME": "help",
