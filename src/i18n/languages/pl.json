@@ -1,6 +1,6 @@
 {
     "TAGLINE": "Zamów (zdjęcie) czegokolwiek na co masz ochotę (z pewnymi ograniczeniami) ze swojego serwera Discord! Wszelkie zamówienia spełniane są przez ludzi!",
-    "EXTENDED_DESCRIPTION": "Masz ochotę na kanapkę? Lody? A może coś bardziej szalonego? Po prostu użyj komendy `/order`, poczekaj chwilę, a jeden z naszych kelnerów dołączy do twojego serwera aby dostarczyć zdjęcie czegokolwiek sobie zażyczyłeś\\aś!",
+    "EXTENDED_DESCRIPTION": "Masz ochotę na kanapkę? Lody? A może coś bardziej szalonego? Po prostu użyj komendy `/zamów`, poczekaj chwilę, a jeden z naszych kelnerów dołączy do twojego serwera aby dostarczyć zdjęcie czegokolwiek sobie zażyczyłeś\\aś!",
     "HELP_COMMAND": {
         "COMMAND_NAME": "pomoc",
         "BODY": "{tagline}\nDołącz do naszej kuchni jeżeli chcesz pomóc nam w spełnianiu zamówień, lub jeżeli potrzebujesz pomocy.",
@@ -34,6 +34,6 @@
             "Ta wiadomość będzie aktualizowana podczas gdy twoje zamówienie będzie spełniane.",
             "Jeżeli masz jakieś pytania, please join the kitchen server: https://dsc.kitchen/kitchen"
         ],
-        "REJECTED": "Twoje zamówienie zostało odrzucone\n\n{reason}\n\nproszę zapoznać się z zasadami składania zamówień: {link}"
+        "REJECTED": "Twoje zamówienie zostało odrzucone\n\n{reason}\nproszę zapoznać się z zasadami składania zamówień: {link}"
     }
 }
