@@ -109,7 +109,6 @@ const handleMessageSetModal = async (interaction: ModalSubmitInteraction) => {
         invite: "discord.gg/deez-nuts",
         createdAt: new Date(),
         updatedAt: new Date(),
-        trainingSessionId: null,
         locale: Locale.EnglishUS,
       },
       message
