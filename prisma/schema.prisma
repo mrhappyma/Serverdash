@@ -31,7 +31,6 @@ model order {
   relatedKitchenMessages String[] // `enum:messageID` format
   invite                 String?
   trainingSession        trainingSession?
-  trainingSessionId      Int?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

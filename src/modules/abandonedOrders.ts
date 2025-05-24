@@ -28,7 +28,7 @@ agenda.define<OrderReminderJob>(
 
     const targetMessage = order.relatedKitchenMessages.find((m) =>
       m.startsWith(
-        order.trainingSessionId
+        order.trainingSession
           ? order.status == orderStatus.FILLING
             ? KitchenChannel.training_orders.toString()
             : KitchenChannel.training_deliveries.toString()

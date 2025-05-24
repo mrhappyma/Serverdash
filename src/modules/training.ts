@@ -113,6 +113,7 @@ messagesClient.client.on("messageCreate", async (message) => {
     "sushi",
     "taco",
     "bowl of mac and cheese",
+    "stack of pancakes",
   ];
   const item = items[Math.floor(Math.random() * items.length)];
 
@@ -281,7 +282,7 @@ messagesClient.registerButton("training-rules-2", async (interaction) => {
       "\n" +
       "You can put whatever you want (mostly)! Just make sure you include `$mention`, `$item`, and `$chef` somewhere in there.\n" +
       "You'll see a preview of what it'll look after you submit any changes. When you're done click continue and we'll deliver the order!\n" +
-      "-# you'll be able to modify this whenever you want later, btw. don't worry about getting it perfect right now!",
+      "-# you'll be able to modify this whenever you want later, btw. don't worry about getting it perfect right now! leaving the default is fine too.",
     components: [
       {
         type: ComponentType.ActionRow,
