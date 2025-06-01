@@ -1,3 +1,70 @@
 {
-    "NAME": "Serverdash"
+    "NAME": "Serverdash",
+    "TAGLINE": "Bestellen Sie (ein Bild) von allem was sie gerne möchten! Von echten Menschen betrieben!",
+    "HELP_COMMAND": {
+        "COMMAND_NAME": "hilfe",
+        "COMMAND_DESCRIPTION": "Über den Bot lernen & Hilfe bekommen",
+        "BODY": "{tagline}\nTreten Sie unserer Küche bei wenn Sie uns bei dem liefern helfen möchten, oder Hilfe brauchen.",
+        "BUTTON_PRIVACY_LABEL": "Privatsfähre",
+        "BUTTON_INVITE_LABEL": "Zu Ihrem Server einladen",
+        "BUTTON_KITCHEN_LABEL": "Der Küche beitreten",
+        "BUTTON_GIT_LABEL": "Open-source auf GitHub"
+    },
+    "ORDER_COMMAND": {
+        "COMMAND_NAME": "bestellen",
+        "COMMAND_DESCRIPTION": "Eine Bestellung zur Lieferung bereitgeben",
+        "ORDER_OPTION_NAME": "Bestellung",
+        "ORDER_INVITE_PERMISSIONS_ERROR": "Ich habe keine Erlaubnis Einladungen zum Server zu erstellen! Wie erwarten Sie dass Ihre bestellung so ankommen soll?",
+        "SENDING_DESCRIPTION": "Ihre Bestellung wird zur Küche geschickt…",
+        "EXISTING_ORDER_ERROR_TITLE": "Sie haben schon eine aktive Bestellung!",
+        "BANNED_ERROR_TITLE": "Sie sind vom bestellen gebannt!",
+        "BANNED_ERROR_DESCRIPTION": "{message}\n\nSie können ab dem {appealTimestamp} Einspruch gegen Ihre Sperre einlegen. Ansonsten läuft es am {expreTimestamp} ab.",
+        "SENDING_FOOTER": "Diese Nachricht wird mit dem Status Ihrer Bestellung aktualisiert.",
+        "ORDER_OPTION_DESCRIPTION": "Was würden Sie gerne bestellen? - 1 angemessener Artikel pro Bestellung bitte :)",
+        "ORDER_IN_THREAD_ERROR": "Wegen Discord's Einschränkungen können sie nicht in einem thread bestellen. Sorry!",
+        "ORDER_CHANNEL_PERMISSIONS_ERROR": "Ich habe keine Erlaubnis Nachrichten in diesem Kanal zu lesen! Ich brauche diese Erlaubnis um Sie für Ihre Bestellung auf dem laufenden zu halten.",
+        "EXISTING_ORDER_ERROR_DESCRIPTION": "Eine Bestellung nach der anderen bitte!"
+    },
+    "CUSTOMER_STATUS_MESSAGE": {
+        "TITLE": "Status Ihrer Bestellung - {order}",
+        "ORDERED": "Bestellung #{id} wurde in die Küche gesendet!",
+        "FILLING": "Ihre Bestellung wird von **{chef}** zubereitet",
+        "PACKING": "Ihre Bestellung wird verpackt! Sie wird in {timestamp} fertig sein.",
+        "PACKED": "Ihre Bestellung ist fertig fürs liefern!",
+        "DELIVERING": "Ihre Bestellung wird von **{deliverer}** geliefert!",
+        "FOOTER_TEXT": "Bestellung #{order} | {message}",
+        "FOOTER_MESSAGES": [
+            "Helfen Sie uns in dem Sie auf top.gg! unseren Bot wählen! https://dsc.kitchen/vote/top.gg",
+            "Diese Nachricht wird aktualisiert während Ihre Bestellung zubereitet wird",
+            "Wenn Sie weitere Fragen haben, bitte joinen sie dem Server unserer Küche: https://dsc.kitchen/kitchen",
+            "Serverdash ist Open Source! Den Code finden Sie auf GitHub: https://dsc.kitchen/git",
+            "Sie möchten uns helfen, Bestellungen entgegenzunehmen? Treten Sie dem Server unserer Küche bei um zu bewerben! https://dsc.kitchen/kitchen",
+            "Alle unsere Köche sind Freiwillige! Bitte bleiben Sie geduldig während sie Ihre Bestellung zubereiten",
+            "Köche müssen Ihren Server nach dem liefern einer Bestellung verlassen. Bitte geben Sie uns Bescheid wenn es Probleme gibt",
+            "Wenn Sie irgendwelche Vorschläge oder Feedback haben, bitte benutzen sie /feedback um uns Bescheid zu geben!",
+            "Sie brauchen Hilfe? Nutzen Sie /help, um mehr über den Bot zu erfahren",
+            "Bitte senden Sie mir Vorschläge für weitere Nachrichten, die ich hier veröffentlichen kann. Mir gehen die Ideen aus "
+        ],
+        "DELIVERED": "Ihre Bestellung ist angekommen!",
+        "REJECTED": "Ihre Bestellung wurde von der Küche abgelehnt\n\n{Grund}\nBitte überprüfen Sie die Bestellungsregeln noch ein Mal: {link}"
+    },
+    "LOOKUP_COMMAND": {
+        "COMMAND_NAME": "nachschlagen",
+        "COMMAND_DESCRIPTION": "Bekommen Sie Information über einer Bestellung",
+        "ORDER_ID_OPTION_NAME": "Bestellung",
+        "ORDER_ID_OPTION_DESCRIPTION": "Bestellungs ID",
+        "ORDER_NOT_FOUND_ERROR": "Bestellung nicht gefunden",
+        "RESULT_TITLE": "Bestellung #{id}",
+        "CREATED_LABEL": "Erstellt",
+        "UPDATED_LABEL": "Als letztes aktualisiert",
+        "STATUS_LABEL": "Status",
+        "CHEF_LABEL": "Koch",
+        "DELIVERY_LABEL": "Zusteller",
+        "FILE_LABEL": "Datei",
+        "REJECTED_REASON_LABEL": "Ablehnungsgrund"
+    },
+    "KITCHEN_CLOSED": {
+        "TITLE": "Küche geschlossen"
+    },
+    "EXTENDED_DESCRIPTION": "Sie möchten einen Cheeseburger? Ein Eis? Einen Mann mit ner Glatze? Benutzen Sie einfach `/order`, warten sie ein bisschen, und einer unserer besten Chefs wird Ihrem Server beitreten und Ihnen ein Bild von dem was sie bestellt haben liefern!"
 }
