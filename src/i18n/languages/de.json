@@ -13,7 +13,7 @@
     "ORDER_COMMAND": {
         "COMMAND_NAME": "bestellen",
         "COMMAND_DESCRIPTION": "Eine Bestellung zur Lieferung bereitgeben",
-        "ORDER_OPTION_NAME": "Bestellung",
+        "ORDER_OPTION_NAME": "bestellung",
         "ORDER_INVITE_PERMISSIONS_ERROR": "Ich habe keine Erlaubnis Einladungen zum Server zu erstellen! Wie erwarten Sie dass Ihre bestellung so ankommen soll?",
         "SENDING_DESCRIPTION": "Ihre Bestellung wird zur Küche geschickt…",
         "EXISTING_ORDER_ERROR_TITLE": "Sie haben schon eine aktive Bestellung!",
@@ -51,7 +51,7 @@
     "LOOKUP_COMMAND": {
         "COMMAND_NAME": "nachschlagen",
         "COMMAND_DESCRIPTION": "Bekommen Sie Information über einer Bestellung",
-        "ORDER_ID_OPTION_NAME": "Bestellung",
+        "ORDER_ID_OPTION_NAME": "bestellung",
         "ORDER_ID_OPTION_DESCRIPTION": "Bestellungs ID",
         "ORDER_NOT_FOUND_ERROR": "Bestellung nicht gefunden",
         "RESULT_TITLE": "Bestellung #{id}",
