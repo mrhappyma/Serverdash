@@ -41,7 +41,11 @@ const handleError = async (
   locale: SupportedLocale = Locale.EnglishUS
 ) => {
   let capture: string | undefined;
-  if (usingSentry) capture = Sentry.captureException(e, { extra: c });
+  if (usingSentry) {
+    capture = Sentry.captureException(e, { extra: c });
+  } else {
+    console.error(e);
+  }
 
   let content: string = c.order
     ? L[locale].SENTRY_CAPTURE.EXCEPTION_TITLE_WITH_ORDER({ id: c.order.id })

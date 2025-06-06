@@ -1,9 +1,10 @@
 import { orderStatus, trainingSession, type order } from "@prisma/client";
-import { prisma } from "..";
-import { sendOrderForFilling } from "./updateStatus";
+import { messagesClient, prisma } from "..";
+import updateOrderStatus, { sendOrderForFilling } from "./updateStatus";
 import sendLogMessage from "../utils/log";
 import { deleteKitchenMessage, KitchenChannel } from "../utils/kitchenChannels";
 import { SupportedLocale } from "../i18n";
+import getAutoFillFileURL from "./autofill";
 
 const activeOrderStatuses: orderStatus[] = [
   orderStatus.ORDERED,
@@ -138,5 +139,22 @@ export const createOrder = async (
     `<@!${customerId}> created order **#${newOrder.id}** for **${order}**`
   );
 
-  return newOrder;
+  const autoFillFileUrl = await getAutoFillFileURL(order);
+  if (autoFillFileUrl) {
+    await updateOrderStatus({
+      id: newOrder.id,
+      status: orderStatus.FILLING,
+      chef: messagesClient.client.user!.id,
+      chefUsername: messagesClient.client.user!.username,
+    });
+    await updateOrderStatus({
+      id: newOrder.id,
+      status: orderStatus.PACKING,
+      chef: messagesClient.client.user!.id,
+      chefUsername: messagesClient.client.user!.username,
+      fileUrl: autoFillFileUrl,
+    });
+  }
+
+  return newOrder.id;
 };

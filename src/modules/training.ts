@@ -130,7 +130,7 @@ messagesClient.client.on("messageCreate", async (message) => {
   );
 
   await message.channel.send({
-    content: `I just created a training order for you, #${order.id}. To fill it, head to <#${env.TRAINING_NEW_ORDERS_CHANNEL_ID}> and claim it! A thread will appear under it, just use Google images or whatever you like to find a picture of what I ordered, and send it in that thread.`,
+    content: `I just created a training order for you, #${order}. To fill it, head to <#${env.TRAINING_NEW_ORDERS_CHANNEL_ID}> and claim it! A thread will appear under it, just use Google images or whatever you like to find a picture of what I ordered, and send it in that thread.`,
   });
 
   await prisma.trainingSession.update({
@@ -139,7 +139,7 @@ messagesClient.client.on("messageCreate", async (message) => {
     },
     data: {
       state: "fill",
-      orderId: order.id,
+      orderId: order,
     },
   });
 });
