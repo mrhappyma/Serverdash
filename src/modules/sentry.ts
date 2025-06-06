@@ -5,6 +5,7 @@ import {
   ButtonBuilder,
   ButtonStyle,
   Interaction,
+  Locale,
   Message,
   ModalActionRowComponentBuilder,
   ModalBuilder,
@@ -14,6 +15,12 @@ import {
 } from "discord.js";
 import bot, { messagesClient } from "..";
 import env from "../utils/env";
+import L, {
+  eng,
+  localizationMap,
+  SupportedLocale,
+  SupportedLocales,
+} from "../i18n";
 
 export let usingSentry = false;
 if (env.SENTRY_DSN && env.SENTRY_ORG && env.SENTRY_PROJECT && env.SENTRY_TOKEN)
@@ -30,25 +37,29 @@ const handleError = async (
     order?: order;
     interaction?: Interaction;
     message?: Message;
-  }
+  },
+  locale: SupportedLocale = Locale.EnglishUS
 ) => {
   let capture: string | undefined;
   if (usingSentry) capture = Sentry.captureException(e, { extra: c });
+
+  let content: string = c.order
+    ? L[locale].SENTRY_CAPTURE.EXCEPTION_TITLE_WITH_ORDER({ id: c.order.id })
+    : L[locale].SENTRY_CAPTURE.EXCEPTION_TITLE();
+  content += "\n";
+  content += L[locale].SENTRY_CAPTURE.EXCEPTION_DESCRIPTION({
+    code: capture || "unknown",
+  });
+
   const message = {
-    content: `Whoa there! Something's set the kitchen ablaze${
-      c.order ? ` while we were working on order ${c.order.id}` : ""
-    }! ${
-      capture
-        ? `Don't worry, we've sent a report to the fire department and they'll be on it soon. It would really help if you would hit that button below and tell them more about what happened 👇\n\nIf you end up contacting the kitchen about this, give them the code \`${capture}\`.`
-        : ""
-    }`,
+    content,
     components: capture
       ? [
           new ActionRowBuilder<ButtonBuilder>().addComponents(
             new ButtonBuilder()
               .setStyle(ButtonStyle.Primary)
               .setCustomId(`error-feedback:${capture}`)
-              .setLabel("add additional details")
+              .setLabel(L[locale].SENTRY_CAPTURE.EXCEPTION_FEEDBACK_LABEL())
           ),
         ]
       : [],
@@ -81,10 +92,10 @@ const handleError = async (
 export default handleError;
 
 export const registerSentryButtons = async () => {
-  bot.registerButton(/^error-feedback:(.*)/, async (interaction) => {
+  bot.registerButton(/^error-feedback:(.*)/, async (interaction, locale) => {
     interaction.showModal(
       new ModalBuilder()
-        .setTitle("Error Feedback")
+        .setTitle(L[locale].SENTRY_CAPTURE.EXCEPTION_FEEDBACK_TITLE())
         .setCustomId(
           `user-feedback-submit:${interaction.customId.split(":")[1]}`
         )
@@ -93,15 +104,19 @@ export const registerSentryButtons = async () => {
             new TextInputBuilder()
               .setStyle(TextInputStyle.Paragraph)
               .setCustomId("comments")
-              .setLabel("What was happening?")
+              .setLabel(
+                L[locale].SENTRY_CAPTURE.EXCEPTION_FEEDBACK_COMMENTS_LABEL()
+              )
               .setRequired(true)
           ),
           new ActionRowBuilder<ModalActionRowComponentBuilder>().addComponents(
             new TextInputBuilder()
               .setStyle(TextInputStyle.Short)
               .setCustomId("email")
-              .setLabel("email (optional)")
-              .setPlaceholder("just in case a DM doesn't work")
+              .setLabel(L[locale].SENTRY_CAPTURE.FEEDBACK_EMAIL_LABEL())
+              .setPlaceholder(
+                L[locale].SENTRY_CAPTURE.FEEDBACK_EMAIL_PLACEHOLDER()
+              )
               .setRequired(false)
           ),
         ])
@@ -110,30 +125,42 @@ export const registerSentryButtons = async () => {
 
   bot.addGlobalCommand(
     new SlashCommandBuilder()
-      .setName("feedback")
-      .setDescription("Something awry? Got a suggestion? Let us know!"),
-    async (interaction) => {
+      .setName(L[eng].SENTRY_CAPTURE.FEEDBACK_COMMAND_NAME())
+      .setNameLocalizations(
+        localizationMap("SENTRY_CAPTURE.FEEDBACK_COMMAND_NAME")
+      )
+      .setDescription(L[eng].SENTRY_CAPTURE.FEEDBACK_COMMAND_DESCRIPTION())
+      .setDescriptionLocalizations(
+        localizationMap("SENTRY_CAPTURE.FEEDBACK_COMMAND_DESCRIPTION")
+      ),
+    async (interaction, locale) => {
       const event = Sentry.captureMessage("feedback", "info");
       interaction.showModal(
         new ModalBuilder()
-          .setTitle("Feedback")
+          .setTitle(L[locale].SENTRY_CAPTURE.GENERAL_FEEDBACK_TITLE())
           .setCustomId(`user-feedback-submit:${event}`)
           .addComponents([
             new ActionRowBuilder<ModalActionRowComponentBuilder>().addComponents(
               new TextInputBuilder()
                 .setStyle(TextInputStyle.Paragraph)
                 .setCustomId("comments")
-                .setLabel("What's your feedback?")
-                .setPlaceholder("How can we improve?")
+                .setLabel(
+                  L[locale].SENTRY_CAPTURE.GENERAL_FEEDBACK_COMMENTS_LABEL()
+                )
+                .setPlaceholder(
+                  L[
+                    locale
+                  ].SENTRY_CAPTURE.GENERAL_FEEDBACK_COMMENTS_PLACEHOLDER()
+                )
                 .setRequired(true)
             ),
             new ActionRowBuilder<ModalActionRowComponentBuilder>().addComponents(
               new TextInputBuilder()
                 .setStyle(TextInputStyle.Short)
                 .setCustomId("email")
-                .setLabel("email (optional)")
+                .setLabel(L[locale].SENTRY_CAPTURE.FEEDBACK_EMAIL_LABEL())
                 .setPlaceholder(
-                  "just in case a DM doesn't work. will never be shared or sold."
+                  L[locale].SENTRY_CAPTURE.FEEDBACK_EMAIL_PLACEHOLDER()
                 )
                 .setRequired(false)
             ),
@@ -142,51 +169,48 @@ export const registerSentryButtons = async () => {
     }
   );
 
-  bot.registerModal(/^user-feedback-submit:(.*)/, async (interaction) => {
-    if (!usingSentry)
-      return interaction.reply({
-        content:
-          "Sentry is not configured. Please contact the kitchen directly.",
-        ephemeral: true,
-      });
-    const capture = interaction.customId.split(":")[1];
-    const comments = interaction.fields.getTextInputValue("comments");
-    const email = interaction.fields.getTextInputValue("email");
-    try {
-      var feedback = await fetch(
-        `https://sentry.io/api/0/projects/${env.SENTRY_ORG}/${env.SENTRY_PROJECT}/user-feedback/`,
-        {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${env.SENTRY_TOKEN}`,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            event_id: capture,
-            name: interaction.user.id,
-            comments,
-            email: email || "serverdash@userexe.me",
-          }),
-        }
-      );
-    } catch {
-      return interaction.reply({
-        content: "Failed to send feedback, sorry about that.",
+  bot.registerModal(
+    /^user-feedback-submit:(.*)/,
+    async (interaction, locale) => {
+      if (!usingSentry)
+        return interaction.reply({
+          content:
+            "Sentry is not configured. Please contact the kitchen directly.",
+          ephemeral: true,
+        });
+      const capture = interaction.customId.split(":")[1];
+      const comments = interaction.fields.getTextInputValue("comments");
+      const email = interaction.fields.getTextInputValue("email");
+      try {
+        const feedback = await fetch(
+          `https://sentry.io/api/0/projects/${env.SENTRY_ORG}/${env.SENTRY_PROJECT}/user-feedback/`,
+          {
+            method: "POST",
+            headers: {
+              Authorization: `Bearer ${env.SENTRY_TOKEN}`,
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              event_id: capture,
+              name: interaction.user.id,
+              comments,
+              email: email || "serverdash@userexe.me",
+            }),
+          }
+        );
+        if (!feedback.ok) throw new Error("Failed to send feedback");
+      } catch {
+        return interaction.reply({
+          content: L[locale].SENTRY_CAPTURE.FEEDBACK_ERROR(),
+          ephemeral: true,
+        });
+      }
+      interaction.reply({
+        content: L[locale].SENTRY_CAPTURE.FEEDBACK_SUCCESS(),
         ephemeral: true,
       });
     }
-    if (!feedback.ok) {
-      return interaction.reply({
-        content:
-          "Failed to send feedback, sorry about that. This is usually due to an invalid email, or waiting a while before submitting feedback.",
-        ephemeral: true,
-      });
-    }
-    interaction.reply({
-      content: "Got it! Thanks!",
-      ephemeral: true,
-    });
-  });
+  );
 
   messagesClient.registerButton("devtools:error-test", () => {
     throw new Error("fire drill");

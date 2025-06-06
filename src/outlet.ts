@@ -31,7 +31,10 @@ export default class Powercord {
   }[];
   private buttons: {
     customId: RegExp | string;
-    callback: (interaction: Discord.ButtonInteraction) => void;
+    callback: (
+      interaction: Discord.ButtonInteraction,
+      locale: SupportedLocale
+    ) => void;
   }[];
   private stringSelectMenus: {
     customId: RegExp | string;
@@ -43,7 +46,10 @@ export default class Powercord {
   }[];
   private modals: {
     customId: RegExp | string;
-    callback: (interaction: Discord.ModalSubmitInteraction) => void;
+    callback: (
+      interaction: Discord.ModalSubmitInteraction,
+      locale: SupportedLocale
+    ) => void;
   }[];
 
   constructor(token: string, options: powercordConfig) {
@@ -82,7 +88,10 @@ export default class Powercord {
 
   registerButton(
     customId: RegExp | string,
-    callback: (interaction: Discord.ButtonInteraction) => void
+    callback: (
+      interaction: Discord.ButtonInteraction,
+      locale: SupportedLocale
+    ) => void
   ) {
     if (this.buttons.find((btn) => btn.customId === customId)) {
       console.log(`Button ${customId} already registered`);
@@ -115,7 +124,10 @@ export default class Powercord {
 
   registerModal(
     customId: RegExp | string,
-    callback: (interaction: Discord.ModalSubmitInteraction) => void
+    callback: (
+      interaction: Discord.ModalSubmitInteraction,
+      locale: SupportedLocale
+    ) => void
   ) {
     if (this.modals.find((modal) => modal.customId === customId)) {
       console.log(`Modal ${customId} already registered`);
@@ -181,7 +193,10 @@ export default class Powercord {
                 console.log(`Button not found ${interaction.customId}`);
                 return;
               }
-              await button.callback(interaction as Discord.ButtonInteraction);
+              await button.callback(
+                interaction as Discord.ButtonInteraction,
+                locale
+              );
               return;
             }
             if (interaction.isStringSelectMenu()) {
@@ -227,7 +242,10 @@ export default class Powercord {
               console.log(`Modal not found ${interaction.customId}`);
               return;
             }
-            await modal.callback(interaction as Discord.ModalSubmitInteraction);
+            await modal.callback(
+              interaction as Discord.ModalSubmitInteraction,
+              locale
+            );
             break;
         }
       } catch (e) {

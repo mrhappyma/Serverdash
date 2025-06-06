@@ -66,5 +66,22 @@
   },
   "KITCHEN_CLOSED": {
     "TITLE": "Kitchen closed"
+  },
+  "SENTRY_CAPTURE": {
+    "EXCEPTION_TITLE": "Whoa there! Something's set the kitchen ablaze!",
+    "EXCEPTION_TITLE_WITH_ORDER": "Whoa there! Something's set the kitchen ablaze while we were working on order {id}!",
+    "EXCEPTION_DESCRIPTION": "Don't worry, we've sent a report to the fire department and they'll be on it soon. It would really help if you would hit that button below and tell them more about what happened 👇\n\nIf you end up contacting the kitchen separately about this, give them the code `{code}`.",
+    "EXCEPTION_FEEDBACK_LABEL": "add error context",
+    "EXCEPTION_FEEDBACK_TITLE": "Error feedback",
+    "EXCEPTION_FEEDBACK_COMMENTS_LABEL": "What was happening?",
+    "GENERAL_FEEDBACK_TITLE": "Feedback",
+    "GENERAL_FEEDBACK_COMMENTS_LABEL": "What's your feedback",
+    "GENERAL_FEEDBACK_COMMENTS_PLACEHOLDER": "How can we improve?",
+    "FEEDBACK_EMAIL_LABEL": "Email (optional)",
+    "FEEDBACK_EMAIL_PLACEHOLDER": "to follow up if DM doesn't work. never for anything else.",
+    "FEEDBACK_ERROR": "Failed to send feedback! Sorry about that. This is usually due to an invalid email, or waiting a while before submitting feedback.",
+    "FEEDBACK_SUCCESS": "Got it! Thanks!",
+    "FEEDBACK_COMMAND_NAME": "feedback",
+    "FEEDBACK_COMMAND_DESCRIPTION": "Something awry? Got a suggestion? Let us know!"
   }
 }
