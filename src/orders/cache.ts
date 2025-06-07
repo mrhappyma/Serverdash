@@ -133,7 +133,7 @@ export const createOrder = async (
   });
 
   cache.set(newOrder.id, newOrder);
-  await sendOrderForFilling(newOrder, false);
+
   await sendLogMessage(
     "materialEdit",
     `<@!${customerId}> created order **#${newOrder.id}** for **${order}**`
@@ -154,6 +154,8 @@ export const createOrder = async (
       chefUsername: messagesClient.client.user!.username,
       fileUrl: autoFillFileUrl,
     });
+  } else {
+    await sendOrderForFilling(newOrder, false);
   }
 
   return newOrder.id;
