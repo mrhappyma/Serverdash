@@ -139,7 +139,7 @@ export const createOrder = async (
     `<@!${customerId}> created order **#${newOrder.id}** for **${order}**`
   );
 
-  const autoFillFileUrl = await getAutoFillFileURL(order);
+  const autoFillFileUrl = await getAutoFillFileURL(newOrder);
   if (autoFillFileUrl) {
     await updateOrderStatus({
       id: newOrder.id,
