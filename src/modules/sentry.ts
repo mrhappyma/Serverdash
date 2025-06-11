@@ -7,6 +7,7 @@ import {
   Interaction,
   Locale,
   Message,
+  MessageFlags,
   ModalActionRowComponentBuilder,
   ModalBuilder,
   SlashCommandBuilder,
@@ -70,7 +71,7 @@ const handleError = async (
   };
   if (c.interaction && !c.interaction.isAutocomplete()) {
     if (!c.interaction.replied && !c.interaction.deferred) {
-      c.interaction.reply({ ...message, ephemeral: true });
+      c.interaction.reply({ ...message, flags: [MessageFlags.Ephemeral] });
     } else {
       c.interaction.followUp(message);
     }
@@ -180,7 +181,7 @@ export const registerSentryButtons = async () => {
         return interaction.reply({
           content:
             "Sentry is not configured. Please contact the kitchen directly.",
-          ephemeral: true,
+          flags: [MessageFlags.Ephemeral],
         });
       const capture = interaction.customId.split(":")[1];
       const comments = interaction.fields.getTextInputValue("comments");
@@ -206,12 +207,12 @@ export const registerSentryButtons = async () => {
       } catch {
         return interaction.reply({
           content: L[locale].SENTRY_CAPTURE.FEEDBACK_ERROR(),
-          ephemeral: true,
+          flags: [MessageFlags.Ephemeral],
         });
       }
       interaction.reply({
         content: L[locale].SENTRY_CAPTURE.FEEDBACK_SUCCESS(),
-        ephemeral: true,
+        flags: [MessageFlags.Ephemeral],
       });
     }
   );

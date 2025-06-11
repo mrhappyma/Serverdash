@@ -1,5 +1,6 @@
 import {
   ActionRowBuilder,
+  MessageFlags,
   ModalBuilder,
   TextInputBuilder,
   TextInputStyle,
@@ -38,8 +39,14 @@ bot.registerModal(/order:(\d+):reject:modal/, async (interaction) => {
   });
 
   if (update.success) {
-    await interaction.reply({ content: "Poof, gone.", ephemeral: true });
+    await interaction.reply({
+      content: "Poof, gone.",
+      flags: [MessageFlags.Ephemeral],
+    });
   } else {
-    await interaction.reply({ content: update.message, ephemeral: true });
+    await interaction.reply({
+      content: update.message,
+      flags: [MessageFlags.Ephemeral],
+    });
   }
 });

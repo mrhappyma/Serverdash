@@ -1,5 +1,6 @@
 import {
   ActionRowBuilder,
+  MessageFlags,
   ModalBuilder,
   TextInputBuilder,
   TextInputStyle,
@@ -82,7 +83,7 @@ messagesClient.registerModal("kitchen-close", async (interaction) => {
   });
   interaction.reply({
     content: "Kitchen closed",
-    ephemeral: true,
+    flags: [MessageFlags.Ephemeral],
   });
   sendKitchenMessage(KitchenChannel.chefChat, {
     embeds: [

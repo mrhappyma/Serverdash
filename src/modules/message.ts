@@ -4,6 +4,7 @@ import {
   ButtonInteraction,
   ButtonStyle,
   Locale,
+  MessageFlags,
   ModalBuilder,
   ModalSubmitInteraction,
   TextInputBuilder,
@@ -22,7 +23,7 @@ messagesClient.registerButton("devtools:message-set", async (interaction) => {
       .setStyle(ButtonStyle.Primary),
   ]);
   const channel = await bot.client.channels.fetch(interaction.channelId);
-  if (channel?.isTextBased())
+  if (channel?.isSendable())
     await channel.send({
       content:
         "Set your prefilled delivery message! The following variables will automatically be filled in. `$mention`, `$item`, and `$chef` are required.\n`$mention`-mention the customer\n`$item`-the image url\n`$number`-the order number\n`$chef`-the chef's username\n`$order`-the order\n`$server`-the customer server's name",
@@ -68,7 +69,7 @@ const handleMessageSetModal = async (interaction: ModalSubmitInteraction) => {
   )
     return interaction.reply({
       content: "Your message must contain `$mention`, `$item`, and `$chef`!",
-      ephemeral: true,
+      flags: [MessageFlags.Ephemeral],
     });
   await prisma.chef.upsert({
     where: { id: interaction.user.id },
@@ -113,7 +114,7 @@ const handleMessageSetModal = async (interaction: ModalSubmitInteraction) => {
       },
       message
     )}`,
-    ephemeral: true,
+    flags: [MessageFlags.Ephemeral],
   });
 };
 

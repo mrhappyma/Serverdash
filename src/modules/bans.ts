@@ -5,6 +5,7 @@ import {
   ButtonBuilder,
   ButtonStyle,
   EmbedBuilder,
+  MessageFlags,
   ModalBuilder,
   StringSelectMenuBuilder,
   TextInputBuilder,
@@ -119,7 +120,7 @@ messagesClient.registerModal(
     return await interaction.reply({
       embeds: [embed],
       components: [a1, a2],
-      ephemeral: true,
+      flags: [MessageFlags.Ephemeral],
     });
   }
 );
@@ -178,7 +179,7 @@ messagesClient.registerModal(
       return interaction.reply({
         content:
           'Invalid date (s).\nIf you\'re trying to specify a relative date start with "in" like "in 2 months".',
-        ephemeral: true,
+        flags: [MessageFlags.Ephemeral],
       });
 
     const ban = await addBan(
@@ -190,7 +191,7 @@ messagesClient.registerModal(
     );
     await interaction.reply({
       content: "Ban added",
-      ephemeral: true,
+      flags: [MessageFlags.Ephemeral],
     });
     const orders = getActiveOrdersForUser(userId);
     for (const order of orders) {

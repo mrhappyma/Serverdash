@@ -2,6 +2,7 @@ import {
   ActionRowBuilder,
   ButtonBuilder,
   ButtonStyle,
+  MessageFlags,
   ModalBuilder,
   SlashCommandBuilder,
   TextInputBuilder,
@@ -20,7 +21,7 @@ messagesClient.addGlobalCommand(
     if (!hasKitchenRole("admin", interaction.user.id))
       return interaction.reply({
         content: "the levee is dry (haha cause the song is pie related)",
-        ephemeral: true,
+        flags: [MessageFlags.Ephemeral],
       });
 
     const kitchenConfig = await prisma.kitchenConfig.upsert({
@@ -68,7 +69,10 @@ messagesClient.addGlobalCommand(
         .setLabel("fire drill")
         .setStyle(ButtonStyle.Secondary),
     ]);
-    return interaction.reply({ components: [a1, a2, a3], ephemeral: true });
+    return interaction.reply({
+      components: [a1, a2, a3],
+      flags: [MessageFlags.Ephemeral],
+    });
   }
 );
 
@@ -107,6 +111,6 @@ messagesClient.registerModal("devtools:dm:modal", async (interaction) => {
   await (await bot.client.users.fetch(user)).send(content);
   interaction.reply({
     content: "Message sent",
-    ephemeral: true,
+    flags: [MessageFlags.Ephemeral],
   });
 });

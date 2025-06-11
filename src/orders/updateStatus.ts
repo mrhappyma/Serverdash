@@ -6,7 +6,6 @@ import {
   ButtonStyle,
   EmbedBuilder,
   TextBasedChannel,
-  WebhookMessageCreateOptions,
 } from "discord.js";
 import env from "../utils/env";
 import {
@@ -155,7 +154,7 @@ const updateOrderStatus = async (
         .setDescription(order.order)
         .setFooter({ text: `Order ID: ${id}` });
 
-      const fillingBody: WebhookMessageCreateOptions = {
+      const fillingBody = {
         embeds: [orderFillingEmbed],
         components: [orderFillingActionRow],
         content: `<@!${chef}>`,
@@ -301,7 +300,7 @@ const updateOrderStatus = async (
         .setTitle(`Order from **${order.customerUsername}**`)
         .setDescription(order.order)
         .setFooter({ text: `Order ID: ${id}` });
-      const deliveringBody: WebhookMessageCreateOptions = {
+      const deliveringBody = {
         embeds: [deliveringEmbed],
         components: [deliveringActionRow],
         content: `<@!${chef}>`,

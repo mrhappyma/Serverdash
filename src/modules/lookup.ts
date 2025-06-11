@@ -1,4 +1,4 @@
-import { EmbedBuilder, SlashCommandBuilder } from "discord.js";
+import { EmbedBuilder, MessageFlags, SlashCommandBuilder } from "discord.js";
 import bot from "..";
 import { orderStatus } from "@prisma/client";
 import { fileUrl } from "../utils/fillOrderMessage";
@@ -34,7 +34,7 @@ bot.addGlobalCommand(
     if (!order) {
       return await interaction.reply({
         content: L[locale].LOOKUP_COMMAND.ORDER_NOT_FOUND_ERROR(),
-        ephemeral: true,
+        flags: [MessageFlags.Ephemeral],
       });
     }
 

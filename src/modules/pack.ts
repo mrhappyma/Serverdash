@@ -132,7 +132,7 @@ messagesClient.client.on("messageCreate", async (message) => {
         content: `${sentence} (thank you!)`,
         allowedMentions: { repliedUser: false },
       });
-      await channel.members.remove(message.author.id, "Order filled!");
+      await channel.members.remove(message.author.id);
       await channel.setLocked(true, "Order filled!");
     };
 

@@ -6,6 +6,7 @@ import {
   ButtonBuilder,
   ButtonStyle,
   UserSelectMenuBuilder,
+  MessageFlags,
 } from "discord.js";
 import bot, { messagesClient } from "..";
 import { getOrder, updateOrder } from "../orders/cache";
@@ -55,7 +56,7 @@ messagesClient.registerModal(
     ]);
     return interaction.reply({
       components: [a1],
-      ephemeral: true,
+      flags: [MessageFlags.Ephemeral],
       content: `updating order **${order.id}** for **${order.order}**\n${order.status}`,
     });
   }
@@ -69,7 +70,7 @@ messagesClient.registerButton(
     if (!order)
       return interaction.reply({
         content: "Order not found",
-        ephemeral: true,
+        flags: [MessageFlags.Ephemeral],
       });
     const modal = new ModalBuilder()
       .setTitle("Edit order")
@@ -121,7 +122,7 @@ messagesClient.registerModal(
 
     return interaction.reply({
       content: `Order **${order.id}** updated`,
-      ephemeral: true,
+      flags: [MessageFlags.Ephemeral],
     });
   }
 );
@@ -134,7 +135,7 @@ messagesClient.registerButton(
     if (!order)
       return interaction.reply({
         content: "Order not found",
-        ephemeral: true,
+        flags: [MessageFlags.Ephemeral],
       });
     const modal = new ModalBuilder()
       .setTitle("Edit order")
@@ -167,7 +168,7 @@ messagesClient.registerModal(
 
     return interaction.reply({
       content: `Order **${order.id}** updated`,
-      ephemeral: true,
+      flags: [MessageFlags.Ephemeral],
     });
   }
 );
@@ -248,7 +249,7 @@ messagesClient.registerButton(
     if (!order)
       return interaction.reply({
         content: "Order not found",
-        ephemeral: true,
+        flags: [MessageFlags.Ephemeral],
       });
 
     if (status == orderStatus.ORDERED) {
@@ -310,7 +311,7 @@ messagesClient.registerButton(
         }
         await interaction.reply({
           content: `Order **${id}** updated`,
-          ephemeral: true,
+          flags: [MessageFlags.Ephemeral],
         });
       });
     } else {

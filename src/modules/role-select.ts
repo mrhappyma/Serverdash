@@ -2,6 +2,7 @@ import {
   ActionRowBuilder,
   ButtonBuilder,
   ButtonStyle,
+  MessageFlags,
   StringSelectMenuBuilder,
 } from "discord.js";
 import bot, { messagesClient } from "..";
@@ -16,7 +17,7 @@ messagesClient.registerButton("devtools:role-select", async (interaction) => {
       .setStyle(ButtonStyle.Primary),
   ]);
   const channel = await bot.client.channels.fetch(interaction.channelId);
-  if (channel?.isTextBased())
+  if (channel?.isSendable())
     channel!.send({
       content: "Select ping roles to be notified of new orders",
       components: [actionRow],
@@ -49,7 +50,7 @@ bot.registerButton("role-select", async (interaction) => {
     ]);
   interaction.reply({
     components: [actionRow],
-    ephemeral: true,
+    flags: [MessageFlags.Ephemeral],
   });
 });
 

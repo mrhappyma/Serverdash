@@ -3,6 +3,7 @@ import {
   ButtonBuilder,
   ButtonStyle,
   EmbedBuilder,
+  MessageFlags,
   SlashCommandBuilder,
 } from "discord.js";
 import bot from "..";
@@ -49,7 +50,7 @@ bot.addGlobalCommand(
     interaction.reply({
       embeds: [embed],
       components: [actionRow],
-      ephemeral: true,
+      flags: [MessageFlags.Ephemeral],
     });
   }
 );

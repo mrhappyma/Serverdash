@@ -3,6 +3,7 @@ import {
   ButtonBuilder,
   ButtonInteraction,
   ButtonStyle,
+  MessageFlags,
 } from "discord.js";
 import bot, { prisma } from "..";
 import { orderStatus, order } from "@prisma/client";
@@ -31,13 +32,13 @@ const sendDeliveryContent = async (o: order, i: ButtonInteraction) => {
   ]);
   await i.followUp({
     content: `<#${o.channelId}>\n${o.invite}`,
-    ephemeral: true,
+    flags: [MessageFlags.Ephemeral],
   });
   await i.followUp({
     content: chefRecord.backticks
       ? `\`\`\`\n${fillOrderMessage(o, chefRecord.message)}\n\`\`\``
       : fillOrderMessage(o, chefRecord.message),
-    ephemeral: true,
+    flags: [MessageFlags.Ephemeral],
     components: [actionRowMessage],
   });
 };
@@ -56,7 +57,7 @@ bot.registerButton(/order:(\d+):deliver/, async (interaction) => {
   if (!update.success) {
     await interaction.reply({
       content: update.message,
-      ephemeral: true,
+      flags: [MessageFlags.Ephemeral],
     });
   } else {
     await interaction.deferUpdate();
@@ -77,12 +78,12 @@ bot.registerButton(/order:(\d+):complete/, async (interaction) => {
   if (!update.success) {
     await interaction.reply({
       content: update.message,
-      ephemeral: true,
+      flags: [MessageFlags.Ephemeral],
     });
   } else {
     await interaction.reply({
       content: `Done! Thanks!`,
-      ephemeral: true,
+      flags: [MessageFlags.Ephemeral],
     });
   }
 });
@@ -128,12 +129,12 @@ bot.registerButton(/order:(\d+):content/, async (interaction) => {
   if (!order)
     return interaction.followUp({
       content: "Failed to fetch order :(",
-      ephemeral: true,
+      flags: [MessageFlags.Ephemeral],
     });
   if (order.deliveryId != interaction.user.id)
     return interaction.followUp({
       content: "Nice try, but this isn't your order!",
-      ephemeral: true,
+      flags: [MessageFlags.Ephemeral],
     });
 
   await sendDeliveryContent(order, interaction);

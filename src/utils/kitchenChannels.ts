@@ -1,4 +1,8 @@
-import { WebhookClient, WebhookMessageCreateOptions } from "discord.js";
+import {
+  WebhookClient,
+  WebhookMessageCreateOptions,
+  WebhookMessageEditOptions,
+} from "discord.js";
 import env from "./env";
 import bot from "..";
 import { addRelatedKitchenMessage } from "../orders/cache";
@@ -64,14 +68,10 @@ export const sendKitchenMessage = async (
 export const editKitchenMessage = async (
   channel: KitchenChannel,
   messageId: string,
-  content: WebhookMessageCreateOptions
+  content: WebhookMessageEditOptions
 ) => {
   const webhook = webhooks[channel];
-  return await webhook.editMessage(messageId, {
-    username: bot.client.user?.username,
-    avatarURL: bot.client.user?.avatarURL() ?? undefined,
-    ...content,
-  });
+  return await webhook.editMessage(messageId, content);
 };
 
 export const deleteKitchenMessage = async (

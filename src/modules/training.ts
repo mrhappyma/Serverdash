@@ -1,8 +1,9 @@
 import {
   ButtonStyle,
   ComponentType,
+  GuildTextBasedChannel,
   Locale,
-  TextBasedChannel,
+  MessageFlags,
   ThreadAutoArchiveDuration,
   ThreadChannel,
 } from "discord.js";
@@ -21,7 +22,6 @@ import { KitchenChannel, sendKitchenMessage } from "../utils/kitchenChannels";
 
 //training starts when someone is given the training role
 messagesClient.client.on("guildMemberUpdate", async (oldMember, newMember) => {
-  console.log("a");
   if (
     !(
       !oldMember.roles.cache.has(env.TRAINING_ROLE_ID) &&
@@ -31,7 +31,7 @@ messagesClient.client.on("guildMemberUpdate", async (oldMember, newMember) => {
     return;
   const channel = (await messagesClient.client.channels.fetch(
     env.TRAINING_CHANNEL_ID
-  )) as TextBasedChannel;
+  )) as GuildTextBasedChannel;
   const m = await channel.send({
     content: `<@${newMember.id}>`,
     embeds: [
@@ -97,7 +97,7 @@ messagesClient.client.on("messageCreate", async (message) => {
   const trainingGuild = await bot.client.guilds.fetch(env.TRAINING_SERVER_ID);
   const channel = (await trainingGuild.channels.fetch(
     env.TRAINING_SERVER_ORDERS_CHANNEL_ID
-  )) as TextBasedChannel;
+  )) as GuildTextBasedChannel;
   const orderMessage = await channel.send({
     embeds: [
       {
@@ -148,7 +148,7 @@ messagesClient.client.on("messageCreate", async (message) => {
 export const trainingOrderFilled = async (training: trainingSession) => {
   const thread = (await messagesClient.client.channels.fetch(
     training.threadId
-  )) as TextBasedChannel;
+  )) as ThreadChannel;
   await thread.send({
     content: `Cool! Yay! Hooray! Great job <@${training.user}>! That's how you fill an order!`,
   });
@@ -183,9 +183,10 @@ export const trainingOrderFilled = async (training: trainingSession) => {
 
 //'yay' button was pressed
 messagesClient.registerButton("training-rules-1", async (interaction) => {
+  const channel = interaction.channel as ThreadChannel;
   await interaction.deferUpdate();
   //TODO: sync these with customer-facing stuff
-  await interaction.channel!.send({
+  await channel.send({
     content: "so, the rules!",
     embeds: [
       {
@@ -213,7 +214,7 @@ messagesClient.registerButton("training-rules-1", async (interaction) => {
       },
     ],
   });
-  await interaction.channel!.send({
+  await channel.send({
     content:
       "If you need to reject an order, just click the big red reject button below it! You'll have to type in a reason, which can just be the rule number. Pretty self-explanatory. These rules are pinned in the chefs chat too, if you need to look back at them.",
     components: [
@@ -245,6 +246,7 @@ messagesClient.registerButton("training-rules-1", async (interaction) => {
 
 //'i read all that sounds good!' button was pressed
 messagesClient.registerButton("training-rules-2", async (interaction) => {
+  const channel = interaction.channel as ThreadChannel;
   await interaction.deferUpdate();
   const training = await prisma.trainingSession.findUnique({
     where: {
@@ -258,19 +260,19 @@ messagesClient.registerButton("training-rules-2", async (interaction) => {
   if (Date.now() - training.updatedAt.getTime() < 35 * 1000) {
     await interaction.followUp({
       content: "hey, you need to actually read that first!",
-      ephemeral: true,
+      flags: [MessageFlags.Ephemeral],
     });
     return;
   }
 
-  await interaction.channel!.send({
+  await channel.send({
     content:
       "Cool! Rejecting is also used for if you can't get in to deliver an order, or if there's other weird stuff, btw.",
   });
-  await interaction.channel!.send({
+  await channel.send({
     content: `One more thing before we deliver that ${training.order?.order}- let's set your delivery message! That's that thing you send to customers to actually deliver the order, and it gets automatically filled in with information about the order, so all you have to do is copy-paste it!`,
   });
-  await interaction.channel!.send({
+  await channel.send({
     content:
       "You can put the following variables in your message:\n" +
       "`$mention` - mention the customer\n" +
@@ -320,6 +322,7 @@ messagesClient.registerButton("training-rules-2", async (interaction) => {
 messagesClient.registerButton(
   "training-message-set-continue",
   async (interaction) => {
+    const channel = interaction.channel as ThreadChannel;
     await interaction.deferUpdate();
     const training = await prisma.trainingSession.findUnique({
       where: {
@@ -334,15 +337,15 @@ messagesClient.registerButton(
     if (training.state !== "message-set-done") {
       await interaction.followUp({
         content: "You need to set your message first!",
-        ephemeral: true,
+        flags: [MessageFlags.Ephemeral],
       });
       return;
     }
 
-    await interaction.channel!.send({
+    await channel.send({
       content: `Great! Now that your message is set, it's finally delivery time! I'm **ABSOLUTELY STARVING** where IS my ${training.order?.order}???`,
     });
-    await interaction.channel!.send({
+    await channel.send({
       content:
         "Here's how it'll work:\n" +
         `1. A message will appear in <#${env.TRAINING_READY_ORDERS_CHANNEL_ID}> for the order! You can click the big button under it to start delivering it.\n` +
@@ -352,7 +355,7 @@ messagesClient.registerButton(
         "6. Leave their server, unless you were already there or have permission from someone there\n" +
         "7. Come back here and click complete to finish the order!",
     });
-    await interaction.channel!.send({
+    await channel.send({
       content: "make sense?",
       components: [
         {
@@ -385,6 +388,8 @@ messagesClient.registerButton(
 
 //'heck yeah' button was pressed
 messagesClient.registerButton("training-delivery-go", async (interaction) => {
+  const channel = interaction.channel as ThreadChannel;
+
   await interaction.deferUpdate();
   const training = await prisma.trainingSession.findUnique({
     where: {
@@ -399,12 +404,12 @@ messagesClient.registerButton("training-delivery-go", async (interaction) => {
   if (Date.now() - training.updatedAt.getTime() < 20 * 1000) {
     await interaction.followUp({
       content: "hey, you need to actually read that first!",
-      ephemeral: true,
+      flags: [MessageFlags.Ephemeral],
     });
     return;
   }
 
-  await interaction.channel!.sendTyping();
+  await channel.sendTyping();
   const order = training.order!;
 
   const deliver = await updateOrderStatus({
@@ -416,7 +421,7 @@ messagesClient.registerButton("training-delivery-go", async (interaction) => {
   if (!deliver.success) {
     await interaction.followUp({
       content: "Something went wrong! Please try again.\n" + deliver.message,
-      ephemeral: true,
+      flags: [MessageFlags.Ephemeral],
     });
     return;
   }
@@ -433,7 +438,7 @@ messagesClient.registerButton("training-delivery-go", async (interaction) => {
   await interaction.message.edit({
     components: [],
   });
-  await interaction.channel!.send({
+  await channel.send({
     content: `<#${env.TRAINING_READY_ORDERS_CHANNEL_ID}>! go get 'em!`,
   });
 });

@@ -1,4 +1,9 @@
-import { GuildChannel, Locale, SlashCommandBuilder } from "discord.js";
+import {
+  GuildChannel,
+  Locale,
+  MessageFlags,
+  SlashCommandBuilder,
+} from "discord.js";
 import bot from "..";
 import { closed, closedReason } from "./closed";
 import { createOrder, getActiveOrdersForUser } from "../orders/cache";
@@ -57,7 +62,7 @@ bot.addGlobalCommand(
     if (!permissions)
       return interaction.reply({
         content: "Failed to fetch channel permissions",
-        ephemeral: true,
+        flags: [MessageFlags.Ephemeral],
       });
     if (!permissions.has("CreateInstantInvite"))
       return interaction.reply({
@@ -83,7 +88,7 @@ bot.addGlobalCommand(
           },
         },
       ],
-      fetchReply: true,
+      withResponse: true,
     });
 
     const activeOrders = getActiveOrdersForUser(interaction.user.id);
@@ -127,7 +132,7 @@ bot.addGlobalCommand(
       interaction.user.id,
       interaction.user.username,
       interaction.channel.id,
-      message.id,
+      message.resource!.message!.id,
       locale
     );
   }

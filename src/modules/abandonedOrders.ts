@@ -8,6 +8,7 @@ import {
   ActionRowBuilder,
   ButtonBuilder,
   ButtonStyle,
+  MessageFlags,
   TextChannel,
 } from "discord.js";
 import { orderStatus } from "@prisma/client";
@@ -95,7 +96,7 @@ messagesClient.registerButton(
     ) {
       await interaction.reply({
         content: "this isn't your order >:(",
-        ephemeral: true,
+        flags: [MessageFlags.Ephemeral],
       });
       return;
     }

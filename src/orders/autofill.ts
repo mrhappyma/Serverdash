@@ -7,7 +7,7 @@ const getAutoFillFileURL = async (order: order) => {
 
   if (["really cool cat", "ginkgo", "the mascot"].includes(o.toLowerCase())) {
     const file = await fetch("https://ginkgo-bot.vercel.app/api/ginkgo");
-    const response = await file.json();
+    const response = (await file.json()) as { url: string };
     return response.url as string;
   }
 

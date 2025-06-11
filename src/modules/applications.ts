@@ -12,6 +12,7 @@ import {
   ButtonStyle,
   EmbedBuilder,
   Locale,
+  MessageFlags,
 } from "discord.js";
 import { applicationStatus, application } from "@prisma/client";
 import hasKitchenRole from "../utils/roleCheck";
@@ -98,7 +99,7 @@ bot.registerButton(
       });
       await interaction.followUp({
         content: "Don't forget to DM them and say why!",
-        ephemeral: true,
+        flags: [MessageFlags.Ephemeral],
       });
     }
     await editKitchenMessage(
@@ -125,7 +126,7 @@ messagesClient.registerButton("devtools:apply-button", async (interaction) => {
       .setStyle(ButtonStyle.Primary),
   ]);
   const channel = await bot.client.channels.fetch(interaction.channelId);
-  if (channel?.isTextBased())
+  if (channel?.isSendable())
     await channel.send({ embeds: [embed], components: [actionRow] });
 });
 
@@ -136,7 +137,7 @@ bot.registerButton("apply", async (interaction) => {
   if (isChef) {
     await interaction.followUp({
       content: "You're already a chef! How are you gonna be a chef twice?",
-      ephemeral: true,
+      flags: [MessageFlags.Ephemeral],
     });
     return;
   }
@@ -145,7 +146,7 @@ bot.registerButton("apply", async (interaction) => {
   if (training) {
     await interaction.followUp({
       content: "You're already in training!",
-      ephemeral: true,
+      flags: [MessageFlags.Ephemeral],
     });
     return;
   }
@@ -163,7 +164,7 @@ bot.registerButton("apply", async (interaction) => {
     await interaction.followUp({
       content:
         "Your chef application has been approved!\nWe stagger new chefs to make sure everything goes smoothly and the kitchen doesn't get overwhelmed. I'll let you know as soon as it's time to start your training! Shouldn't be too long.",
-      ephemeral: true,
+      flags: [MessageFlags.Ephemeral],
     });
     return;
   }
@@ -184,7 +185,7 @@ bot.registerButton("apply", async (interaction) => {
       content: `You've been rejected recently :( you can apply again <t:${Math.round(
         reapplyDate.getTime() / 1000
       ).toString()}:R>`,
-      ephemeral: true,
+      flags: [MessageFlags.Ephemeral],
     });
     return;
   }
@@ -196,7 +197,7 @@ bot.registerButton("apply", async (interaction) => {
     await interaction.followUp({
       content:
         "You already have an application pending! We'll get back to you soon!",
-      ephemeral: true,
+      flags: [MessageFlags.Ephemeral],
     });
     return;
   }
@@ -230,6 +231,6 @@ bot.registerButton("apply", async (interaction) => {
         ? "\n-# **Please note that our kitchen operates only in English**, and we can only accept chefs that know the language at this time"
         : ""),
     components: [actionRow],
-    ephemeral: true,
+    flags: [MessageFlags.Ephemeral],
   });
 });

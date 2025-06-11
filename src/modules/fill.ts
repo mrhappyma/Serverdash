@@ -4,6 +4,7 @@ import { emojiInline } from "../utils/emoji";
 import { KitchenChannel, sendKitchenMessage } from "../utils/kitchenChannels";
 import { getOrder } from "../orders/cache";
 import updateOrderStatus, { sendOrderForFilling } from "../orders/updateStatus";
+import { MessageFlags } from "discord.js";
 
 bot.registerButton("order:(\\d+):fill", async (interaction) => {
   const update = await updateOrderStatus({
@@ -17,7 +18,7 @@ bot.registerButton("order:(\\d+):fill", async (interaction) => {
   if (!update.success) {
     await interaction.reply({
       content: update.message,
-      ephemeral: true,
+      flags: [MessageFlags.Ephemeral],
     });
   } else {
     await interaction.deferUpdate();
@@ -29,16 +30,19 @@ bot.registerButton("order:(\\d+):drop", async (interaction) => {
   const orderId = interaction.customId.split(":")[1];
   const order = await getOrder(parseInt(orderId));
   if (!order)
-    return interaction.reply({ content: "Order not found", ephemeral: true });
+    return interaction.reply({
+      content: "Order not found",
+      flags: [MessageFlags.Ephemeral],
+    });
   if (order.chefId !== interaction.user.id)
     return interaction.reply({
       content: "Nice try, but this isn't your order!",
-      ephemeral: true,
+      flags: [MessageFlags.Ephemeral],
     });
   if (order.status !== orderStatus.FILLING)
     return interaction.reply({
       content: "Can't unclaim order- status is not FILLING",
-      ephemeral: true,
+      flags: [MessageFlags.Ephemeral],
     });
 
   await sendOrderForFilling(order);
