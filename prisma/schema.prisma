@@ -102,3 +102,8 @@ model ban {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
+
+model staticGuildInvite {
+  guildId String @id
+  invite  String @unique
+}

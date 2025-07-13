@@ -17,7 +17,7 @@ import { emojiInline } from "../utils/emoji";
 import updateOrderStatusMessage from "../utils/updateOrderStatusMessage";
 import sendLogMessage from "../utils/log";
 import { updateOrderStatusParams, updateOrderStatusResponse } from "./types";
-import bot, { messagesClient } from "..";
+import bot, { messagesClient, prisma } from "..";
 import { type PackOrderJob } from "../modules/pack";
 import { fileUrl } from "../utils/fillOrderMessage";
 import { updateProcessingOrders } from "../modules/metrics";
@@ -268,12 +268,22 @@ const updateOrderStatus = async (
           message: "Failed to fetch order channel",
         };
       try {
-        var invite = await targetChannel.createInvite({
-          maxAge: 3600,
-          maxUses: 1,
-          unique: true,
-          reason: `Order #${id} delivery invite`,
+        //TODO: add caching maybe
+        const staticInvite = await prisma.staticGuildInvite.findUnique({
+          where: {
+            guildId: order.guildId,
+          },
         });
+        var invite = staticInvite
+          ? staticInvite.invite
+          : (
+              await targetChannel.createInvite({
+                maxAge: 3600,
+                maxUses: 1,
+                unique: true,
+                reason: `Order #${id} delivery invite`,
+              })
+            ).url;
       } catch (e) {
         return {
           success: false,
@@ -316,7 +326,7 @@ const updateOrderStatus = async (
       }
       order = await updateOrder(id, {
         status,
-        invite: invite.url,
+        invite: invite,
       });
       break;
     case orderStatus.DELIVERED:
