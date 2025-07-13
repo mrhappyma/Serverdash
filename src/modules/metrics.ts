@@ -1,7 +1,6 @@
-import type { OrderStatus } from "aws-sdk/clients/outposts";
+import { orderStatus } from "@prisma/client";
 import { Gauge, collectDefaultMetrics } from "prom-client";
 import { prisma } from "..";
-import { orderStatus } from "@prisma/client";
 
 collectDefaultMetrics();
 
@@ -11,7 +10,7 @@ const processingOrders = new Gauge({
   labelNames: ["status"],
 });
 
-const ordersCache = new Map<number, OrderStatus>();
+const ordersCache = new Map<number, orderStatus>();
 
 const initCounters = async () => {
   const orders = await prisma.order.findMany();
@@ -32,7 +31,7 @@ const updateCounts = () => {
 };
 
 export const updateProcessingOrders = (
-  status: OrderStatus,
+  status: orderStatus,
   orderNumber: number
 ) => {
   ordersCache.set(orderNumber, status);

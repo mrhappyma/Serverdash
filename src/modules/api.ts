@@ -5,6 +5,7 @@ import {
 } from "./applications";
 import { register } from "prom-client";
 import agenda from "./jobs";
+import dailyStats from "./daily-stats";
 
 const api = express();
 api.use(express.json());
@@ -17,6 +18,10 @@ api.post("/api/applications/submit", (req, res) => {
   } catch {
     return res.sendStatus(400);
   }
+});
+
+api.get("/api/stats/yesterday", async (req, res) => {
+  res.json(dailyStats);
 });
 
 api.get("/metrics", async (req, res) => {
