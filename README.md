@@ -4,6 +4,9 @@
 
 #### Order (a picture of) anything (within reason) from your Discord server! Powered by real life humans!
 
+![orders yesterday](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fsd-internals.userexe.me%2Fapi%2Fstats%2Fyesterday&query=ordersDeliveredYesterday&style=flat&label=orders%20yesterday&labelColor=%23ef0d07&cacheSeconds=3600)
+![Discord](https://img.shields.io/discord/1037404759897940062?style=flat&label=kitchen%20server)
+
 [Invite Serverdash to your server](https://dsc.kitchen/) to order something! You can also [join the kitchen](https://dsc.kitchen/kitchen) to help fill orders (or if you need help, or if you just want to be there :)!
 
 [![Translation status](https://i18n.dsc.kitchen/widget/serverdash/bot/multi-auto.svg)](https://i18n.dsc.kitchen/engage/serverdash/)

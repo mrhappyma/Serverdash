@@ -10,29 +10,30 @@ import { KitchenChannel, sendKitchenMessage } from "../utils/kitchenChannels";
 import { emojiInline } from "../utils/emoji";
 
 export let closed = true;
-export let closedReason = "starting up, have patience";
+export let closedReason: string | undefined = "starting up, have patience";
 const loadClosed = async () => {
-  const kitchenConfig = await prisma.kitchenConfig.upsert({
+  const activeKitchenClosed = await prisma.kitchenClosed.findFirst({
     where: {
-      id: 0,
+      OR: [{ until: null }, { until: { gt: new Date() } }],
     },
-    update: {},
-    create: { id: 0 },
+    orderBy: {
+      from: "desc",
+    },
   });
-  closed = kitchenConfig.closed;
-  closedReason = kitchenConfig.closedReason;
+  closed = activeKitchenClosed ? true : false;
+  closedReason = activeKitchenClosed?.reason;
 };
 loadClosed();
 
 messagesClient.registerButton("devtools:closed-toggle", async (interaction) => {
   if (closed) {
     closed = false;
-    await prisma.kitchenConfig.update({
+    await prisma.kitchenClosed.updateMany({
       where: {
-        id: 0,
+        OR: [{ until: null }, { until: { gt: new Date() } }],
       },
       data: {
-        closed: false,
+        until: new Date(),
       },
     });
     interaction.update({
@@ -50,6 +51,9 @@ messagesClient.registerButton("devtools:closed-toggle", async (interaction) => {
     });
     sendKitchenMessage(KitchenChannel.logs, {
       content: `${emojiInline.materialDoorFront} <@!${interaction.user.id}> opened the kitchen`,
+      allowedMentions: {
+        parse: [],
+      },
     });
   } else {
     const modal = new ModalBuilder()
@@ -72,13 +76,10 @@ messagesClient.registerModal("kitchen-close", async (interaction) => {
   const reason = interaction.fields.getTextInputValue("reason");
   closed = true;
   closedReason = reason;
-  await prisma.kitchenConfig.update({
-    where: {
-      id: 0,
-    },
+  await prisma.kitchenClosed.create({
     data: {
-      closed: true,
-      closedReason: reason,
+      by: interaction.user.id,
+      reason,
     },
   });
   interaction.reply({
@@ -90,13 +91,13 @@ messagesClient.registerModal("kitchen-close", async (interaction) => {
       {
         title: "Kitchen closed",
         description: reason,
-        footer: {
-          text: `${interaction.user.username} - ${interaction.user.id}`,
-        },
       },
     ],
   });
   sendKitchenMessage(KitchenChannel.logs, {
     content: `${emojiInline.materialDoorFront} <@!${interaction.user.id}> closed the kitchen\n\`\`\`${reason}\`\`\``,
+    allowedMentions: {
+      parse: [],
+    },
   });
 });

@@ -3,7 +3,7 @@ import { prisma } from "..";
 import agenda from "./jobs";
 
 let dailyStats = {
-  ordersDeliveredYesterday: 0,
+  ordersDeliveredYesterday: 0 as number | "the kitchen was closed yesterday :(",
   topChefYesterday: "",
   topChefOrdersYesterday: 0,
   topDeliveryPersonYesterday: "",
@@ -14,17 +14,37 @@ export default dailyStats;
 const updateDailyStats = async () => {
   const startOfYesterday = new Date().setDate(new Date().getDate() - 1);
   const endOfYesterday = startOfYesterday + 24 * 60 * 60 * 1000;
-  const orders = await prisma.order.count({
+
+  const kitchenClosingsYesterday = await prisma.kitchenClosed.findMany({
     where: {
-      status: orderStatus.DELIVERED,
-      updatedAt: {
-        gte: new Date(startOfYesterday),
-        lt: new Date(endOfYesterday),
-      },
+      OR: [{ until: null }, { until: { gt: new Date(startOfYesterday) } }],
     },
   });
-  dailyStats.ordersDeliveredYesterday = orders;
-  if (orders > 0) {
+  const totalClosedTime = kitchenClosingsYesterday.reduce((total, closing) => {
+    const until = closing.until ? new Date(closing.until) : new Date();
+    return total + (until.getTime() - new Date(closing.from).getTime());
+  }, 0);
+  const closedHours = totalClosedTime / (1000 * 60 * 60);
+
+  if (closedHours > 12) {
+    dailyStats.ordersDeliveredYesterday = "the kitchen was closed yesterday :(";
+  } else {
+    const orders = await prisma.order.count({
+      where: {
+        status: orderStatus.DELIVERED,
+        updatedAt: {
+          gte: new Date(startOfYesterday),
+          lt: new Date(endOfYesterday),
+        },
+      },
+    });
+    dailyStats.ordersDeliveredYesterday = orders;
+  }
+
+  if (
+    typeof dailyStats.ordersDeliveredYesterday === "number" &&
+    dailyStats.ordersDeliveredYesterday > 0
+  ) {
     const topChef = await prisma.order.groupBy({
       by: ["chefId"],
       _count: {

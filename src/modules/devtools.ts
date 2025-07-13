@@ -9,10 +9,10 @@ import {
   TextInputStyle,
 } from "discord.js";
 import bot, { messagesClient, prisma } from "..";
-import env from "../utils/env";
 import { emojiInline } from "../utils/emoji";
 import { sendKitchenMessage, KitchenChannel } from "../utils/kitchenChannels";
 import hasKitchenRole from "../utils/roleCheck";
+import { closed } from "./closed";
 
 messagesClient.addGlobalCommand(
   new SlashCommandBuilder().setName("devtools").setDescription("secret sauce"),
@@ -24,13 +24,6 @@ messagesClient.addGlobalCommand(
         flags: [MessageFlags.Ephemeral],
       });
 
-    const kitchenConfig = await prisma.kitchenConfig.upsert({
-      where: {
-        id: 0,
-      },
-      update: {},
-      create: { id: 0 },
-    });
     const a1 = new ActionRowBuilder<ButtonBuilder>().addComponents([
       new ButtonBuilder()
         .setCustomId("devtools:role-select")
@@ -62,7 +55,7 @@ messagesClient.addGlobalCommand(
     const a3 = new ActionRowBuilder<ButtonBuilder>().addComponents([
       new ButtonBuilder()
         .setCustomId("devtools:closed-toggle")
-        .setLabel(kitchenConfig.closed ? "Open kitchen" : "Close kitchen")
+        .setLabel(closed ? "Open kitchen" : "Close kitchen")
         .setStyle(ButtonStyle.Secondary),
       new ButtonBuilder()
         .setCustomId("devtools:error-test")

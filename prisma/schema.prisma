@@ -54,12 +54,6 @@ model chef {
   backticks Boolean @default(false)
 }
 
-model KitchenConfig {
-  id           Int     @id
-  closed       Boolean @default(false)
-  closedReason String  @default("")
-}
-
 model application {
   id     Int               @id @default(autoincrement())
   user   String
@@ -106,4 +100,12 @@ model ban {
 model staticGuildInvite {
   guildId String @id
   invite  String @unique
+}
+
+model kitchenClosed {
+  id     Int       @id @default(autoincrement())
+  by     String
+  reason String
+  from   DateTime  @default(now())
+  until  DateTime?
 }
