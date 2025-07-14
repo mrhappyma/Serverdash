@@ -1,22 +1,16 @@
 import bot, { messagesClient } from "..";
-import env from "../utils/env";
 
 const nicknameCache = new Map<string, string>();
-
-const kitchenGuild = bot.client.guilds.fetch(env.KITCHEN_SERVER_ID);
 
 export const getNickname = async (id: string) => {
   const cached = nicknameCache.get(id);
   if (cached) return cached;
-  const user = await (await kitchenGuild).members.fetch(id);
-  const nickname = user.nickname || user.user.globalName || user.user.username;
+  const user = await bot.client.users.fetch(id).catch(() => null);
+  const nickname = user?.globalName || user?.username || "Unknown User";
   nicknameCache.set(id, nickname);
   return nickname;
 };
 
-messagesClient.client.on("guildMemberUpdate", async (oldMember, newMember) => {
-  nicknameCache.set(
-    newMember.id,
-    newMember.nickname || newMember.user.globalName || newMember.user.username
-  );
+messagesClient.client.on("userUpdate", async (oldUser, newUser) => {
+  nicknameCache.set(newUser.id, newUser.globalName || newUser.username);
 });
