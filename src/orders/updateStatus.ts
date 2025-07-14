@@ -28,11 +28,13 @@ import {
   trainingOrderFilled,
 } from "../modules/training";
 import L, { SupportedLocale } from "../i18n";
+import { getNickname } from "../modules/nicknames";
 
 const updateOrderStatus = async (
   p: updateOrderStatusParams
 ): Promise<updateOrderStatusResponse> => {
   const { id, status, chef, admin } = p;
+  const chefUsername = await getNickname(chef);
 
   let order = await getOrder(id);
   if (!order) {
@@ -133,7 +135,7 @@ const updateOrderStatus = async (
         {
           status,
           chefId: chef,
-          chefUsername: p.chefUsername,
+          chefUsername: chefUsername,
         },
         !p.interactionMessageId && true
       );
@@ -249,7 +251,7 @@ const updateOrderStatus = async (
         {
           status,
           deliveryId: chef,
-          deliveryUsername: p.chefUsername,
+          deliveryUsername: chefUsername,
         },
         !p.interactionMessageId && true
       );
@@ -413,7 +415,7 @@ const updateOrderStatus = async (
   switch (status) {
     case orderStatus.FILLING:
       message = L[locale].CUSTOMER_STATUS_MESSAGE.FILLING({
-        chef: p.chefUsername,
+        chef: chefUsername,
       });
       break;
     case orderStatus.PACKING:
@@ -429,7 +431,7 @@ const updateOrderStatus = async (
       break;
     case orderStatus.DELIVERING:
       message = L[locale].CUSTOMER_STATUS_MESSAGE.DELIVERING({
-        deliverer: p.chefUsername,
+        deliverer: chefUsername,
       });
       break;
     case orderStatus.DELIVERED:

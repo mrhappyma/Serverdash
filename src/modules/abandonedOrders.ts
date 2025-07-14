@@ -13,6 +13,7 @@ import {
 } from "discord.js";
 import { orderStatus } from "@prisma/client";
 import updateOrderStatus, { sendOrderForFilling } from "../orders/updateStatus";
+import { getNickname } from "./nicknames";
 
 export interface OrderReminderJob extends JobAttributesData {
   orderId: number;
@@ -151,7 +152,6 @@ agenda.define<OrderAbandonedJob>(
           id: order.id,
           status: orderStatus.PACKED,
           chef: messagesClient.client.user!.id,
-          chefUsername: messagesClient.client.user!.username,
           admin: messagesClient.client.user!.id,
         });
         break;

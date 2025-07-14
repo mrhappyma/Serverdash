@@ -130,7 +130,7 @@ bot.addGlobalCommand(
       interaction.guild.id,
       interaction.guild.name,
       interaction.user.id,
-      interaction.user.username,
+      interaction.user.globalName ?? interaction.user.username,
       interaction.channel.id,
       message.resource!.message!.id,
       locale

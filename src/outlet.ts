@@ -8,6 +8,7 @@ import { SupportedLocale, SupportedLocales } from "./i18n";
 
 declare type powercordConfig = {
   intents: BitFieldResolvable<GatewayIntentsString, number>;
+  partials?: Discord.Partials[];
 };
 
 /**
@@ -62,6 +63,7 @@ export default class Powercord {
     this.token = token;
     this.client = new Discord.Client({
       intents: options.intents,
+      partials: options.partials || [],
     });
   }
 

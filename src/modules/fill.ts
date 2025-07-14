@@ -11,7 +11,6 @@ bot.registerButton("order:(\\d+):fill", async (interaction) => {
     id: parseInt(interaction.customId.split(":")[1]),
     status: orderStatus.FILLING,
     chef: interaction.user.id,
-    chefUsername: interaction.user.username,
     interactionMessageId: interaction.message.id,
   });
 

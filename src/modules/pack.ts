@@ -106,7 +106,6 @@ messagesClient.client.on("messageCreate", async (message) => {
         id: order.id,
         status: orderStatus.PACKING,
         chef: message.author.id,
-        chefUsername: message.author.username,
         fileUrl: c,
       });
 
@@ -179,7 +178,6 @@ agenda.define<PackOrderJob>(
       id: job.attrs.data.orderId,
       status: orderStatus.PACKED,
       chef: bot.client.user!.id,
-      chefUsername: bot.client.user!.username,
     });
 
     return update.success;

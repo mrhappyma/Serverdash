@@ -13,6 +13,7 @@ import {
 import bot, { messagesClient, prisma } from "..";
 import fillOrderMessage from "../utils/fillOrderMessage";
 import { orderStatus } from "@prisma/client";
+import { getNickname } from "./nicknames";
 
 messagesClient.registerButton("devtools:message-set", async (interaction) => {
   interaction.deferUpdate();
@@ -102,7 +103,7 @@ const handleMessageSetModal = async (interaction: ModalSubmitInteraction) => {
         chefId: "4",
         chefUsername: "chefy mcchef face",
         deliveryId: interaction.user.id,
-        deliveryUsername: interaction.user.username,
+        deliveryUsername: await getNickname(interaction.user.id),
         fileUrl: "s3 m/brazil.jpg",
         rejectedReason: null,
         rejectorId: null,

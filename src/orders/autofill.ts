@@ -18,7 +18,7 @@ const getAutoFillFileURL = async (order: order) => {
       .catch(() => null);
     if (user) {
       await updateOrder(order.id, {
-        order: user.username,
+        order: user.globalName || user.username,
       });
       return user.displayAvatarURL();
     }

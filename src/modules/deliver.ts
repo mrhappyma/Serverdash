@@ -50,7 +50,6 @@ bot.registerButton(/order:(\d+):deliver/, async (interaction) => {
     id: orderId,
     status: orderStatus.DELIVERING,
     chef: interaction.user.id,
-    chefUsername: interaction.user.username,
     interactionMessageId: interaction.message.id,
   });
 
@@ -72,7 +71,6 @@ bot.registerButton(/order:(\d+):complete/, async (interaction) => {
     id: orderId,
     status: orderStatus.DELIVERED,
     chef: interaction.user.id,
-    chefUsername: interaction.user.username,
   });
 
   if (!update.success) {

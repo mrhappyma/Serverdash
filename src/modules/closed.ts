@@ -43,9 +43,6 @@ messagesClient.registerButton("devtools:closed-toggle", async (interaction) => {
       embeds: [
         {
           title: "Kitchen opened",
-          footer: {
-            text: `${interaction.user.username} - ${interaction.user.id}`,
-          },
         },
       ],
     });

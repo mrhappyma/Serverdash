@@ -1,19 +1,26 @@
 import { orderStatus } from "@prisma/client";
 import { prisma } from "..";
 import agenda from "./jobs";
+import { getNickname } from "./nicknames";
 
-let dailyStats = {
+let publicDailyStats = {
   ordersDeliveredYesterday: 0 as number | "the kitchen was closed yesterday :(",
   topChefYesterday: "",
   topChefOrdersYesterday: 0,
   topDeliveryPersonYesterday: "",
   topDeliveryPersonOrdersYesterday: 0,
 };
-export default dailyStats;
+let topChefYesterdayId = "";
+let topDeliveryPersonYesterdayId = "";
+export default publicDailyStats;
 
 const updateDailyStats = async () => {
-  const startOfYesterday = new Date().setDate(new Date().getDate() - 1);
-  const endOfYesterday = startOfYesterday + 24 * 60 * 60 * 1000;
+  const startOfYesterday = new Date();
+  startOfYesterday.setHours(0, 0, 0, 0);
+  startOfYesterday.setDate(startOfYesterday.getDate() - 1);
+  const endOfYesterday = new Date();
+  endOfYesterday.setHours(23, 59, 59, 999);
+  endOfYesterday.setDate(endOfYesterday.getDate() - 1);
 
   const kitchenClosingsYesterday = await prisma.kitchenClosed.findMany({
     where: {
@@ -27,7 +34,8 @@ const updateDailyStats = async () => {
   const closedHours = totalClosedTime / (1000 * 60 * 60);
 
   if (closedHours > 12) {
-    dailyStats.ordersDeliveredYesterday = "the kitchen was closed yesterday :(";
+    publicDailyStats.ordersDeliveredYesterday =
+      "the kitchen was closed yesterday :(";
   } else {
     const orders = await prisma.order.count({
       where: {
@@ -38,12 +46,12 @@ const updateDailyStats = async () => {
         },
       },
     });
-    dailyStats.ordersDeliveredYesterday = orders;
+    publicDailyStats.ordersDeliveredYesterday = orders;
   }
 
   if (
-    typeof dailyStats.ordersDeliveredYesterday === "number" &&
-    dailyStats.ordersDeliveredYesterday > 0
+    typeof publicDailyStats.ordersDeliveredYesterday === "number" &&
+    publicDailyStats.ordersDeliveredYesterday > 0
   ) {
     const topChef = await prisma.order.groupBy({
       by: ["chefId"],
@@ -65,8 +73,9 @@ const updateDailyStats = async () => {
       take: 1,
     });
     if (topChef.length > 0) {
-      dailyStats.topChefYesterday = topChef[0].chefId!;
-      dailyStats.topChefOrdersYesterday = topChef[0]._count.chefId;
+      topChefYesterdayId = topChef[0].chefId!;
+      publicDailyStats.topChefYesterday = await getNickname(topChef[0].chefId!);
+      publicDailyStats.topChefOrdersYesterday = topChef[0]._count.chefId;
     }
 
     const topDeliveryPerson = await prisma.order.groupBy({
@@ -89,15 +98,18 @@ const updateDailyStats = async () => {
       take: 1,
     });
     if (topDeliveryPerson.length > 0) {
-      dailyStats.topDeliveryPersonYesterday = topDeliveryPerson[0].deliveryId!;
-      dailyStats.topDeliveryPersonOrdersYesterday =
+      topDeliveryPersonYesterdayId = topDeliveryPerson[0].deliveryId!;
+      publicDailyStats.topDeliveryPersonYesterday = await getNickname(
+        topDeliveryPerson[0].deliveryId!
+      );
+      publicDailyStats.topDeliveryPersonOrdersYesterday =
         topDeliveryPerson[0]._count.deliveryId;
     }
   } else {
-    dailyStats.topChefYesterday = "";
-    dailyStats.topChefOrdersYesterday = 0;
-    dailyStats.topDeliveryPersonYesterday = "";
-    dailyStats.topDeliveryPersonOrdersYesterday = 0;
+    publicDailyStats.topChefYesterday = "";
+    publicDailyStats.topChefOrdersYesterday = 0;
+    publicDailyStats.topDeliveryPersonYesterday = "";
+    publicDailyStats.topDeliveryPersonOrdersYesterday = 0;
   }
 };
 

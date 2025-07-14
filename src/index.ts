@@ -1,7 +1,7 @@
 import { PrismaClient, orderStatus } from "@prisma/client";
 import Powercord from "./outlet";
 import env from "./utils/env";
-import { ActivityType } from "discord.js";
+import { ActivityType, Partials } from "discord.js";
 import path from "path";
 import fs from "fs";
 import { registerSentryButtons } from "./modules/sentry";
@@ -16,6 +16,7 @@ export default bot;
 export const collector = env.COLLECTOR_TOKEN
   ? new Powercord(env.COLLECTOR_TOKEN, {
       intents: ["GuildMessages", "MessageContent", "GuildMembers", "Guilds"],
+      partials: [Partials.GuildMember],
     })
   : null;
 export const messagesClient = collector ?? bot;

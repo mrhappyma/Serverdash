@@ -5,7 +5,7 @@ import {
 } from "./applications";
 import { register } from "prom-client";
 import agenda from "./jobs";
-import dailyStats from "./daily-stats";
+import publicDailyStats from "./daily-stats";
 
 const api = express();
 api.use(express.json());
@@ -21,7 +21,7 @@ api.post("/api/applications/submit", (req, res) => {
 });
 
 api.get("/api/stats/yesterday", async (req, res) => {
-  res.json(dailyStats);
+  res.json(publicDailyStats);
 });
 
 api.get("/metrics", async (req, res) => {

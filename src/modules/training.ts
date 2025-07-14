@@ -19,6 +19,7 @@ import updateOrderStatus from "../orders/updateStatus";
 import agenda from "./jobs";
 import { Job, JobAttributesData } from "agenda";
 import { KitchenChannel, sendKitchenMessage } from "../utils/kitchenChannels";
+import { getNickname } from "./nicknames";
 
 //training starts when someone is given the training role
 messagesClient.client.on("guildMemberUpdate", async (oldMember, newMember) => {
@@ -122,7 +123,7 @@ messagesClient.client.on("messageCreate", async (message) => {
     trainingGuild.id,
     trainingGuild.name,
     messagesClient.client.user!.id,
-    messagesClient.client.user!.username,
+    await getNickname(messagesClient.client.user!.id),
     orderMessage.channelId,
     orderMessage.id,
     Locale.EnglishUS,
@@ -416,7 +417,6 @@ messagesClient.registerButton("training-delivery-go", async (interaction) => {
     id: order.id,
     status: orderStatus.PACKED,
     chef: bot.client.user!.id,
-    chefUsername: bot.client.user!.username,
   });
   if (!deliver.success) {
     await interaction.followUp({

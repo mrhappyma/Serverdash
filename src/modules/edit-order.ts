@@ -107,7 +107,6 @@ messagesClient.registerModal(
         id: order.id,
         status: orderStatus.FILLING,
         chef: order.chefId!,
-        chefUsername: order.chefUsername!,
         interactionMessageId: order.relatedKitchenMessages[0].split(":")[1],
         admin: interaction.user.id,
       });
@@ -116,7 +115,6 @@ messagesClient.registerModal(
         id: order.id,
         status: orderStatus.PACKED,
         chef: interaction.user.id,
-        chefUsername: interaction.user.username,
         admin: interaction.user.id,
       });
 
@@ -302,9 +300,6 @@ messagesClient.registerButton(
             id,
             status,
             chef: userId,
-            chefUsername: await bot.client.users
-              .fetch(userId)
-              .then((u) => u.username),
             fileUrl: content,
             admin: interaction.user.id,
           });
@@ -319,9 +314,6 @@ messagesClient.registerButton(
         id,
         status,
         chef: userId,
-        chefUsername: await bot.client.users
-          .fetch(userId)
-          .then((u) => u.username),
         admin: interaction.user.id,
       });
       if (update.success) {

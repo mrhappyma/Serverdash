@@ -145,13 +145,11 @@ export const createOrder = async (
       id: newOrder.id,
       status: orderStatus.FILLING,
       chef: messagesClient.client.user!.id,
-      chefUsername: messagesClient.client.user!.username,
     });
     await updateOrderStatus({
       id: newOrder.id,
       status: orderStatus.PACKING,
       chef: messagesClient.client.user!.id,
-      chefUsername: messagesClient.client.user!.username,
       fileUrl: autoFillFileUrl,
     });
   } else {

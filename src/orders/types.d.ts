@@ -4,7 +4,6 @@ declare type updateOrderStatusParams =
   | {
       id: number;
       chef: string;
-      chefUsername: string;
       status: Exclude<
         orderStatus,
         "ORDERED" | "FILLING" | "DELIVERING" | "REJECTED" | "PACKING"
@@ -24,7 +23,6 @@ declare type updateOrderStatusParams =
   | {
       id: number;
       chef: string;
-      chefUsername: string;
       status: "DELIVERING" | "FILLING";
       admin?: string;
       interactionMessageId?: string;
@@ -32,7 +30,6 @@ declare type updateOrderStatusParams =
   | {
       id: number;
       chef: string;
-      chefUsername: string;
       status: "PACKING";
       admin?: string;
       fileUrl: string;
