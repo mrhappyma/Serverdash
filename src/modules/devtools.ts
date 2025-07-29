@@ -18,7 +18,7 @@ messagesClient.addGlobalCommand(
   new SlashCommandBuilder().setName("devtools").setDescription("secret sauce"),
   async (interaction) => {
     if (!interaction.isCommand()) return;
-    if (!hasKitchenRole("admin", interaction.user.id))
+    if (!(await hasKitchenRole("admin", interaction.user.id)))
       return interaction.reply({
         content: "the levee is dry (haha cause the song is pie related)",
         flags: [MessageFlags.Ephemeral],

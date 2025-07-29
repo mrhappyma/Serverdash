@@ -8,9 +8,12 @@ const roles = {
 };
 
 declare type Role = keyof typeof roles;
-export default function hasKitchenRole(role: Role, userId: string) {
-  return bot.client.guilds.cache
-    .get(env.KITCHEN_SERVER_ID)
-    ?.members.cache.get(userId)
-    ?.roles.cache.has(roles[role]);
+export default async function hasKitchenRole(role: Role, userId: string) {
+  return (
+    (
+      await bot.client.guilds.cache
+        .get(env.KITCHEN_SERVER_ID)
+        ?.members.fetch(userId)
+    )?.roles.cache.has(roles[role]) ?? false
+  );
 }

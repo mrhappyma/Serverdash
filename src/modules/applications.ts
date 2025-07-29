@@ -133,7 +133,7 @@ messagesClient.registerButton("devtools:apply-button", async (interaction) => {
 bot.registerButton("apply", async (interaction) => {
   await interaction.deferUpdate();
 
-  const isChef = hasKitchenRole("chef", interaction.user.id);
+  const isChef = await hasKitchenRole("chef", interaction.user.id);
   if (isChef) {
     await interaction.followUp({
       content: "You're already a chef! How are you gonna be a chef twice?",
@@ -142,7 +142,7 @@ bot.registerButton("apply", async (interaction) => {
     return;
   }
 
-  const training = hasKitchenRole("training", interaction.user.id);
+  const training = await hasKitchenRole("training", interaction.user.id);
   if (training) {
     await interaction.followUp({
       content: "You're already in training!",

@@ -33,7 +33,7 @@ const updateDailyStats = async () => {
   }, 0);
   const closedHours = totalClosedTime / (1000 * 60 * 60);
 
-  if (closedHours > 12) {
+  if (closedHours >= 12) {
     publicDailyStats.ordersDeliveredYesterday =
       "the kitchen was closed yesterday :(";
   } else {
@@ -42,7 +42,7 @@ const updateDailyStats = async () => {
         status: orderStatus.DELIVERED,
         updatedAt: {
           gte: new Date(startOfYesterday),
-          lt: new Date(endOfYesterday),
+          lte: new Date(endOfYesterday),
         },
       },
     });
