@@ -109,3 +109,11 @@ model kitchenClosed {
   from   DateTime  @default(now())
   until  DateTime?
 }
+
+model sentChefInactivityWarning {
+  id            Int      @id @default(autoincrement())
+  userId        String
+  givenDeadline DateTime
+  sentAt        DateTime @default(now())
+  resolved      Boolean  @default(false)
+}
